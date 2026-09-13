@@ -2,6 +2,7 @@ import {redirect} from "next/navigation";
 import {getAdminSession} from "../../lib/admin-auth";
 import {getBookingSettings, listReservations} from "../../lib/booking-store";
 import {minutes, reservationStatuses, timeFromMinutes, type BookingSettings, type TableReservation} from "../../lib/bookings";
+import { isRegularClosureDate } from "../../lib/restaurant-schedule";
 import {adminCan} from "../../lib/admin-permissions";
 import {AdminFrame, AdminPageHeader, EmptyState, MetricCard} from "../components/admin-ui";
 import {AdminDeleteButton} from "../components/admin-delete-button";
@@ -42,6 +43,7 @@ export default async function ReservationsAdminPage({searchParams}: {searchParam
   const today = new Intl.DateTimeFormat("sv-SE", {timeZone: "Europe/London"}).format(new Date());
   const upcoming = reservations.filter((item) => item.bookingDate >= today && item.status === "confirmed");
   const todayBookings = upcoming.filter((item) => item.bookingDate === today);
+  const mondayExceptions = upcoming.filter((item) => isRegularClosureDate(item.bookingDate));
   const todayGuests = todayBookings.reduce((sum, item) => sum + item.partySize, 0);
   const canWrite = adminCan(session.role, "reservations:write");
   const canDelete = adminCan(session.role, "reservations:delete");
@@ -49,9 +51,11 @@ export default async function ReservationsAdminPage({searchParams}: {searchParam
   return <AdminFrame active="/admin/reservations" session={session}>
     <AdminPageHeader eyebrow="Front of house" title="Table reservations." description="Create, inspect, edit and remove table bookings without leaving the operations portal." />
     {query.update && <p className={`adminAlert ${["success", "created", "deleted"].includes(query.update) ? "isSuccess" : "isError"}`}>{updateMessage(query.update)}</p>}
+    {mondayExceptions.length > 0 && <p className="adminAlert isError">The restaurant is usually closed on Mondays. Review {mondayExceptions.length} confirmed Monday table{mondayExceptions.length === 1 ? "" : "s"} below as intentional exceptions or contact the guests to rearrange.</p>}
     <section className="adminMetrics"><MetricCard label="Upcoming tables" value={upcoming.length} detail="Confirmed future reservations"/><MetricCard label="Guests today" value={todayGuests} detail={`${todayBookings.length} table${todayBookings.length===1?"":"s"}`} tone={todayGuests?"attention":undefined}/><MetricCard label="Seats per sitting" value={settings.capacity} detail={`${settings.sittingMinutes}-minute table duration`}/><MetricCard label="Largest online party" value={settings.maximumPartySize} detail={`${settings.slotMinutes}-minute arrival intervals`}/></section>
     {canWrite && <section className="adminPanel"><details className="adminCreateRecord"><summary>Create a table reservation</summary><form className="adminRecordForm" method="post" action="/api/admin/reservations"><input type="hidden" name="csrf" value={session.csrfToken}/><ReservationFields settings={settings}/><button className="adminButton" type="submit">Create reservation</button></form></details></section>}
     <section className="adminPanel"><div className="adminPanelHeading"><div><p>Capacity controls</p><h2>Booking rules</h2></div><b>{settings.bookingEnabled?"Accepting bookings":"Paused"}</b></div>
+      <p>Online table bookings are closed on Mondays. Staff can create a Monday reservation here for an agreed exception.</p>
       <form className="adminBookingSettings" method="post" action="/api/admin/reservations/settings">
         <input type="hidden" name="csrf" value={session.csrfToken}/><label>Total seats<input name="capacity" type="number" min="1" max="500" defaultValue={settings.capacity}/></label><label>Table duration<select name="sittingMinutes" defaultValue={settings.sittingMinutes}><option value="60">60 minutes</option><option value="90">90 minutes</option><option value="120">120 minutes</option><option value="150">150 minutes</option><option value="180">180 minutes</option></select></label><label>Arrival interval<select name="slotMinutes" defaultValue={settings.slotMinutes}><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label><label>Minimum party<input name="minimumPartySize" type="number" min="1" max="20" defaultValue={settings.minimumPartySize}/></label><label>Maximum party<input name="maximumPartySize" type="number" min="1" max="100" defaultValue={settings.maximumPartySize}/></label><label>First sitting<input name="firstSitting" type="time" defaultValue={settings.firstSitting}/></label><label>Last sitting<input name="lastSitting" type="time" defaultValue={settings.lastSitting}/></label><label>Minimum notice (minutes)<input name="minimumLeadMinutes" type="number" min="0" max="10080" defaultValue={settings.minimumLeadMinutes}/></label><label>Book ahead (days)<input name="advanceDays" type="number" min="1" max="365" defaultValue={settings.advanceDays}/></label><label className="adminCheckField"><input name="bookingEnabled" type="checkbox" defaultChecked={settings.bookingEnabled}/>Online table booking enabled</label><button className="adminButton" disabled={!canWrite}>Save booking rules</button>
       </form>

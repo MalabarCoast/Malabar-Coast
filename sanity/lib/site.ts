@@ -52,7 +52,7 @@ export const fallbackSiteSettings: SiteSettings = {
   coordinates: site.geo,
   mapUrl: site.maps.directionsUrl,
   mapEmbedUrl: site.maps.embedUrl,
-  openingHours: [],
+  openingHours: [{days: "Monday", hours: "Usually closed"}],
   socialLinks: [{platform: "Instagram", url: "https://www.instagram.com/malabarcoastuk"}],
   primaryNavigation: [
     {label: "Our story", href: "/story"},
@@ -120,6 +120,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       primaryNavigation: navigationWithBooking,
       footerNavigation: safeFooterNavigation.length ? safeFooterNavigation : fallbackSiteSettings.footerNavigation,
       socialLinks: settings.socialLinks?.length ? settings.socialLinks : fallbackSiteSettings.socialLinks,
+      openingHours: settings.openingHours?.length ? settings.openingHours : fallbackSiteSettings.openingHours,
     };
   } catch (error) {
     console.error("Sanity site settings fetch failed; using the checked-in site fallback.", error instanceof Error ? error.name : "UnknownError");

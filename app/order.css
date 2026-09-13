@@ -79,6 +79,7 @@
 .choiceCards strong { margin-top: auto; font-family: "Iowan Old Style",Georgia,serif; font-size: 1.25rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .choiceCards span { color: rgba(16,32,28,.62); font-size: .68rem; line-height: 1.45; letter-spacing: 0; text-transform: none; }
 .fullField { display: block; margin-top: 1.5rem; }
+.checkoutScheduleNote { margin: .55rem 0 0; color: rgba(16,32,28,.68); font-family: "Iowan Old Style",Georgia,serif; font-size: .9rem; line-height: 1.5; }
 .addressFields { margin-top: 1.5rem; }
 .addressFields label:first-child { grid-column: auto; }
 .paymentNotice,.checkoutError { margin: 0 0 1rem; padding: 1rem; border-left: 2px solid #9d5e31; background: rgba(157,94,49,.12); font-family: "Iowan Old Style",Georgia,serif; font-size: .9rem; line-height: 1.5; }

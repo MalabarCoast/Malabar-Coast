@@ -14,6 +14,7 @@
 .summary { display: grid; gap: .55rem; padding: 1rem; border: 1px solid rgba(16,32,28,.16); background: rgba(255,255,255,.35); }
 .summary strong { font: 1.2rem "Iowan Old Style",Georgia,serif; }
 .summary span { color: rgba(16,32,28,.65); font-size: .75rem; line-height: 1.5; }
+.scheduleNote { margin: -.3rem 0 0; color: rgba(16,32,28,.68); font: .85rem/1.5 "Iowan Old Style",Georgia,serif; }
 .compact .grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .compact .summary { padding: .85rem 1rem; }
 .compact .button { width: 100%; }

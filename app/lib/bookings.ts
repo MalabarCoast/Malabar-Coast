@@ -1,3 +1,5 @@
+import { isRegularClosureDate } from "./restaurant-schedule";
+
 export const reservationStatuses = ["confirmed", "cancelled", "completed", "no_show"] as const;
 export type ReservationStatus = typeof reservationStatuses[number];
 export const hallEnquiryStatuses = ["new", "contacted", "approved", "declined"] as const;
@@ -150,6 +152,7 @@ export function validateReservation(input: unknown, settings: BookingSettings) {
   if (!input || typeof input !== "object") throw new BookingValidationError("Booking details are missing.");
   const body = input as Record<string, unknown>;
   const bookingDate = date(body.bookingDate, "Booking date");
+  if (isRegularClosureDate(bookingDate)) throw new BookingValidationError("Online table bookings are closed on Mondays. Please choose another day.");
   const startTime = time(body.startTime, "Booking time");
   const partySize = Number(body.partySize);
   if (!Number.isInteger(partySize) || partySize < settings.minimumPartySize || partySize > settings.maximumPartySize) {

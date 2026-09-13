@@ -320,7 +320,7 @@ async function seed() {
     coordinates: {latitude: site.geo.latitude, longitude: site.geo.longitude},
     mapUrl: site.maps.directionsUrl,
     mapEmbedUrl: site.maps.embedUrl,
-    openingHours: [],
+    openingHours: [{_key: "monday-closed", days: "Monday", hours: "Usually closed"}],
     socialLinks: [{_key: "instagram", platform: "Instagram", url: "https://www.instagram.com/malabarcoastuk"}],
     primaryNavigation: [
       {_type: "link", _key: "story", label: "Our story", href: "/story", openInNewTab: false},
@@ -344,7 +344,7 @@ async function seed() {
 
   const marketingPages = pageSeeds();
   for (const page of marketingPages) await upsertByField("marketingPage", "pageKey", page.pageKey, page);
-  for (const [index, faq] of faqItems.entries()) await upsertByField("faqItem", "question", faq.question, {question: faq.question, answer: faq.answer, category: index >= 15 ? "Private hall" : "Restaurant", displayOrder: index, published: true});
+  for (const [index, faq] of faqItems.entries()) await upsertByField("faqItem", "question", faq.question, {question: faq.question, answer: faq.answer, category: ["private-hall", "hall-facilities", "hall-enquiries"].includes(faq.id) ? "Private hall" : "Restaurant", displayOrder: index, published: true});
 
   const testimonials = [
     {name: "Just Eat guests", source: "Independent delivery platform", rating: 4.75, quote: "Eight early diners placed Malabar Coast at 4.75 out of 5, a warm first word from Holytown."},
@@ -366,7 +366,7 @@ async function seed() {
       priceNote: "While today's batch lasts",
       dietaryNote: "Please tell the team about allergies before ordering.",
       menuItem: {_type: "reference", _ref: specialMenuItemId},
-      activeDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+      activeDays: ["tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
       displayOrder: 10,
     });
   }

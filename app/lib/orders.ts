@@ -1,4 +1,5 @@
 import { getCheckoutMenuItem } from "@/sanity/lib/menu";
+import { isRegularClosureDate } from "./restaurant-schedule";
 
 export type PaymentProvider = "stripe";
 export type FulfilmentMethod = "collection" | "delivery";
@@ -216,10 +217,13 @@ function formatRestaurantLocal(date: Date) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 
-function validateRequestedTime(value: unknown) {
+export function validateRequestedTime(value: unknown) {
   const requested = cleanText(value, "Requested time", 16);
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(requested)) {
     throw new CheckoutValidationError("Choose a valid requested date and time.");
+  }
+  if (isRegularClosureDate(requested.slice(0, 10))) {
+    throw new CheckoutValidationError("Online collection and delivery are unavailable on Mondays. Please choose another day.");
   }
   const now = new Date();
   if (requested < formatRestaurantLocal(new Date(now.getTime() - 5 * 60_000))) {

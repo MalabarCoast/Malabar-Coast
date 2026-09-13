@@ -1,7 +1,8 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
-import { defaultBookingSettings, type AdminHallEnquiryInput, type AdminReservationInput, type BookingSettings, type HallEnquiry, type HallEnquiryStatus, type ReservationStatus, type TableReservation } from "./bookings";
+import { BookingValidationError, defaultBookingSettings, type AdminHallEnquiryInput, type AdminReservationInput, type BookingSettings, type HallEnquiry, type HallEnquiryStatus, type ReservationStatus, type TableReservation } from "./bookings";
+import { isRegularClosureDate } from "./restaurant-schedule";
 import { isSupabaseServerConfigured, supabaseServerRequest, supabaseServerRpc } from "./supabase/server";
 
 const localPath = path.join(process.cwd(), ".data", "bookings.json");
@@ -37,6 +38,7 @@ export async function getBookingSettings(): Promise<BookingSettings> {
 }
 
 export async function createReservation(input: Omit<TableReservation, "id" | "reference" | "createdAt" | "updatedAt" | "status" | "adminNotes">) {
+  if (isRegularClosureDate(input.bookingDate)) throw new BookingValidationError("Online table bookings are closed on Mondays. Please choose another day.");
   if (isSupabaseServerConfigured()) return supabaseServerRpc<TableReservation>("create_table_reservation", { p_data: input });
   if (process.env.NODE_ENV === "production") throw new Error("Reservation storage is not configured.");
   let result!: TableReservation;

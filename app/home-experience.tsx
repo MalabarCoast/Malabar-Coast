@@ -245,7 +245,7 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
         <div className="homeBookingIntro">
           <span>Book your table · Holytown</span>
           <h2 id="home-booking-title">A seat in<br />the story.</h2>
-          <p>Choose your date, arrival time and party size right here. We check live capacity before your table is confirmed.</p>
+          <p>Choose your date, arrival time and party size right here. We check live capacity before your table is confirmed. We are usually closed on Mondays.</p>
           <nav aria-label="Book your table and explore">
             <Link href="/menu">Browse the menu <span aria-hidden="true">↗</span></Link>
             <Link href="/hall">Planning a gathering? <span aria-hidden="true">↗</span></Link>

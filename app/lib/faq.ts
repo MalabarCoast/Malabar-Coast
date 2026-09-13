@@ -78,6 +78,12 @@ export const faqItems = [
       "Open the menu, add available dishes to the order, review quantities in the cart and continue to checkout. At checkout, choose collection or delivery, provide contact and fulfilment details, select a requested date and time, then complete the configured payment flow.",
   },
   {
+    id: "monday-opening",
+    question: "Is Malabar Coast open on Mondays?",
+    answer:
+      "Malabar Coast is usually closed on Mondays. Online table bookings, collection and delivery are unavailable for Mondays. Please speak to the restaurant about any special Monday arrangement.",
+  },
+  {
     id: "menu-prices",
     question: "Can I see all menu prices before ordering?",
     answer:
