@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { formatPrice } from "../lib/menu";
 import type { FulfilmentMethod } from "../lib/orders";
+import { isRegularClosureDate, regularClosureNotice } from "../lib/restaurant-schedule";
 import {
   checkoutAttemptForPayload,
   clearCheckoutAttempt,
@@ -17,13 +18,26 @@ import { SmartDateInput } from "./smart-date-input";
 
 type PaymentConfig = { stripe: boolean; deliveryFeePence: number };
 
+function recoveryIsForClosedDate(attempt: CheckoutAttempt | null) {
+  if (!attempt) return false;
+  try {
+    const payload = JSON.parse(attempt.payload) as {requestedTime?: unknown};
+    return typeof payload.requestedTime === "string" && isRegularClosureDate(payload.requestedTime.slice(0, 10));
+  } catch {
+    return false;
+  }
+}
+
 export function CheckoutForm() {
   const { lines, items, subtotalPence, setQuantity, removeItem, clearCart, hydrated } = useCart();
   const [config, setConfig] = useState<PaymentConfig | null>(null);
   const [fulfilment, setFulfilment] = useState<FulfilmentMethod>("collection");
+  const [requestedTime, setRequestedTime] = useState("");
+  const closedDate = isRegularClosureDate(requestedTime.slice(0, 10));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [recovery, setRecovery] = useState<CheckoutAttempt | null>(null);
+  const closedRecovery = recoveryIsForClosedDate(recovery);
 
   useEffect(() => {
     const storedAttempt = readCheckoutAttempt();
@@ -57,6 +71,10 @@ export function CheckoutForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (closedDate) {
+      setError("Online collection and delivery are unavailable on Mondays. Please choose another day.");
+      return;
+    }
     if (!paymentReady) {
       setError("Online payment is temporarily unavailable. Please try again shortly or contact the restaurant.");
       return;
@@ -148,7 +166,7 @@ export function CheckoutForm() {
         <p>Share your details, choose collection or delivery, then review everything once before paying securely.</p>
       </header>
 
-      {recovery?.orderId && recovery.redirectUrl && (
+      {recovery?.orderId && recovery.redirectUrl && !closedRecovery && (
         <section className="checkoutRecovery" aria-labelledby="checkout-recovery-heading">
           <div>
             <span>Payment recovery</span>
@@ -162,6 +180,10 @@ export function CheckoutForm() {
           </nav>
         </section>
       )}
+      {closedRecovery && <section className="checkoutRecovery" aria-label="Previous Monday checkout">
+        <div><span>Choose another day</span><h2>The earlier payment link is for a Monday.</h2><p>Online collection and delivery are unavailable on Mondays. Select another date to create a new checkout.</p></div>
+        <nav><button type="button" onClick={() => {clearCheckoutAttempt(); setRecovery(null);}}>Clear earlier checkout</button></nav>
+      </section>}
 
       <form className="checkoutLayout" onSubmit={handleSubmit}>
         <div className="checkoutDetails">
@@ -192,7 +214,9 @@ export function CheckoutForm() {
                 <strong>Delivery</strong><span>{formatPrice(config?.deliveryFeePence ?? 350)} delivery fee</span>
               </label>
             </div>
-            <label className="fullField">Requested date &amp; time<SmartDateInput name="requestedTime" type="datetime-local" required /></label>
+            <label className="fullField">Requested date &amp; time<SmartDateInput name="requestedTime" type="datetime-local" onChange={(event) => setRequestedTime(event.target.value)} required /></label>
+            <p className="checkoutScheduleNote">{regularClosureNotice} Please choose Tuesday to Sunday for collection or delivery.</p>
+            {closedDate && <p className="paymentNotice" role="alert">Online orders are unavailable on Mondays. Choose another date before continuing to payment.</p>}
             {fulfilment === "delivery" && (
               <div className="fieldGrid addressFields">
                 <label>Address line 1<input name="line1" autoComplete="address-line1" required /></label>
@@ -263,7 +287,7 @@ export function CheckoutForm() {
             <strong><span>Total to pay</span><b>{formatPrice(totalPence)}</b></strong>
           </div>
           {error && <div className="checkoutError" role="alert" aria-live="assertive">{error}</div>}
-          <button className="payButton" type="submit" disabled={submitting || !paymentReady} aria-busy={submitting}>
+          <button className="payButton" type="submit" disabled={submitting || !paymentReady || closedDate} aria-busy={submitting}>
             <span>{paymentButtonLabel}</span><b aria-hidden="true">→</b>
           </button>
           <button className="clearOrder" type="button" onClick={clearCart}>Clear order</button>

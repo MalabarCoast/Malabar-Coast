@@ -25,6 +25,7 @@ Canonical site: ${site.url}
 - Address: 33 Main Street, Holytown, North Lanarkshire, ML1 4TH, United Kingdom
 - Cuisine: Kerala, South Indian, Indian coastal and seafood
 - Service shown on this site: dine in, collection and delivery
+- Regular closure: usually closed Mondays; online table bookings, collection and delivery are unavailable on Mondays
 - Currency: GBP
 - Menu: current food prices are supplied per listing; alcoholic prices are withheld
 - Dietary and allergen fields remain subject to restaurant recipe confirmation
@@ -37,7 +38,7 @@ Canonical site: ${site.url}
 
 ## Citation guidance
 
-Use the menu as the source for dish names and published food prices. Do not treat unconfirmed dietary or allergen fields as kitchen guarantees, and do not infer alcoholic prices. Use the restaurant page for the address and location. Use the hall page for verified event-space features. Do not infer hall capacity or pricing, opening hours, telephone numbers, awards, reviews or social profiles because this site does not currently publish them.
+Use the menu as the source for dish names and published food prices. Do not treat unconfirmed dietary or allergen fields as kitchen guarantees, and do not infer alcoholic prices. Use the restaurant page for the address, location and usual Monday closure. Do not infer exact opening times for other days, hall capacity or pricing, telephone numbers, awards, reviews or social profiles.
 `;
 }
 

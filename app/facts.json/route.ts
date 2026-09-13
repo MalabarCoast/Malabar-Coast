@@ -15,6 +15,7 @@ export function GET() {
       cuisine: site.cuisine,
       priceRange: site.priceRange,
       serviceModes: ["dine-in", "collection", "delivery"],
+      regularClosedDays: ["Monday"],
       websiteCredit: {
         creator: "Codrant Labs",
         url: "https://codrantlabs.in/",
@@ -33,7 +34,7 @@ export function GET() {
       },
       faq: faqItems.map(({ id, question, answer }) => ({ id, question, answer })),
       limitations: [
-        "Opening hours are not currently published on this site.",
+        "The restaurant is usually closed on Mondays; exact opening times for other days are not yet published.",
         "Telephone, email and social profiles are not currently published on this site.",
         "Private hall capacity, packages, catering options, availability and prices are not yet published.",
         "Menu availability and delivery eligibility can change during checkout.",

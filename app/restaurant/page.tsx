@@ -109,7 +109,7 @@ export default async function RestaurantPage() {
         <Reveal><span>Cooking</span><strong>Coastal South Indian</strong></Reveal>
         <Reveal delay={60}><span>At the table</span><strong>Sharing encouraged</strong></Reveal>
         <Reveal delay={120}><span>Service</span><strong>Lunch &amp; dinner</strong></Reveal>
-        <Reveal delay={180}><span>Good to know</span><strong>Vegetarian choices</strong></Reveal>
+        <Reveal delay={180}><span>Regular closure</span><strong>Usually closed Mondays</strong></Reveal>
       </section>
 
       <section className="restaurantHallTeaser" aria-labelledby="restaurant-hall-title">

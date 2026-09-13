@@ -4,6 +4,7 @@ import { getAdminSession } from "../../lib/admin-auth";
 import { adminCan } from "../../lib/admin-permissions";
 import { listOrdersForReport } from "../../lib/order-store";
 import { orderStatusLabels, type OrderStatus } from "../../lib/orders";
+import { isRegularClosureDate } from "../../lib/restaurant-schedule";
 import { AdminFrame, AdminPageHeader, OrderTable } from "../components/admin-ui";
 import { RealtimePageRefresh } from "../components/realtime-page-refresh";
 
@@ -30,6 +31,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
     const haystack = [order.id, order.customer.name, order.customer.email, order.customer.phone, order.requestedTime, ...order.lines.map((line) => line.name)].join(" ").toLowerCase();
     return haystack.includes(q);
   });
+  const mondayOrders = allOrders.filter((order) => isRegularClosureDate(order.requestedTime.slice(0, 10)) && ["paid", "confirmed", "preparing", "ready", "out_for_delivery"].includes(order.status));
   const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(pages, Math.max(1, Number.parseInt(query.page || "1", 10) || 1));
   const orders = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -50,6 +52,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   return <AdminFrame active="/admin/orders" session={session}>
     <AdminPageHeader eyebrow="Order management" title="Every order, under control." description="Search customer and dish details, isolate exceptions, and advance paid orders without leaving the list." actions={<><RealtimePageRefresh supabaseUrl={realtimeUrl} publishableKey={realtimePublishableKey} /><Link className="adminButton" href="/admin/kitchen">Kitchen board</Link></>} />
     {query.delete && <p className={`adminAlert ${query.delete === "success" ? "isSuccess" : "isError"}`}>{query.delete === "success" ? "Order removed from the active register. Its payment record remains retained for audit." : "That deletion was rejected."}</p>}
+    {mondayOrders.length > 0 && <p className="adminAlert isError">The restaurant is usually closed on Mondays. Review {mondayOrders.length} paid or active Monday order{mondayOrders.length === 1 ? "" : "s"} and arrange fulfilment or contact the customers.</p>}
     <section className="adminPanel adminFilterPanel">
       <form method="get" action="/admin/orders" className="adminFilters">
         <label className="adminSearchField"><span>Search</span><input name="q" defaultValue={q} placeholder="Order, customer, email, phone or dish" /></label>
