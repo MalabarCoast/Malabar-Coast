@@ -1,4 +1,4 @@
-import { isRegularClosureDate } from "./restaurant-schedule";
+import { defaultRestaurantSchedule, isWithinSchedule, scheduleNotice, type RestaurantSchedule } from "./restaurant-schedule";
 
 export const reservationStatuses = ["confirmed", "cancelled", "completed", "no_show"] as const;
 export type ReservationStatus = typeof reservationStatuses[number];
@@ -147,13 +147,13 @@ export function reservationSlots(settings: BookingSettings) {
   return slots;
 }
 
-export function validateReservation(input: unknown, settings: BookingSettings) {
+export function validateReservation(input: unknown, settings: BookingSettings, schedule: RestaurantSchedule = defaultRestaurantSchedule) {
   if (!settings.bookingEnabled) throw new BookingValidationError("Online table booking is temporarily paused. Please contact the restaurant.");
   if (!input || typeof input !== "object") throw new BookingValidationError("Booking details are missing.");
   const body = input as Record<string, unknown>;
   const bookingDate = date(body.bookingDate, "Booking date");
-  if (isRegularClosureDate(bookingDate)) throw new BookingValidationError("Online table bookings are closed on Mondays. Please choose another day.");
   const startTime = time(body.startTime, "Booking time");
+  if (!isWithinSchedule(schedule, bookingDate, startTime, settings.sittingMinutes)) throw new BookingValidationError(`${scheduleNotice(schedule, bookingDate)} Please choose another date or time.`);
   const partySize = Number(body.partySize);
   if (!Number.isInteger(partySize) || partySize < settings.minimumPartySize || partySize > settings.maximumPartySize) {
     throw new BookingValidationError(`Online bookings are available for ${settings.minimumPartySize} to ${settings.maximumPartySize} guests.`);

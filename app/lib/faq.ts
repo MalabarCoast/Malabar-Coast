@@ -81,7 +81,7 @@ export const faqItems = [
     id: "monday-opening",
     question: "Is Malabar Coast open on Mondays?",
     answer:
-      "Malabar Coast is usually closed on Mondays. Online table bookings, collection and delivery are unavailable for Mondays. Please speak to the restaurant about any special Monday arrangement.",
+      "Malabar Coast is usually closed on Mondays. A dated opening exception may make a particular Monday available. Check the current opening calendar and booking or checkout availability for your chosen date.",
   },
   {
     id: "menu-prices",

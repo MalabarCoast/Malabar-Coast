@@ -411,6 +411,7 @@ export async function notifyReservation(reservation: TableReservation) {
 }
 
 export async function notifyHallEnquiry(enquiry: HallEnquiry) {
+  // Hall enquiries are requests until a staff member approves them.
   const preferredDate = formatDate(enquiry.preferredDate);
   const coreDetails = detailTable([
     { label: "Enquiry reference", value: enquiry.reference },
@@ -462,12 +463,44 @@ export async function notifyHallEnquiry(enquiry: HallEnquiry) {
   ]);
 }
 
+export function reservationCancellationEmail(reservation: TableReservation) {
+  const date = formatDate(reservation.bookingDate);
+  const time = `${reservation.startTime}–${reservation.endTime}`;
+  return {
+    eventKey: `reservation:${reservation.id}:cancelled:${reservation.updatedAt}:customer`,
+    category: "reservation_cancellation_customer",
+    to: {email: reservation.email, name: reservation.name},
+    subject: `Table booking cancelled · ${reservation.reference}`,
+    html: emailFrame({
+      preheader: `Your table booking ${reservation.reference} for ${date} has been cancelled.`,
+      eyebrow: "Table booking update",
+      title: "Your table has been cancelled.",
+      intro: `${reservation.name}, your booking at Malabar Coast has been cancelled. We are sorry for any inconvenience.`,
+      body: detailTable([
+        {label: "Guest name", value: reservation.name},
+        {label: "Booking ID", value: reservation.reference},
+        {label: "Date", value: date},
+        {label: "Time", value: time},
+        {label: "Party size", value: `${reservation.partySize} ${reservation.partySize === 1 ? "guest" : "guests"}`},
+        {label: "Contact phone", value: reservation.phone},
+      ]) + noteBlock("Need another table?", "Please contact the restaurant if you would like to arrange another date or discuss this cancellation."),
+      cta: {label: "Book another table", href: `${siteOrigin()}/book-a-table`},
+      footerNote: "Please keep this email and your booking reference for your records.",
+    }),
+    text: `MALABAR COAST · TABLE BOOKING CANCELLED\n\nHello ${reservation.name},\nYour table booking has been cancelled.\n\nBooking ID: ${reservation.reference}\nGuest name: ${reservation.name}\nDate: ${date}\nTime: ${time}\nParty size: ${reservation.partySize}\nContact phone: ${reservation.phone}\n\nPlease contact the restaurant if you would like to arrange another date or discuss this cancellation.\n\n${restaurantAddress}`,
+  };
+}
+
+export async function notifyReservationCancellation(reservation: TableReservation) {
+  return sendBrevoEmail(reservationCancellationEmail(reservation));
+}
+
 export async function notifyHallDecision(enquiry: HallEnquiry) {
-  if (!(["approved", "declined"] as const).includes(enquiry.status as "approved" | "declined")) return;
+  if (!(["approved", "declined"] as const).includes(enquiry.status as "approved" | "declined")) return false;
   const approved = enquiry.status === "approved";
   const preferredDate = formatDate(enquiry.preferredDate);
-  await sendBrevoEmail({
-    eventKey: `hall:${enquiry.id}:${enquiry.status}:customer`,
+  return sendBrevoEmail({
+    eventKey: `hall:${enquiry.id}:${enquiry.status}:${enquiry.updatedAt}:customer`,
     category: "hall_decision",
     to: { email: enquiry.email, name: enquiry.name },
     subject: `${approved ? "Hall enquiry approved for next steps" : "Hall enquiry update"} · ${enquiry.reference}`,
@@ -479,9 +512,11 @@ export async function notifyHallDecision(enquiry: HallEnquiry) {
         ? `Good news, ${enquiry.name}. We can continue planning around your preferred request.`
         : `${enquiry.name}, thank you for considering Malabar Coast for your occasion.`,
       body: detailTable([
+        { label: "Guest name", value: enquiry.name },
         { label: "Enquiry reference", value: enquiry.reference },
         { label: "Status", value: approved ? "Approved for next steps" : "Unable to proceed" },
         { label: "Preferred date", value: preferredDate },
+        { label: "Preferred time", value: enquiry.preferredTime || "Flexible" },
         { label: "Estimated guests", value: enquiry.guestCount || "Not provided" },
       ]) + noteBlock(approved ? "What happens next" : "What this means", approved
         ? "Our team will contact you to finalise timings, catering and event details. This approval is not a payment receipt or final event contract."
@@ -489,6 +524,6 @@ export async function notifyHallDecision(enquiry: HallEnquiry) {
       cta: { label: approved ? "View the private hall" : "Contact the restaurant", href: `${siteOrigin()}/hall` },
       footerNote: approved ? "We look forward to planning the details with you." : "Thank you for considering Malabar Coast.",
     }),
-    text: `MALABAR COAST\n\nHALL ENQUIRY UPDATE\n\nHello ${enquiry.name},\n${approved ? "Your enquiry is approved for the next planning steps." : "We are unable to accept the requested plan at this time."}\n\nReference: ${enquiry.reference}\nPreferred date: ${preferredDate}\nStatus: ${approved ? "Approved for next steps" : "Unable to proceed"}\n\n${approved ? "Our team will contact you to finalise the details. This is not a payment receipt or final event contract." : "Please contact the restaurant if you would like to discuss another date or arrangement."}\n\n${restaurantAddress}`,
+    text: `MALABAR COAST\n\nHALL ENQUIRY UPDATE\n\nHello ${enquiry.name},\n${approved ? "Your enquiry is approved for the next planning steps." : "We are unable to accept the requested plan at this time."}\n\nEnquiry reference: ${enquiry.reference}\nGuest name: ${enquiry.name}\nPreferred date: ${preferredDate}\nPreferred time: ${enquiry.preferredTime || "Flexible"}\nEstimated guests: ${enquiry.guestCount || "Not provided"}\nStatus: ${approved ? "Approved for next steps" : "Unable to proceed"}\n\n${approved ? "Our team will contact you to finalise the details. This is not a payment receipt or final event contract." : "Please contact the restaurant if you would like to discuss another date or arrangement."}\n\n${restaurantAddress}`,
   });
 }

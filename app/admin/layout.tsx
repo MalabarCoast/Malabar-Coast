@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   manifest: "/admin/manifest.webmanifest",
   applicationName: "Malabar Coast Restaurant Operations",
   appleWebApp: {capable: true, title: "MC Operations", statusBarStyle: "black-translucent"},
-  icons: {icon: "/icon.svg", apple: "/icon.svg"},
+  icons: {icon: "/icon-192.png", apple: "/icon-192.png"},
   robots: { index: false, follow: false, noarchive: true, nosnippet: true, noimageindex: true },
 };
 

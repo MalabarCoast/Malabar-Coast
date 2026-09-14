@@ -10,6 +10,7 @@ import { SiteHeader } from "./components/site-header";
 import { SiteFooter } from "./components/site-footer";
 import { SmoothScroll } from "./components/smooth-scroll";
 import { CartProvider } from "./components/cart-provider";
+import {PwaRegistration} from "./components/pwa-registration";
 import { JsonLd } from "./components/json-ld";
 import { absoluteUrl, site } from "./lib/site";
 import { getMenuContent } from "@/sanity/lib/menu";
@@ -73,7 +74,7 @@ const fallbackMetadata: Metadata = {
     description: site.shortDescription,
     images: ["/malabar-restaurant-hero-v2.jpg"],
   },
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
   formatDetection: { address: false, email: false, telephone: false },
 };
 
@@ -189,6 +190,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="en">
       <body>
         <JsonLd data={globalSchema(siteSettings)} />
+        <PwaRegistration />
         <SmoothScroll />
         <CartProvider catalogue={currentMenuItems}>
           <SiteHeader settings={siteSettings} />

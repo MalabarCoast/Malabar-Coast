@@ -13,6 +13,8 @@ import {PromotionPopup} from "./components/promotion-popup";
 import type {DailySpecial} from "@/sanity/lib/daily-specials";
 import type {BookingSettings} from "./lib/bookings";
 import {TableBookingForm} from "./components/table-booking-form";
+import {OpeningHours} from "./components/opening-hours";
+import type {RestaurantSchedule} from "./lib/restaurant-schedule";
 import {malabarCoastIntroduction} from "./lib/brand-content";
 import {site} from "./lib/site";
 
@@ -53,7 +55,7 @@ function CompassMark() {
   );
 }
 
-export function HomeExperience({content, menuItems, promotions, dailySpecials, bookingSettings}: {content: HomeCmsContent; menuItems: MenuItem[]; promotions: Promotion[]; dailySpecials: DailySpecial[]; bookingSettings: BookingSettings}) {
+export function HomeExperience({content, menuItems, promotions, dailySpecials, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; promotions: Promotion[]; dailySpecials: DailySpecial[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
   const [introActive, setIntroActive] = useState(true);
   const [heroFooterRevealed, setHeroFooterRevealed] = useState(false);
   const latitude = content.coordinates?.latitude ?? site.geo.latitude;
@@ -240,19 +242,20 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
       </section>
 
       <HomeSignatures items={menuItems} specials={dailySpecials} eyebrow={content.menuEyebrow} heading={content.menuHeading} introduction={content.menuText} />
+      <OpeningHours schedule={schedule}/>
 
       <section className="homeBooking" id="book-your-table" aria-labelledby="home-booking-title">
         <div className="homeBookingIntro">
           <span>Book your table · Holytown</span>
           <h2 id="home-booking-title">A seat in<br />the story.</h2>
-          <p>Choose your date, arrival time and party size right here. We check live capacity before your table is confirmed. We are usually closed on Mondays.</p>
+          <p>Choose your date, arrival time and party size right here. We check live capacity and the restaurant calendar before your table is confirmed.</p>
           <nav aria-label="Book your table and explore">
             <Link href="/menu">Browse the menu <span aria-hidden="true">↗</span></Link>
             <Link href="/hall">Planning a gathering? <span aria-hidden="true">↗</span></Link>
             <Link href="/book-a-table">Open the full booking page <span aria-hidden="true">→</span></Link>
           </nav>
         </div>
-        <div className="homeBookingForm"><TableBookingForm settings={bookingSettings} compact /></div>
+        <div className="homeBookingForm"><TableBookingForm settings={bookingSettings} schedule={schedule} compact /></div>
       </section>
 
       <HomeStoryScroll />

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { AddToOrder } from "../components/add-to-order";
 import { JsonLd } from "../components/json-ld";
 import { Reveal } from "../components/reveal";
+import {OpeningHours} from "../components/opening-hours";
+import {getRestaurantSchedule} from "../lib/schedule-store";
 import { formatPrice } from "../lib/menu";
 import { absoluteUrl } from "../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
@@ -23,6 +25,8 @@ const fallbackMetadata: Metadata = {
     images: ["/restaurant/dining-room.png"],
   },
 };
+
+export const dynamic = "force-dynamic";
 
 export function generateMetadata() {
   return getMarketingPageMetadata("restaurant", "/restaurant", fallbackMetadata);
@@ -62,7 +66,7 @@ const signatures = [
 ];
 
 export default async function RestaurantPage() {
-  const [cmsPage, {items: currentMenuItems}] = await Promise.all([getMarketingPage("restaurant"), getMenuContent()]);
+  const [cmsPage, {items: currentMenuItems}, schedule] = await Promise.all([getMarketingPage("restaurant"), getMenuContent(), getRestaurantSchedule()]);
   const foodSection = getPageSection(cmsPage, "restaurant-food");
   const restaurantsSection = getPageSection(cmsPage, "restaurant-restaurants");
   const restaurantsParagraphs = portableTextToPlainText(restaurantsSection?.body).split(/\n\s*\n/).filter(Boolean);
@@ -111,6 +115,7 @@ export default async function RestaurantPage() {
         <Reveal delay={120}><span>Service</span><strong>Lunch &amp; dinner</strong></Reveal>
         <Reveal delay={180}><span>Regular closure</span><strong>Usually closed Mondays</strong></Reveal>
       </section>
+      <OpeningHours schedule={schedule}/>
 
       <section className="restaurantHallTeaser" aria-labelledby="restaurant-hall-title">
         <Image

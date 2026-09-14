@@ -2,7 +2,8 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { BookingValidationError, defaultBookingSettings, type AdminHallEnquiryInput, type AdminReservationInput, type BookingSettings, type HallEnquiry, type HallEnquiryStatus, type ReservationStatus, type TableReservation } from "./bookings";
-import { isRegularClosureDate } from "./restaurant-schedule";
+import { isWithinSchedule, scheduleNotice } from "./restaurant-schedule";
+import { getRestaurantSchedule } from "./schedule-store";
 import { isSupabaseServerConfigured, supabaseServerRequest, supabaseServerRpc } from "./supabase/server";
 
 const localPath = path.join(process.cwd(), ".data", "bookings.json");
@@ -38,7 +39,8 @@ export async function getBookingSettings(): Promise<BookingSettings> {
 }
 
 export async function createReservation(input: Omit<TableReservation, "id" | "reference" | "createdAt" | "updatedAt" | "status" | "adminNotes">) {
-  if (isRegularClosureDate(input.bookingDate)) throw new BookingValidationError("Online table bookings are closed on Mondays. Please choose another day.");
+  const schedule = await getRestaurantSchedule();
+  if (!isWithinSchedule(schedule, input.bookingDate, input.startTime, Number(input.endTime.slice(0, 2)) * 60 + Number(input.endTime.slice(3, 5)) - Number(input.startTime.slice(0, 2)) * 60 - Number(input.startTime.slice(3, 5)))) throw new BookingValidationError(`${scheduleNotice(schedule, input.bookingDate)} Please choose another date or time.`);
   if (isSupabaseServerConfigured()) return supabaseServerRpc<TableReservation>("create_table_reservation", { p_data: input });
   if (process.env.NODE_ENV === "production") throw new Error("Reservation storage is not configured.");
   let result!: TableReservation;
@@ -59,6 +61,22 @@ export async function listReservations(limit = 500) {
     return (await response.json() as Record<string, unknown>[]).map(mapReservation);
   }
   return (await readLocal()).reservations.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function listReservationsInDateRange(from: string, to: string): Promise<TableReservation[]> {
+  if (isSupabaseServerConfigured()) {
+    const all: TableReservation[] = [];
+    for (let offset = 0; ; offset += 1000) {
+      const query = new URLSearchParams({select: "*", deleted_at: "is.null", booking_date: `gte.${from}`, order: "booking_date.asc", limit: "1000", offset: String(offset)});
+      query.append("booking_date", `lte.${to}`);
+      const response = await supabaseServerRequest(`table_reservations?${query}`);
+      const rows = await response.json() as Record<string, unknown>[];
+      all.push(...rows.map(mapReservation));
+      if (rows.length < 1000) break;
+    }
+    return all;
+  }
+  return (await readLocal()).reservations.filter((item) => item.bookingDate >= from && item.bookingDate <= to);
 }
 
 export async function getReservation(reservationId: string) {
@@ -114,6 +132,21 @@ export async function createHallEnquiry(input: Omit<HallEnquiry, "id" | "referen
 export async function listHallEnquiries(limit = 500) {
   if (isSupabaseServerConfigured()) { const response = await supabaseServerRequest(`hall_enquiries?select=*&deleted_at=is.null&order=created_at.desc&limit=${Math.min(limit, 1000)}`); return (await response.json() as Record<string, unknown>[]).map(mapHall); }
   return (await readLocal()).hallEnquiries.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+export async function listHallEnquiriesInDateRange(from: string, to: string): Promise<HallEnquiry[]> {
+  if (isSupabaseServerConfigured()) {
+    const all: HallEnquiry[] = [];
+    for (let offset = 0; ; offset += 1000) {
+      const query = new URLSearchParams({select: "*", deleted_at: "is.null", preferred_date: `gte.${from}`, order: "preferred_date.asc", limit: "1000", offset: String(offset)});
+      query.append("preferred_date", `lte.${to}`);
+      const response = await supabaseServerRequest(`hall_enquiries?${query}`);
+      const rows = await response.json() as Record<string, unknown>[];
+      all.push(...rows.map(mapHall));
+      if (rows.length < 1000) break;
+    }
+    return all;
+  }
+  return (await readLocal()).hallEnquiries.filter((item) => item.preferredDate >= from && item.preferredDate <= to);
 }
 export async function getHallEnquiry(enquiryId: string) {
   if (isSupabaseServerConfigured()) { const response = await supabaseServerRequest(`hall_enquiries?id=eq.${encodeURIComponent(enquiryId)}&deleted_at=is.null&select=*&limit=1`); const row = (await response.json() as Record<string, unknown>[])[0]; return row ? mapHall(row) : null; }

@@ -12,10 +12,12 @@ const navigation = [
   { href: "/admin/orders", label: "Orders", mark: "02", permission: "orders:read" },
   { href: "/admin/kitchen", label: "Kitchen", mark: "03", permission: "kitchen:read" },
   { href: "/admin/reservations", label: "Tables", mark: "04", permission: "reservations:read" },
-  { href: "/admin/hall-enquiries", label: "Hall", mark: "05", permission: "hall:read" },
-  { href: "/admin/reports", label: "Reports", mark: "06", permission: "reports:read" },
-  { href: "/admin/content", label: "Content", mark: "07", permission: "content:write" },
-  { href: "/admin/settings", label: "System", mark: "08", permission: "settings:read" },
+  { href: "/admin/schedule", label: "Calendar", mark: "05", permission: "reservations:read" },
+  { href: "/admin/hall-enquiries", label: "Hall", mark: "06", permission: "hall:read" },
+  { href: "/admin/reports", label: "Reports", mark: "07", permission: "reports:read" },
+  { href: "/admin/content", label: "Content", mark: "08", permission: "content:write" },
+  { href: "/admin/careers", label: "Careers", mark: "09", permission: "content:write" },
+  { href: "/admin/settings", label: "System", mark: "10", permission: "settings:read" },
 ] satisfies { href: string; label: string; mark: string; permission: AdminPermission }[];
 
 export function AdminFrame({ active, session, children }: { active: string; session: AdminSession; children: ReactNode }) {

@@ -43,15 +43,6 @@ export const siteSettings = defineType({
       validation: (rule) => rule.uri({scheme: ['https']}),
     }),
     defineField({
-      name: 'openingHours',
-      title: 'Opening hours',
-      type: 'array',
-      of: [defineArrayMember({type: 'object', fields: [
-        defineField({name: 'days', title: 'Day or range', type: 'string', validation: (rule) => rule.required()}),
-        defineField({name: 'hours', title: 'Hours', type: 'string', validation: (rule) => rule.required()}),
-      ], preview: {select: {title: 'days', subtitle: 'hours'}}})],
-    }),
-    defineField({
       name: 'socialLinks',
       title: 'Social profiles',
       type: 'array',

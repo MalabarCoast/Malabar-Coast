@@ -34,6 +34,7 @@ export function SiteFooter({settings}: {settings: SiteSettings}) {
           {settings.primaryNavigation.filter((link) => link.href !== "/checkout").map((link) => (
             <Link href={link.href} key={`${link.href}-${link.label}`} target={link.openInNewTab ? "_blank" : undefined} rel={link.openInNewTab ? "noreferrer" : undefined}>{link.label} <span aria-hidden="true">↗</span></Link>
           ))}
+          <Link href="/careers">Careers <span aria-hidden="true">↗</span></Link>
         </nav>
 
         <address className="siteFooterAddress">

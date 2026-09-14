@@ -1,6 +1,7 @@
 import { createReservation, getBookingSettings } from "../../lib/booking-store";
 import { BookingValidationError, validateReservation } from "../../lib/bookings";
 import { notifyReservation } from "../../lib/email/notifications";
+import { getRestaurantSchedule } from "../../lib/schedule-store";
 import {publishAdminActivityEvent} from "../../lib/publishEvent";
 import { checkRateLimit, getClientAddress, isTrustedOrigin, noStoreJson, readLimitedJson, RequestBodyTooLargeError } from "../../lib/security";
 
@@ -11,8 +12,8 @@ export async function POST(request: Request) {
     if (!isTrustedOrigin(request)) return noStoreJson({ error: "Invalid request origin." }, { status: 403 });
     const rate = checkRateLimit("table-reservation", getClientAddress(request), 6, 60 * 60_000);
     if (!rate.allowed) return noStoreJson({ error: "Too many booking attempts. Please wait before trying again." }, { status: 429 });
-    const settings = await getBookingSettings();
-    const input = validateReservation(await readLimitedJson(request, 32_000), settings);
+    const [settings, schedule] = await Promise.all([getBookingSettings(), getRestaurantSchedule()]);
+    const input = validateReservation(await readLimitedJson(request, 32_000), settings, schedule);
     const reservation = await createReservation(input);
     await Promise.all([notifyReservation(reservation), publishAdminActivityEvent("reservation", reservation.id)]);
     return noStoreJson({ reference: reservation.reference, bookingDate: reservation.bookingDate, startTime: reservation.startTime, endTime: reservation.endTime, partySize: reservation.partySize }, { status: 201 });
