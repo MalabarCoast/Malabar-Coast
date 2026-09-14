@@ -1,0 +1,24 @@
+import {redirect} from "next/navigation";
+import {getAdminSession} from "../../lib/admin-auth";
+import {listCareers} from "../../lib/career-store";
+import type {CareerOpportunity} from "../../lib/careers";
+import {AdminFrame, AdminPageHeader, EmptyState} from "../components/admin-ui";
+
+export const dynamic = "force-dynamic";
+
+function CareerFields({item}: {item?: CareerOpportunity}) {
+  return <div className="adminRecordGrid">
+    {item && <input type="hidden" name="id" value={item.id}/>}<label>Role title<input name="title" maxLength={120} defaultValue={item?.title} required/></label><label>Team or department<input name="team" maxLength={80} defaultValue={item?.team}/></label><label>Location<input name="location" maxLength={120} defaultValue={item?.location || "Holytown, Scotland"} required/></label><label>Employment type<input name="employmentType" maxLength={80} defaultValue={item?.employmentType} placeholder="Full-time, part-time or casual" required/></label><label>Hours or shifts<input name="hours" maxLength={100} defaultValue={item?.hours}/></label><label>Pay or salary<input name="pay" maxLength={120} defaultValue={item?.pay}/></label><label>Application email<input type="email" name="applicationEmail" maxLength={160} defaultValue={item?.applicationEmail} required/></label><label>Closing date<input type="date" name="closingDate" defaultValue={item?.closingDate}/></label><label>Status<select name="status" defaultValue={item?.status || "draft"}><option value="draft">Draft</option><option value="published">Published</option><option value="closed">Closed</option></select></label><label className="adminRecordWide">Role overview<textarea name="summary" required maxLength={1000} rows={4} defaultValue={item?.summary}/></label><label className="adminRecordWide">Responsibilities, one per line<textarea name="responsibilities" maxLength={4000} rows={6} defaultValue={item?.responsibilities}/></label><label className="adminRecordWide">Skills and experience, one per line<textarea name="skills" required maxLength={4000} rows={6} defaultValue={item?.skills}/></label><label className="adminRecordWide">Benefits, one per line<textarea name="benefits" maxLength={2000} rows={4} defaultValue={item?.benefits}/></label>
+  </div>;
+}
+
+export default async function CareersAdminPage({searchParams}: {searchParams: Promise<{update?: string}>}) {
+  const session = await getAdminSession("content:write");
+  if (!session) redirect("/admin/login");
+  const [items, query] = await Promise.all([listCareers(), searchParams]);
+  return <AdminFrame active="/admin/careers" session={session}><AdminPageHeader eyebrow="People and hiring" title="Career opportunities." description="Write, publish and close roles from the admin portal. Drafts stay private."/>
+    {query.update && <p className={`adminAlert ${query.update === "saved" ? "isSuccess" : "isError"}`}>{query.update === "saved" ? "Job opportunity saved." : query.update === "setup" ? "The careers database update must be applied before jobs can be published." : "The job could not be saved. Check the required details and try again."}</p>}
+    <section className="adminPanel"><details className="adminCreateRecord"><summary>Post a job opportunity</summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields/><button className="adminButton">Save opportunity</button></form></details></section>
+    <section className="adminPanel"><div className="adminPanelHeading"><div><p>Roles</p><h2>Current register</h2></div><span>{items.length} recorded</span></div>{items.length ? <div className="careerAdminList">{items.map((item) => <details className="adminEditRecord" key={item.id}><summary><strong>{item.title}</strong><span>{item.status} · {item.location} · {item.employmentType}</span></summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields item={item}/><button className="adminButton">Save changes</button></form></details>)}</div> : <EmptyState title="No roles yet" detail="Create a draft, then publish it when the details are ready."/>}</section>
+  </AdminFrame>;
+}

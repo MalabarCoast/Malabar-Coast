@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { formatPrice } from "../lib/menu";
 import type { FulfilmentMethod } from "../lib/orders";
-import { isRegularClosureDate, regularClosureNotice } from "../lib/restaurant-schedule";
+import { isWithinSchedule, regularClosureNotice, scheduleNotice, type RestaurantSchedule } from "../lib/restaurant-schedule";
 import {
   checkoutAttemptForPayload,
   clearCheckoutAttempt,
@@ -18,26 +18,27 @@ import { SmartDateInput } from "./smart-date-input";
 
 type PaymentConfig = { stripe: boolean; deliveryFeePence: number };
 
-function recoveryIsForClosedDate(attempt: CheckoutAttempt | null) {
+function recoveryIsForClosedDate(attempt: CheckoutAttempt | null, schedule: RestaurantSchedule) {
   if (!attempt) return false;
   try {
     const payload = JSON.parse(attempt.payload) as {requestedTime?: unknown};
-    return typeof payload.requestedTime === "string" && isRegularClosureDate(payload.requestedTime.slice(0, 10));
+    return typeof payload.requestedTime === "string" && !isWithinSchedule(schedule, payload.requestedTime.slice(0, 10), payload.requestedTime.slice(11));
   } catch {
     return false;
   }
 }
 
-export function CheckoutForm() {
+export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
   const { lines, items, subtotalPence, setQuantity, removeItem, clearCart, hydrated } = useCart();
   const [config, setConfig] = useState<PaymentConfig | null>(null);
   const [fulfilment, setFulfilment] = useState<FulfilmentMethod>("collection");
   const [requestedTime, setRequestedTime] = useState("");
-  const closedDate = isRegularClosureDate(requestedTime.slice(0, 10));
+  const [liveSchedule, setLiveSchedule] = useState(schedule);
+  const closedDate = Boolean(requestedTime) && !isWithinSchedule(liveSchedule, requestedTime.slice(0, 10), requestedTime.slice(11));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [recovery, setRecovery] = useState<CheckoutAttempt | null>(null);
-  const closedRecovery = recoveryIsForClosedDate(recovery);
+  const closedRecovery = recoveryIsForClosedDate(recovery, liveSchedule);
 
   useEffect(() => {
     const storedAttempt = readCheckoutAttempt();
@@ -52,6 +53,7 @@ export function CheckoutForm() {
         if (active) setConfig(value);
       })
       .catch(() => active && setError("Secure payment could not be prepared. Please refresh and try again."));
+    fetch("/api/schedule", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => {if (active && data?.schedule) setLiveSchedule(data.schedule);}).catch(() => undefined);
     return () => {
       active = false;
       if (recoveryFrame !== undefined) window.cancelAnimationFrame(recoveryFrame);
@@ -72,7 +74,7 @@ export function CheckoutForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (closedDate) {
-      setError("Online collection and delivery are unavailable on Mondays. Please choose another day.");
+      setError(`${scheduleNotice(liveSchedule, requestedTime.slice(0, 10))} Please choose another date or time.`);
       return;
     }
     if (!paymentReady) {
@@ -180,8 +182,8 @@ export function CheckoutForm() {
           </nav>
         </section>
       )}
-      {closedRecovery && <section className="checkoutRecovery" aria-label="Previous Monday checkout">
-        <div><span>Choose another day</span><h2>The earlier payment link is for a Monday.</h2><p>Online collection and delivery are unavailable on Mondays. Select another date to create a new checkout.</p></div>
+      {closedRecovery && <section className="checkoutRecovery" aria-label="Previous checkout for unavailable date">
+        <div><span>Choose another time</span><h2>The earlier payment link is for an unavailable time.</h2><p>Choose another date or time to create a new checkout.</p></div>
         <nav><button type="button" onClick={() => {clearCheckoutAttempt(); setRecovery(null);}}>Clear earlier checkout</button></nav>
       </section>}
 
@@ -215,8 +217,8 @@ export function CheckoutForm() {
               </label>
             </div>
             <label className="fullField">Requested date &amp; time<SmartDateInput name="requestedTime" type="datetime-local" onChange={(event) => setRequestedTime(event.target.value)} required /></label>
-            <p className="checkoutScheduleNote">{regularClosureNotice} Please choose Tuesday to Sunday for collection or delivery.</p>
-            {closedDate && <p className="paymentNotice" role="alert">Online orders are unavailable on Mondays. Choose another date before continuing to payment.</p>}
+            <p className="checkoutScheduleNote">{regularClosureNotice} Holiday hours may differ.</p>
+            {closedDate && <p className="paymentNotice" role="alert">{scheduleNotice(liveSchedule, requestedTime.slice(0, 10))} Choose another date or time before continuing to payment.</p>}
             {fulfilment === "delivery" && (
               <div className="fieldGrid addressFields">
                 <label>Address line 1<input name="line1" autoComplete="address-line1" required /></label>

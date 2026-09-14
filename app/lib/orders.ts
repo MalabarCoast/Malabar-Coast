@@ -1,5 +1,5 @@
 import { getCheckoutMenuItem } from "@/sanity/lib/menu";
-import { isRegularClosureDate } from "./restaurant-schedule";
+import { defaultRestaurantSchedule, isWithinSchedule, scheduleNotice, type RestaurantSchedule } from "./restaurant-schedule";
 
 export type PaymentProvider = "stripe";
 export type FulfilmentMethod = "collection" | "delivery";
@@ -217,13 +217,13 @@ function formatRestaurantLocal(date: Date) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 
-export function validateRequestedTime(value: unknown) {
+export function validateRequestedTime(value: unknown, schedule: RestaurantSchedule = defaultRestaurantSchedule) {
   const requested = cleanText(value, "Requested time", 16);
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(requested)) {
     throw new CheckoutValidationError("Choose a valid requested date and time.");
   }
-  if (isRegularClosureDate(requested.slice(0, 10))) {
-    throw new CheckoutValidationError("Online collection and delivery are unavailable on Mondays. Please choose another day.");
+  if (!isWithinSchedule(schedule, requested.slice(0, 10), requested.slice(11))) {
+    throw new CheckoutValidationError(`${scheduleNotice(schedule, requested.slice(0, 10))} Please choose another collection or delivery time.`);
   }
   const now = new Date();
   if (requested < formatRestaurantLocal(new Date(now.getTime() - 5 * 60_000))) {
@@ -240,7 +240,7 @@ export function getDeliveryFeePence() {
   return Number.isInteger(configured) && configured >= 0 ? configured : 350;
 }
 
-export async function validateCheckout(input: unknown) {
+export async function validateCheckout(input: unknown, schedule: RestaurantSchedule = defaultRestaurantSchedule) {
   if (!input || typeof input !== "object") throw new CheckoutValidationError("Checkout details are missing.");
   const body = input as Record<string, unknown>;
   if (body.provider !== "stripe") throw new CheckoutValidationError("Stripe is the only supported payment method.");
@@ -308,7 +308,7 @@ export async function validateCheckout(input: unknown) {
     fulfilment,
     customer,
     deliveryAddress,
-    requestedTime: validateRequestedTime(body.requestedTime),
+    requestedTime: validateRequestedTime(body.requestedTime, schedule),
     orderNote: cleanText(body.orderNote, "Order note", 500, false),
     lines,
     subtotalPence,

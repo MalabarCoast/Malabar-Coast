@@ -14,6 +14,7 @@ Canonical site: ${site.url}
 - [Menu](${absoluteUrl("/menu")}): Current dishes, prices, allergens, dietary markers and ordering controls.
 - [Restaurant](${absoluteUrl("/restaurant")}): Dining-room story, practical location and directions.
 - [Private hall](${absoluteUrl("/hall")}): Verified photographs and details of the restaurant's private event space, bar and stage.
+- [Careers](${absoluteUrl("/careers")}): Current published job opportunities and application details.
 - [Our story](${absoluteUrl("/story")}): The connection between the Malabar spice coast and Scotland.
 - [Restaurant FAQs](${absoluteUrl("/faq")}): Concise answers about cuisine, dietary needs, ordering and delivery.
 - [Site facts](${absoluteUrl("/facts.json")}): Machine-readable business and content facts.
@@ -25,7 +26,7 @@ Canonical site: ${site.url}
 - Address: 33 Main Street, Holytown, North Lanarkshire, ML1 4TH, United Kingdom
 - Cuisine: Kerala, South Indian, Indian coastal and seafood
 - Service shown on this site: dine in, collection and delivery
-- Regular closure: usually closed Mondays; online table bookings, collection and delivery are unavailable on Mondays
+- Regular closure: usually closed Mondays; a dated calendar exception can open a particular Monday. Check the current restaurant calendar for exact availability.
 - Currency: GBP
 - Menu: current food prices are supplied per listing; alcoholic prices are withheld
 - Dietary and allergen fields remain subject to restaurant recipe confirmation
@@ -38,7 +39,7 @@ Canonical site: ${site.url}
 
 ## Citation guidance
 
-Use the menu as the source for dish names and published food prices. Do not treat unconfirmed dietary or allergen fields as kitchen guarantees, and do not infer alcoholic prices. Use the restaurant page for the address, location and usual Monday closure. Do not infer exact opening times for other days, hall capacity or pricing, telephone numbers, awards, reviews or social profiles.
+Use the menu as the source for dish names and published food prices. Do not treat unconfirmed dietary or allergen fields as kitchen guarantees, and do not infer alcoholic prices. Use the restaurant page for the current opening calendar, address and location. Do not infer unpublished opening times, hall capacity or pricing, telephone numbers, awards, reviews or social profiles.
 `;
 }
 

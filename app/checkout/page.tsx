@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { CheckoutForm } from "../components/checkout-form";
+import {getRestaurantSchedule} from "../lib/schedule-store";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -7,6 +10,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, noarchive: true, nosnippet: true },
 };
 
-export default function CheckoutPage() {
-  return <CheckoutForm />;
+export default async function CheckoutPage() {
+  return <CheckoutForm schedule={await getRestaurantSchedule()} />;
 }

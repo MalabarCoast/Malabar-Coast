@@ -5,7 +5,7 @@ import { isSupabaseServerConfigured, supabaseServerRequest, supabaseServerRpc } 
 
 const dataDirectory = path.join(process.cwd(), ".data");
 const dataFile = path.join(dataDirectory, "orders.json");
-const ORDER_DATABASE_CONTRACT_VERSION = "2026-08-23-admin-delete-v5";
+const ORDER_DATABASE_CONTRACT_VERSION = "2026-09-14-schedule-careers-v7";
 let writeQueue: Promise<void> = Promise.resolve();
 
 async function readLocalOrders(): Promise<OrderRecord[]> {
@@ -104,6 +104,8 @@ export type OrderListOptions = {
   statuses?: OrderStatus[];
   fulfilment?: "collection" | "delivery";
   provider?: PaymentProvider;
+  requestedFrom?: string;
+  requestedTo?: string;
 };
 
 export async function listOrdersPage(options: OrderListOptions = {}): Promise<OrderRecord[]> {
@@ -122,6 +124,8 @@ export async function listOrdersPage(options: OrderListOptions = {}): Promise<Or
     if (options.statuses?.length) query.set("status", `in.(${options.statuses.join(",")})`);
     if (options.fulfilment) query.set("data->>fulfilment", `eq.${options.fulfilment}`);
     if (options.provider) query.set("provider", `eq.${options.provider}`);
+    if (options.requestedFrom) query.append("data->>requestedTime", `gte.${options.requestedFrom}`);
+    if (options.requestedTo) query.append("data->>requestedTime", `lt.${options.requestedTo}`);
     const response = await supabaseServerRequest(`orders?${query}`, { method: "GET" });
     const rows = await response.json() as { data: OrderRecord }[];
     return rows.map((row) => row.data);
@@ -134,6 +138,8 @@ export async function listOrdersPage(options: OrderListOptions = {}): Promise<Or
     .filter((order) => !options.statuses?.length || options.statuses.includes(order.status))
     .filter((order) => !options.fulfilment || order.fulfilment === options.fulfilment)
     .filter((order) => !options.provider || order.provider === options.provider)
+    .filter((order) => !options.requestedFrom || order.requestedTime >= options.requestedFrom)
+    .filter((order) => !options.requestedTo || order.requestedTime < options.requestedTo)
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
     .slice(offset, offset + limit);
 }

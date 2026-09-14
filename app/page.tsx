@@ -7,6 +7,7 @@ import {getActiveDailySpecials} from "@/sanity/lib/daily-specials";
 import {getBookingSettings} from "./lib/booking-store";
 import type {Metadata} from "next";
 import {getSiteSettings} from "@/sanity/lib/site";
+import {getRestaurantSchedule} from "./lib/schedule-store";
 
 const fallbackMetadata: Metadata = {
   title: "Malabar Coast | Southern Indian Restaurant in Holytown",
@@ -18,10 +19,10 @@ export function generateMetadata() {
   return getMarketingPageMetadata("home", "/", fallbackMetadata);
 }
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [page, {items: menuItems}, testimonials, promotions, dailySpecials, bookingSettings, siteSettings] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActivePromotions(), getActiveDailySpecials(), getBookingSettings(), getSiteSettings()]);
+  const [page, {items: menuItems}, testimonials, promotions, dailySpecials, bookingSettings, siteSettings, schedule] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActivePromotions(), getActiveDailySpecials(), getBookingSettings(), getSiteSettings(), getRestaurantSchedule()]);
   const overview = getPageSection(page, "home-overview");
   const menu = getPageSection(page, "home-menu");
   const reservations = getPageSection(page, "home-reservations");
@@ -48,5 +49,5 @@ export default async function HomePage() {
     coordinates: siteSettings.coordinates,
     testimonials,
   } : {};
-  return <HomeExperience content={content} menuItems={menuItems} promotions={promotions} dailySpecials={dailySpecials} bookingSettings={bookingSettings} />;
+  return <HomeExperience content={content} menuItems={menuItems} promotions={promotions} dailySpecials={dailySpecials} bookingSettings={bookingSettings} schedule={schedule} />;
 }

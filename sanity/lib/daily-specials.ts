@@ -1,7 +1,8 @@
 import {getSanityClient} from './client'
 import {activeDailySpecialsQuery} from './queries'
 import {sanitisePublicLink} from './links'
-import {isRegularClosureDate} from '@/app/lib/restaurant-schedule'
+import {isWithinSchedule} from '@/app/lib/restaurant-schedule'
+import {getRestaurantSchedule} from '@/app/lib/schedule-store'
 
 export type DailySpecial = {
   _id: string
@@ -23,7 +24,7 @@ export type DailySpecial = {
 export async function getActiveDailySpecials(): Promise<DailySpecial[]> {
   const now = new Date()
   const restaurantDate = new Intl.DateTimeFormat('sv-SE', {timeZone: 'Europe/London'}).format(now)
-  if (isRegularClosureDate(restaurantDate)) return []
+  if (!isWithinSchedule(await getRestaurantSchedule(), restaurantDate)) return []
   const dayName = new Intl.DateTimeFormat('en-GB', {weekday: 'long', timeZone: 'Europe/London'}).format(now).toLowerCase()
   const client = getSanityClient()
   if (!client) return []

@@ -13,11 +13,12 @@ export function GET() {
     theme_color: "#071310",
     lang: "en-GB",
     categories: ["business", "food", "productivity"],
-    icons: [{src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any"}],
+    icons: [{src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any"}, {src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any"}, {src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable"}],
     shortcuts: [
-      {name: "Orders", short_name: "Orders", url: "/admin/orders", icons: [{src: "/icon.svg", sizes: "any", type: "image/svg+xml"}]},
-      {name: "Kitchen", short_name: "Kitchen", url: "/admin/kitchen", icons: [{src: "/icon.svg", sizes: "any", type: "image/svg+xml"}]},
-      {name: "Tables", short_name: "Tables", url: "/admin/reservations", icons: [{src: "/icon.svg", sizes: "any", type: "image/svg+xml"}]},
+      {name: "Orders", short_name: "Orders", url: "/admin/orders", icons: [{src: "/icon-192.png", sizes: "192x192", type: "image/png"}]},
+      {name: "Kitchen", short_name: "Kitchen", url: "/admin/kitchen", icons: [{src: "/icon-192.png", sizes: "192x192", type: "image/png"}]},
+      {name: "Tables", short_name: "Tables", url: "/admin/reservations", icons: [{src: "/icon-192.png", sizes: "192x192", type: "image/png"}]},
+      {name: "Calendar", short_name: "Calendar", url: "/admin/schedule", icons: [{src: "/icon-192.png", sizes: "192x192", type: "image/png"}]},
     ],
   }, {headers: {"Content-Type": "application/manifest+json", "Cache-Control": "no-store"}});
 }

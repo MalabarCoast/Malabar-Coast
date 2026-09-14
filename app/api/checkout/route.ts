@@ -3,6 +3,7 @@ import { applyPaymentEvent, attachCheckoutProviderReference, createCheckoutOrder
 import { CheckoutValidationError, type OrderRecord, validateCheckout } from "../../lib/orders";
 import { setOrderAccess, isOrderAccessConfigured } from "../../lib/order-access";
 import { createStripeCheckout, isStripeConfigured } from "../../lib/payments/stripe";
+import {getRestaurantSchedule} from "../../lib/schedule-store";
 import { checkRateLimit, configuredSiteOrigin, getClientAddress, isTrustedOrigin, noStoreJson, readLimitedJson, RequestBodyTooLargeError } from "../../lib/security";
 
 export const runtime = "nodejs";
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
     }
     if (!isOrderAccessConfigured()) throw new Error("Order access signing is not configured.");
 
-    const checkout = await validateCheckout(await readLimitedJson(request, 64_000));
+    const checkout = await validateCheckout(await readLimitedJson(request, 64_000), await getRestaurantSchedule());
     const requestedKey = request.headers.get("idempotency-key") || "";
     if (!/^[a-zA-Z0-9_-]{16,100}$/.test(requestedKey)) {
       throw new CheckoutValidationError("A valid idempotency key is required.");

@@ -468,3 +468,14 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
 @media (prefers-reduced-motion: reduce) {
   .adminShell *, .adminShell *::before, .adminShell *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+.scheduleEditor { display:grid; gap:1.25rem; }.scheduleWeek { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:.5rem; margin:1.5rem 0; }
+.scheduleWeek > div { display:flex; flex-direction:column; gap:.6rem; min-width:0; padding:1rem .7rem; border:1px solid var(--admin-line); background:#f8f5ee; }
+.scheduleWeek strong { font-size:.68rem; }.scheduleWeek span { color:#66736c; font-size:.7rem; line-height:1.4; }
+.scheduleHelp { color:#66736c; line-height:1.55; }.scheduleExceptions { display:grid; gap:.5rem; margin:1rem 0; }
+.scheduleExceptions button { display:flex; justify-content:space-between; gap:1rem; width:100%; padding:1rem; border:1px solid var(--admin-line); background:#f8f5ee; color:inherit; text-align:left; cursor:pointer; }
+.scheduleExceptions button span { color:#66736c; }.scheduleActions { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.5rem; }
+.scheduleImpact { margin-top:1.5rem; padding:1.25rem; border:1px solid #c7ad76; background:#faf6e8; }.scheduleImpact h3 { margin:0 0 .5rem; font:400 1.5rem Georgia,serif; }.scheduleImpact p { line-height:1.5; }
+.careerAdminList { display:grid; gap:.6rem; }.careerAdminList > details { border:1px solid var(--admin-line); }.careerAdminList > details > summary { display:flex; justify-content:space-between; gap:1rem; padding:1rem; cursor:pointer; }.careerAdminList > details > summary span { color:#66736c; }
+@media (max-width:900px) { .scheduleWeek { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:600px) { .scheduleWeek { grid-template-columns:repeat(2,minmax(0,1fr)); }.scheduleExceptions button,.careerAdminList > details > summary { flex-direction:column; }.scheduleActions .adminButton { width:100%; } }

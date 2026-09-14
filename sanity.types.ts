@@ -337,11 +337,6 @@ export type SiteSettings = {
   };
   mapUrl?: string;
   mapEmbedUrl?: string;
-  openingHours?: Array<{
-    days?: string;
-    hours?: string;
-    _key: string;
-  }>;
   socialLinks?: Array<{
     platform?: string;
     url?: string;
@@ -785,7 +780,7 @@ export type CheckoutMenuItemQueryResult = {
 
 // Source: ../sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_id == "siteSettings"][0] {  restaurantName,  legalName,  shortDescription,  description,  siteUrl,  phone,  email,  reservationEmail,  address,  coordinates,  mapUrl,  mapEmbedUrl,  openingHours,  socialLinks,  primaryNavigation,  footerNavigation,  announcement,  footerEyebrow,  footerHeading,  footerText,  footerCreditLabel,  footerCreditUrl,  copyrightText,  defaultSeo {    title,    description,    noIndex,    image {alt, "url": asset->url}  },  logo {alt, "url": asset->url},  lightLogo {alt, "url": asset->url},  favicon {alt, "url": asset->url}}
+// Query: *[_id == "siteSettings"][0] {  restaurantName,  legalName,  shortDescription,  description,  siteUrl,  phone,  email,  reservationEmail,  address,  coordinates,  mapUrl,  mapEmbedUrl,  socialLinks,  primaryNavigation,  footerNavigation,  announcement,  footerEyebrow,  footerHeading,  footerText,  footerCreditLabel,  footerCreditUrl,  copyrightText,  defaultSeo {    title,    description,    noIndex,    image {alt, "url": asset->url}  },  logo {alt, "url": asset->url},  lightLogo {alt, "url": asset->url},  favicon {alt, "url": asset->url}}
 export type SiteSettingsQueryResult =
   | {
       restaurantName: null;
@@ -800,7 +795,6 @@ export type SiteSettingsQueryResult =
       coordinates: null;
       mapUrl: null;
       mapEmbedUrl: null;
-      openingHours: null;
       socialLinks: null;
       primaryNavigation: null;
       footerNavigation: null;
@@ -829,7 +823,6 @@ export type SiteSettingsQueryResult =
       coordinates: null;
       mapUrl: null;
       mapEmbedUrl: null;
-      openingHours: null;
       socialLinks: null;
       primaryNavigation: null;
       footerNavigation: null;
@@ -867,11 +860,6 @@ export type SiteSettingsQueryResult =
       } | null;
       mapUrl: string | null;
       mapEmbedUrl: string | null;
-      openingHours: Array<{
-        days?: string;
-        hours?: string;
-        _key: string;
-      }> | null;
       socialLinks: Array<{
         platform?: string;
         url?: string;
@@ -1165,7 +1153,7 @@ declare module "@sanity/client" {
     '{\n  "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {\n    _id,\n    name,\n    "category": category->title,\n    "categorySlug": category->slug.current,\n    pricePence,\n    "available": coalesce(available, true),\n    "onlineOrdering": coalesce(onlineOrdering, true),\n    "featured": coalesce(featured, false),\n    "isAlcoholic": coalesce(isAlcoholic, false),\n    "updatedAt": _updatedAt\n  },\n  "promotions": *[_type == "promotion"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    "status": coalesce(status, "paused"),\n    "showOnHomepage": coalesce(showOnHomepage, false),\n    startsAt,\n    endsAt,\n    "updatedAt": _updatedAt,\n    poster {alt, "url": asset->url}\n  },\n  "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    "status": coalesce(status, "paused"),\n    pricePence,\n    "updatedAt": _updatedAt,\n    image {alt, "url": asset->url}\n  },\n  "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {\n    _id,\n    _type,\n    title,\n    pageKey,\n    "updatedAt": _updatedAt\n  },\n  "categoryCount": count(*[_type == "menuCategory"]),\n  "faqCount": count(*[_type == "faqItem"]),\n  "testimonialCount": count(*[_type == "testimonial"]),\n  "hasMenuPage": defined(*[_id == "menuPage"][0]._id),\n  "hasSiteSettings": defined(*[_id == "siteSettings"][0]._id)\n}': AdminContentOverviewQueryResult;
     '{\n  "categories": *[_type == "menuCategory" && published != false] | order(orderRank asc) {\n    "slug": slug.current,\n    title,\n    "note": coalesce(shortTitle, title),\n    "description": coalesce(description, ""),\n    orderRank\n  },\n  "items": *[_type == "menuItem" && published != false] | order(category->orderRank asc, displayOrder asc, name asc) {\n    "id": coalesce(sourceKey, _id),\n    "category": category->slug.current,\n    name,\n    "description": coalesce(description, ""),\n    subheading,\n    pricePence,\n    priceLabel,\n    hidePrice,\n    isAlcoholic,\n    isVegetarian,\n    isVegan,\n    dietaryReviewStatus,\n    "allergens": coalesce(allergens, []),\n    spiceLevel,\n    available,\n    onlineOrdering,\n    featured,\n    displayOrder,\n    image {\n      alt,\n      caption,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions\n    }\n  },\n  "page": *[_id == "menuPage"][0] {\n    eyebrow,\n    headingLineOne,\n    headingLineTwo,\n    introduction,\n    journeyLinkLabel,\n    manifestEyebrow,\n    manifestHeading,\n    manifestIntroduction,\n    dietaryNotice,\n    alcoholNotice,\n    voyageStops[] {\n      _key,\n      "itemId": coalesce(dish->sourceKey, dish->_id),\n      "area": coalesce(area, port),\n      region,\n      coordinates,\n      "year": yearLabel,\n      "course": courseLabel,\n      description,\n      image {\n        alt,\n        "url": asset->url,\n        "dimensions": asset->metadata.dimensions\n      }\n    },\n    seo {\n      title,\n      description,\n      noIndex,\n      image {alt, "url": asset->url}\n    }\n  }\n}': MenuContentQueryResult;
     '*[_type == "menuItem" && (sourceKey == $id || _id == $id)][0] {\n  "id": coalesce(sourceKey, _id),\n  "category": category->slug.current,\n  name,\n  pricePence,\n  available,\n  onlineOrdering,\n  isAlcoholic\n}': CheckoutMenuItemQueryResult;
-    '*[_id == "siteSettings"][0] {\n  restaurantName,\n  legalName,\n  shortDescription,\n  description,\n  siteUrl,\n  phone,\n  email,\n  reservationEmail,\n  address,\n  coordinates,\n  mapUrl,\n  mapEmbedUrl,\n  openingHours,\n  socialLinks,\n  primaryNavigation,\n  footerNavigation,\n  announcement,\n  footerEyebrow,\n  footerHeading,\n  footerText,\n  footerCreditLabel,\n  footerCreditUrl,\n  copyrightText,\n  defaultSeo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  },\n  logo {alt, "url": asset->url},\n  lightLogo {alt, "url": asset->url},\n  favicon {alt, "url": asset->url}\n}': SiteSettingsQueryResult;
+    '*[_id == "siteSettings"][0] {\n  restaurantName,\n  legalName,\n  shortDescription,\n  description,\n  siteUrl,\n  phone,\n  email,\n  reservationEmail,\n  address,\n  coordinates,\n  mapUrl,\n  mapEmbedUrl,\n  socialLinks,\n  primaryNavigation,\n  footerNavigation,\n  announcement,\n  footerEyebrow,\n  footerHeading,\n  footerText,\n  footerCreditLabel,\n  footerCreditUrl,\n  copyrightText,\n  defaultSeo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  },\n  logo {alt, "url": asset->url},\n  lightLogo {alt, "url": asset->url},\n  favicon {alt, "url": asset->url}\n}': SiteSettingsQueryResult;
     '*[_type == "marketingPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  heroHeading,\n  heroText,\n  heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n  heroPrimaryLink,\n  heroSecondaryLink,\n  sections[] {\n    _key,\n    _type,\n    internalName,\n    eyebrow,\n    heading,\n    body,\n    text,\n    image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    links,\n    items[] {_key, title, text, shortLabel},\n    primaryLink,\n    secondaryLink,\n    shortLabel,\n    note,\n    theme\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}\n  }\n}': MarketingPageQueryResult;
     '*[_type == "legalPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  summary,\n  lastUpdated,\n  sections[] {\n    _key,\n    "id": sectionId.current,\n    title,\n    body[] {\n      ...,\n      children[] {...},\n      markDefs[] {...}\n    }\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  }\n}': LegalPageQueryResult;
     '*[_type == "faqItem" && published != false] | order(displayOrder asc) {\n  question,\n  answer,\n  category,\n  displayOrder\n}': FaqItemsQueryResult;
