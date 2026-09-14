@@ -1,7 +1,5 @@
 # Reservations, hall enquiries and Brevo email
 
-## Deployment order
-
 1. Apply the complete `supabase/schema.sql` before deploying the matching application build. The public table form stays paused if the booking contract cannot be reached.
 2. Deploy the application and confirm `/api/health/ready` reports the database, Stripe and transactional email checks as ready.
 3. Sign in to `/admin/reservations` and confirm capacity, sitting duration, arrival interval, maximum party size, service times, notice and advance-booking window.
