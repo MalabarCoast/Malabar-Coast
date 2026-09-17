@@ -2,7 +2,6 @@ import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableText
 import {HomeExperience, type HomeCmsContent} from "./home-experience";
 import {getMenuContent} from "@/sanity/lib/menu";
 import {getTestimonials} from "@/sanity/lib/testimonials";
-import {getActivePromotions} from "@/sanity/lib/promotions";
 import {getActiveDailySpecials} from "@/sanity/lib/daily-specials";
 import {getBookingSettings} from "./lib/booking-store";
 import type {Metadata} from "next";
@@ -10,8 +9,8 @@ import {getSiteSettings} from "@/sanity/lib/site";
 import {getRestaurantSchedule} from "./lib/schedule-store";
 
 const fallbackMetadata: Metadata = {
-  title: "Malabar Coast | Southern Indian Restaurant in Holytown",
-  description: "Southern Indian coastal cooking from Malabar to Scotland.",
+  title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
+  description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown.",
   alternates: {canonical: "/"},
 };
 
@@ -22,23 +21,23 @@ export function generateMetadata() {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [page, {items: menuItems}, testimonials, promotions, dailySpecials, bookingSettings, siteSettings, schedule] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActivePromotions(), getActiveDailySpecials(), getBookingSettings(), getSiteSettings(), getRestaurantSchedule()]);
+  const [page, {items: menuItems}, testimonials, dailySpecials, bookingSettings, siteSettings, schedule] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActiveDailySpecials(), getBookingSettings(), getSiteSettings(), getRestaurantSchedule()]);
   const overview = getPageSection(page, "home-overview");
   const menu = getPageSection(page, "home-menu");
   const reservations = getPageSection(page, "home-reservations");
   const content: HomeCmsContent = page ? {
-    heroEyebrow: page.eyebrow,
+    heroEyebrow: "Indian Cuisine & Bar · Holytown · Scotland",
     heroHeading: page.heroHeading,
-    heroText: page.heroText,
+    heroText: "Tandoor fire, fragrant biriyani, rich curries and Malabar coastal flavours, served with a full bar in the heart of Holytown.",
     heroImage: page.heroImage,
     heroPrimaryLink: page.heroPrimaryLink,
     heroSecondaryLink: page.heroSecondaryLink,
     overviewEyebrow: overview?.eyebrow,
     overviewHeading: overview?.heading,
     overviewText: portableTextToPlainText(overview?.body),
-    menuEyebrow: menu?.eyebrow,
+    menuEyebrow: "From coast and tandoor",
     menuHeading: menu?.heading,
-    menuText: portableTextToPlainText(menu?.body),
+    menuText: "From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.",
     reservationEyebrow: reservations?.eyebrow,
     reservationHeading: reservations?.heading,
     reservationText: reservations?.text,
@@ -49,5 +48,5 @@ export default async function HomePage() {
     coordinates: siteSettings.coordinates,
     testimonials,
   } : {};
-  return <HomeExperience content={content} menuItems={menuItems} promotions={promotions} dailySpecials={dailySpecials} bookingSettings={bookingSettings} schedule={schedule} />;
+  return <HomeExperience content={content} menuItems={menuItems} dailySpecials={dailySpecials} bookingSettings={bookingSettings} schedule={schedule} />;
 }

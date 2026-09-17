@@ -50,7 +50,7 @@ test("global identity, navigation, footer and default SEO come from site setting
     read("../sanity/lib/queries.ts"),
   ]);
   assert.match(layout, /generateMetadata/);
-  assert.match(layout, /globalSchema\(siteSettings\)/);
+  assert.match(layout, /globalSchema\(siteSettings,\s*schedule\)/);
   assert.match(header, /settings\.primaryNavigation/);
   assert.match(footer, /settings\.footerHeading/);
   assert.match(schema, /footerCreditUrl/);

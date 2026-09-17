@@ -4,7 +4,7 @@ import Link from "next/link";
 import { StoryCanvas } from "./story-canvas";
 import { StoryTransitionLink } from "./story-transition-link";
 import { JsonLd } from "../components/json-ld";
-import { absoluteUrl } from "../lib/site";
+import { absoluteUrl, pageLastUpdated } from "../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 import {ourInspirationContent} from "../lib/brand-content";
 
@@ -17,7 +17,7 @@ const fallbackMetadata: Metadata = {
     url: "/story",
     title: "From Malabar to Scotland | The Malabar Coast Story",
     description: "A cinematic journey through pepper, monsoon ports and the living coastal cuisine carried to Scotland.",
-    images: ["/story/calicut-spice-port.png"],
+    images: ["/og/story.png"],
   },
 };
 
@@ -35,7 +35,7 @@ const storySchema = {
       image: absoluteUrl("/story/calicut-spice-port.png"),
       mainEntityOfPage: absoluteUrl("/story"),
       datePublished: "2026-07-13",
-      dateModified: "2026-08-02",
+      dateModified: pageLastUpdated["/story"],
       author: { "@id": `${absoluteUrl("/")}#restaurant` },
       publisher: { "@id": `${absoluteUrl("/")}#restaurant` },
     },
@@ -89,20 +89,23 @@ const dishesFromTheStory = [
     image: "/menu/calicut-pepper-prawns.png",
     alt: "A coastal prawn dish inspired by Calicut's spice coast",
     connection: "Calicut · Pepper",
+    description: "Prawns tossed with toasted coconut, curry leaves and Malabar spices for a dry, savoury finish.",
   },
   {
-    name: "Meen Moilee",
-    link: "/menu#malabar-coast-signature",
-    image: "/menu/scotland-haddock.png",
-    alt: "Fish served in a golden coconut moilee",
-    connection: "Malabar to Scotland · Coconut",
+    name: "Chicken Tikka",
+    link: "/menu#clay-oven",
+    image: "/menu/chicken-tikka.png",
+    alt: "Charred chicken tikka with red onion and grilled lemon",
+    connection: "Delhi · Tandoor fire",
+    description: "Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre.",
   },
   {
-    name: "Malabar Coast Special Dessert",
+    name: "Gulab Jamun",
     link: "/menu#desserts",
-    image: "/menu/lisbon-custard-tart.png",
-    alt: "A warm spiced dessert inspired by the old sea route",
-    connection: "Lisbon · Cardamom",
+    image: "/menu/gulab-jamun.png",
+    alt: "Gulab jamun in cardamom and saffron syrup",
+    connection: "Lucknow · Cardamom",
+    description: "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup.",
   },
 ] as const;
 
@@ -234,6 +237,7 @@ export default async function StoryPage() {
               </div>
               <span>{dish.connection}</span>
               <strong>{dish.name}</strong>
+              <p>{dish.description}</p>
               <i aria-hidden="true">View dish ↗</i>
             </Link>
           ))}

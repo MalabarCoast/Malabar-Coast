@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: "/",
     name: "Malabar Coast",
     short_name: "Malabar Coast",
-    description: "Southern Indian coastal restaurant in Holytown, Scotland. A coast open to the world.",
+    description: "Indian Cuisine & Bar in Holytown, serving tandoor dishes, curries, biriyani and Malabar coastal specialities.",
     start_url: "/",
     scope: "/",
     display: "standalone",

@@ -1,12 +1,12 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
-const keralaFoodAreas = [
-  {title: 'Kannur', value: 'Kannur'},
-  {title: 'Kozhikode', value: 'Kozhikode'},
-  {title: 'Palakkad', value: 'Palakkad'},
-  {title: 'Kochi', value: 'Kochi'},
-  {title: 'Kottayam', value: 'Kottayam'},
-  {title: 'Alappuzha', value: 'Alappuzha'},
+const indianFoodDestinations = [
+  {title: 'Delhi', value: 'Delhi'},
+  {title: 'Amritsar', value: 'Amritsar'},
+  {title: 'Mumbai (Bombay)', value: 'Mumbai (Bombay)'},
+  {title: 'Kashmir', value: 'Kashmir'},
+  {title: 'Hyderabad', value: 'Hyderabad'},
+  {title: 'Lucknow', value: 'Lucknow'},
 ]
 
 export const menuPage = defineType({
@@ -26,13 +26,13 @@ export const menuPage = defineType({
     defineField({name: 'alcoholNotice', title: 'Alcohol notice', type: 'text', rows: 3}),
     defineField({
       name: 'voyageStops',
-      title: 'Six Kerala food regions',
-      description: 'Choose six areas of Kerala and connect each one to an existing dish from the menu.',
+      title: 'Six Indian food destinations',
+      description: 'Choose six places across India and connect each one to an existing dish from the menu.',
       type: 'array',
       of: [defineArrayMember({type: 'object', fields: [
         defineField({name: 'dish', title: 'Dish', type: 'reference', to: [{type: 'menuItem'}], validation: (rule) => rule.required()}),
-        defineField({name: 'area', title: 'Kerala area', type: 'string', options: {list: keralaFoodAreas, layout: 'dropdown'}, validation: (rule) => rule.required()}),
-        defineField({name: 'port', title: 'Former port name', type: 'string', deprecated: {reason: 'Use Kerala area instead.'}, readOnly: true, hidden: ({value}) => value === undefined, initialValue: undefined}),
+        defineField({name: 'area', title: 'Indian destination', type: 'string', options: {list: indianFoodDestinations, layout: 'dropdown'}, validation: (rule) => rule.required()}),
+        defineField({name: 'port', title: 'Former port name', type: 'string', deprecated: {reason: 'Use Indian destination instead.'}, readOnly: true, hidden: ({value}) => value === undefined, initialValue: undefined}),
         defineField({name: 'region', title: 'Food landscape', type: 'string'}),
         defineField({name: 'coordinates', title: 'Coordinates', type: 'string'}),
         defineField({name: 'yearLabel', title: 'Area note', type: 'string'}),
@@ -41,9 +41,9 @@ export const menuPage = defineType({
         defineField({name: 'description', title: 'Story', type: 'text', rows: 4}),
       ], preview: {
         select: {area: 'area', formerPort: 'port', subtitle: 'dish.name', media: 'image'},
-        prepare: ({area, formerPort, subtitle, media}) => ({title: area || formerPort || 'Kerala area', subtitle, media}),
+        prepare: ({area, formerPort, subtitle, media}) => ({title: area || formerPort || 'Indian destination', subtitle, media}),
       }})],
-      validation: (rule) => rule.required().length(6).error('Add exactly six Kerala food regions.'),
+      validation: (rule) => rule.required().length(6).error('Add exactly six Indian food destinations.'),
     }),
     defineField({name: 'seo', title: 'Search and sharing', type: 'seo'}),
   ],

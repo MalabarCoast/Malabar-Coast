@@ -22,15 +22,15 @@ Canonical site: ${site.url}
 ## Key facts
 
 - Name: Malabar Coast
-- Category: Southern Indian coastal restaurant
+- Category: Indian restaurant and bar
 - Address: 33 Main Street, Holytown, North Lanarkshire, ML1 4TH, United Kingdom
-- Cuisine: Kerala, South Indian, Indian coastal and seafood
-- Service shown on this site: dine in, collection and delivery
+- Cuisine: Indian, North Indian, South Indian, tandoori, Kerala and seafood
+- Service shown on this site: dine in, collection, delivery and private-event catering by enquiry
 - Regular closure: usually closed Mondays; a dated calendar exception can open a particular Monday. Check the current restaurant calendar for exact availability.
 - Currency: GBP
 - Menu: current food prices are supplied per listing; alcoholic prices are withheld
 - Dietary and allergen fields remain subject to restaurant recipe confirmation
-- Private hall: flexible open floor, built-in wooden bar and raised stage; capacity, packages and pricing are not yet published
+- Private hall: flexible open floor, built-in wooden bar, raised stage and tailored catering by enquiry; capacity and pricing are confirmed directly
 
 ## Website credit
 

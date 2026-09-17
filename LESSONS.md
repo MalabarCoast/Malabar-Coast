@@ -51,3 +51,4 @@
 - Cap content gutters on ultra-wide screens so related headlines and supporting copy remain visually connected instead of drifting toward opposite edges.
 - Long editorial narratives can use two readable text columns on wide screens, but should return to one continuous column before tablet widths.
 - Treat venue address, coordinates and actions as one information group; a restrained panel gives them hierarchy without changing the content.
+- Size editorial grid columns for their longest unbroken display word, and stack before laptop widths force headings to paint into adjacent content.

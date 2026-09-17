@@ -241,7 +241,12 @@ export type MenuPage = {
   voyageStops?: Array<{
     dish?: MenuItemReference;
     area?:
-      "Kannur" | "Kozhikode" | "Palakkad" | "Kochi" | "Kottayam" | "Alappuzha";
+      | "Delhi"
+      | "Amritsar"
+      | "Mumbai (Bombay)"
+      | "Kashmir"
+      | "Hyderabad"
+      | "Lucknow";
     port?: string;
     region?: string;
     coordinates?: string;
@@ -734,12 +739,12 @@ export type MenuContentQueryResult = {
           itemId: string | null;
           area:
             | string
-            | "Alappuzha"
-            | "Kannur"
-            | "Kochi"
-            | "Kottayam"
-            | "Kozhikode"
-            | "Palakkad"
+            | "Amritsar"
+            | "Delhi"
+            | "Hyderabad"
+            | "Kashmir"
+            | "Lucknow"
+            | "Mumbai (Bombay)"
             | null;
           region: string | null;
           coordinates: string | null;

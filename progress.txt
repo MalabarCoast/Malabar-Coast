@@ -77,3 +77,9 @@
 - Presented the location details as one cohesive information panel and preserved comfortable 44px actions on compact screens.
 - Verified the redesigned sections at desktop and 390px widths with no body-level horizontal overflow.
 - Verified 54 automated tests, ESLint, TypeScript, changed-file whitespace and the Next.js production build.
+
+2026-09-17 - Careers empty-state collision fixed
+
+- Rebalanced the careers desktop grid so the Current opportunities heading remains inside its column beside the empty-state panel.
+- Added explicit empty-state heading and paragraph spacing and moved the single-column transition to small-laptop widths.
+- Preserved the existing content, colors and behavior.

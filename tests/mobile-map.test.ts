@@ -33,3 +33,11 @@ test("mobile controls retain thumb-sized targets and safe viewport behaviour", a
   assert.match(worker, /viewport-fit=cover/);
   assert.match(worker, /min-height:44px/);
 });
+
+test("the careers empty state cannot collide with its editorial heading", async () => {
+  const globalCss = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(globalCss, /\.careersBody \{[^}]*grid-template-columns:minmax\(0,\.85fr\) minmax\(0,1\.15fr\)/);
+  assert.match(globalCss, /\.careersIntro h2 \{[^}]*max-width:12ch/);
+  assert.match(globalCss, /@media \(max-width:1100px\) \{ \.careersBody \{ grid-template-columns:1fr;/);
+  assert.match(globalCss, /\.careersEmpty h3 \{ margin:0 0 1\.25rem;/);
+});

@@ -1,7 +1,7 @@
 import {randomBytes} from "node:crypto";
 import {mkdir, readFile, rename, writeFile} from "node:fs/promises";
 import path from "node:path";
-import type {CareerOpportunity} from "./careers";
+import {careerSlug, type CareerOpportunity} from "./careers";
 import {isSupabaseServerConfigured, supabaseServerRequest, supabaseServerRpc} from "./supabase/server";
 
 const localPath = path.join(process.cwd(), ".data", "careers.json");
@@ -13,6 +13,10 @@ export async function listCareers(): Promise<CareerOpportunity[]> {
   if (isSupabaseServerConfigured()) {try {const response = await supabaseServerRequest("career_opportunities?select=data&order=created_at.desc&limit=500"); return (await response.json() as {data: CareerOpportunity}[]).map((row) => row.data);} catch (error) {if (error instanceof Error && error.message.includes("(404)")) return []; throw error;}}
   if (process.env.NODE_ENV === "production") throw new Error("Careers storage is not configured.");
   return (await readLocal()).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function getCareerBySlug(slug: string) {
+  return (await listCareers()).find((job) => careerSlug(job) === slug);
 }
 
 export async function saveCareer(input: Omit<CareerOpportunity, "id" | "createdAt" | "updatedAt">, actorUserId: string, existingId?: string) {

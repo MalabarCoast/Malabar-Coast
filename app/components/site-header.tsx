@@ -10,7 +10,7 @@ import type { SiteSettings } from "@/sanity/lib/site";
 const NAV_REVEAL_SCROLL_THRESHOLD = 4;
 
 const fallbackNavigationDescriptions: Record<string, string> = {
-  "/story": "From Malabar's coast to Scotland",
+  "/story": "From India's spice coast to Scotland",
   "/offers": "Today's specials, posters and offers",
   "/restaurant": "The room, the team and how to find us",
   "/faq": "Helpful answers before you visit",
@@ -100,11 +100,14 @@ export function SiteHeader({settings}: {settings: SiteSettings}) {
   return (
     <>
       <header className={`nav siteHeader ${navMinimal ? "navMinimal" : ""}`} aria-label="Primary navigation">
-        <Link className="bookButton" href="/book-a-table" inert={navMinimal}>
-          <span className="bookButtonLabel">Book your table</span>
-          <span className="bookButtonMobile" aria-hidden="true">Book</span>
-          <span className="arrow" aria-hidden="true">↗</span>
-        </Link>
+        <div className="headerPrimaryActions" inert={navMinimal}>
+          <Link className="bookButton" href="/book-a-table">
+            <span className="bookButtonLabel">Book your table</span>
+            <span className="bookButtonMobile" aria-hidden="true">Book</span>
+            <span className="arrow" aria-hidden="true">↗</span>
+          </Link>
+          <Link className="headerOfferButton" href="/offers">Offers <span aria-hidden="true">↗</span></Link>
+        </div>
 
         <Link className="brand" href="/" aria-label={`${settings.restaurantName} home`} onClick={handleBrandClick}>
           <Image src={settings.logo.url} alt={settings.logo.alt} width={2383} height={2402} priority />

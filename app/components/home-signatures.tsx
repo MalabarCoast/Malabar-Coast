@@ -14,10 +14,10 @@ const featuredDishes = [
     note: "From Calicut · Small plate",
   },
   {
-    id: "malabar-coast-signature-meen-moilee",
-    image: "/menu/scotland-haddock.png",
-    alt: "Scottish haddock in golden coconut moilee with charred leek",
-    note: "Two coasts · Our signature",
+    id: "clay-oven-chicken-tikka",
+    image: "/menu/chicken-tikka.png",
+    alt: "Charred chicken tikka with red onion and grilled lemon",
+    note: "From Delhi · Tandoor fire",
   },
   {
     id: "malabar-coast-signature-aattirachi-kurumulak",
@@ -33,42 +33,22 @@ export function HomeSignatures({items, specials, eyebrow, heading, introduction}
     <section className="homeSignatures" aria-labelledby="home-signatures-title">
       <div className="homeSignaturesIntro">
         <div className="homeSignaturesMeta">
-          <span>{hasSpecials ? `Fresh from the kitchen · ${String(specials.length).padStart(2, "0")} special${specials.length === 1 ? "" : "s"}` : eyebrow || "Tonight at Malabar · 03 plates"}</span>
-          <span>{hasSpecials ? "Updated in our Content Studio" : "From our coastal kitchen"}</span>
+          <span>{eyebrow || "Featured dishes · 03 plates"}</span>
+          <span>From coast and tandoor</span>
         </div>
         <div className="homeSignaturesHeading">
-          <h2 id="home-signatures-title">{hasSpecials ? <>Today&apos;s<br />specials.</> : heading || <>Come to<br />the table.</>}</h2>
+          <h2 id="home-signatures-title">{heading || <>Come to<br />the table.</>}</h2>
           <div>
             <p>
-              {hasSpecials ? "A little extra from the kitchen, available today while each batch lasts. Check back often, the board changes with the cooks and the coast." : introduction || "Pepper warmed over fire, coconut softened with lime and seafood from the Scottish coast. Three plates that tell our journey through flavour."}
+              {introduction || "From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India."}
             </p>
-            <Link className="homeSpecialsOfferLink" href="/offers">See posters &amp; offers <span aria-hidden="true">↗</span></Link>
+            <Link className="homeSpecialsOfferLink" href="/offers">{hasSpecials ? `See ${specials.length} kitchen special${specials.length === 1 ? "" : "s"} & offers` : "See current offers"} <span aria-hidden="true">↗</span></Link>
           </div>
         </div>
       </div>
 
       <div className="homeSignatureGrid">
-        {hasSpecials ? specials.slice(0, 3).map((special, index) => {
-          const canOrder = special.status === "active" && special.menuItem?.available && special.menuItem.onlineOrdering && !special.menuItem.isAlcoholic && special.menuItem.pricePence === special.pricePence;
-          return <article className={`homeSignatureCard homeSignatureCard${index + 1} isDailySpecial`} key={special._id}>
-            <div className="homeSignatureImage">
-              <Image src={special.image.url} alt={special.image.alt} fill sizes={index === 0 ? "(max-width: 720px) 100vw, 50vw" : "(max-width: 720px) 100vw, 25vw"} placeholder={special.image.lqip ? "blur" : "empty"} blurDataURL={special.image.lqip} />
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {special.status === "soldOut" && <b className="homeSpecialSoldOut">Sold out today</b>}
-            </div>
-            <div className="homeSignatureCopy">
-              <p>{special.badge || "Today from the kitchen"}</p>
-              <h3>{special.title}</h3>
-              <span>{special.description}</span>
-              {special.dietaryNote && <small className="homeSpecialDietary">{special.dietaryNote}</small>}
-              <div className="homeSignatureOrder">
-                <span><strong>{formatPrice(special.pricePence)}</strong>{special.priceNote && <small>{special.priceNote}</small>}</span>
-                {canOrder && special.menuItem && <AddToOrder id={special.menuItem.id} compact />}
-                {!canOrder && special.callToAction?.href && <Link className="homeSpecialAction" href={special.callToAction.href}>{special.callToAction.label} <span aria-hidden="true">↗</span></Link>}
-              </div>
-            </div>
-          </article>;
-        }) : featuredDishes.map((featured, index) => {
+        {featuredDishes.map((featured, index) => {
           const dish = items.find((item) => item.id === featured.id);
           if (!dish) return null;
 

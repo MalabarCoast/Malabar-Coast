@@ -34,6 +34,12 @@ const imageFiles = {
   capeLamb: "menu/cape-malay-lamb.png",
   lisbonDessert: "menu/lisbon-custard-tart.png",
   scotlandFish: "menu/scotland-haddock.png",
+  chickenTikka: "menu/chicken-tikka.png",
+  tandooriChicken: "menu/tandoori-chicken.png",
+  chickenShashlik: "menu/chicken-shashlik.png",
+  lambTikka: "menu/lamb-tikka.png",
+  chickenBiriyani: "menu/chicken-biriyani.png",
+  gulabJamun: "menu/gulab-jamun.png",
 } as const;
 
 type AssetKey = keyof typeof imageFiles;
@@ -78,19 +84,19 @@ const pageSeeds = () => [
   {
     pageKey: "home",
     title: "Home",
-    eyebrow: "Southern Indian coastal kitchen · Holytown",
+    eyebrow: "Indian Cuisine & Bar · Holytown",
     heroHeading: "From the Malabar Coast to Scotland.",
-    heroText: "Kerala's pepper, coconut, curry leaf and hospitality, served at 33 Main Street in Holytown.",
+    heroText: "Tandoor fire, fragrant biriyani, rich curries and Malabar coastal flavours, served with a full bar in the heart of Holytown.",
     heroImage: image("hero", "A Kerala-inspired restaurant table with coastal dishes in a warm dining room"),
     heroPrimaryLink: {_type: "link", label: "Explore the menu", href: "/menu", openInNewTab: false},
     heroSecondaryLink: {_type: "link", label: "Book your table", href: "/book-a-table", openInNewTab: false},
     sections: [
       {_type: "contentSection", _key: "home-overview", internalName: "What is Malabar Coast?", eyebrow: "Our restaurant", heading: "What is Malabar Coast?", body: malabarCoastIntroduction.map((paragraph,index)=>block(paragraph, `overview-copy-${index+1}`)), image: image("diningRoom", "The warmly lit Malabar Coast dining room")},
-      {_type: "contentSection", _key: "home-menu", internalName: "Signature menu", eyebrow: "From our kitchen", heading: "Come to the table.", body: [block("Pepper warmed over fire, coconut softened with lime and dishes prepared for sharing.", "menu-copy")], image: image("calicutPrawns", "A coastal prawn dish with curry leaf")},
+      {_type: "contentSection", _key: "home-menu", internalName: "Signature menu", eyebrow: "From coast and tandoor", heading: "Come to the table.", body: [block("From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.", "menu-copy")], image: image("chickenTikka", "Charred chicken tikka with red onion and grilled lemon")},
       {_type: "contentSection", _key: "home-story", internalName: "Coastal story", eyebrow: "Our story", heading: "A coast that changed the table.", body: [block("Follow the old sea road from Calicut to the new coast in Scotland.", "story-copy")], image: image("storyPort", "A rain-washed historic spice port on the Malabar Coast")},
       {_type: "callToAction", _key: "home-reservations", eyebrow: "Book your table", heading: "Your table by the coast.", text: "Choose your date, arrival time and party size online, with live capacity checked before confirmation.", primaryLink: {_type: "link", label: "Book your table", href: "/book-a-table", openInNewTab: false}, secondaryLink: {_type: "link", label: "Get directions", href: site.maps.directionsUrl, openInNewTab: true}, image: image("tableForTwo", "An intimate table for two at Malabar Coast")},
     ],
-    seo: {title: "Malabar Coast | Southern Indian Restaurant in Holytown", description: "Southern Indian coastal cooking from Malabar to Scotland."},
+    seo: {title: "Malabar Coast | Indian Cuisine & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown."},
   },
   {
     pageKey: "restaurant",
@@ -238,6 +244,12 @@ async function seed() {
     "malabar-coast-signature-aattirachi-kurumulak": {key: "capeLamb", alt: "Pepper-spiced lamb with flaky porotta"},
     "desserts-malabar-coast-special-dessert": {key: "lisbonDessert", alt: "A warm spiced dessert"},
     "malabar-coast-signature-meen-moilee": {key: "scotlandFish", alt: "Fish in a golden coconut moilee"},
+    "clay-oven-chicken-tikka": {key: "chickenTikka", alt: "Charred chicken tikka with red onion and grilled lemon"},
+    "clay-oven-tandoori-chicken": {key: "tandooriChicken", alt: "Bone-in tandoori chicken with grilled lemon"},
+    "clay-oven-chicken-shashlik": {key: "chickenShashlik", alt: "Chicken shashlik skewers with peppers and onion"},
+    "clay-oven-lamb-tikka": {key: "lambTikka", alt: "Aromatic lamb tikka with charred lemon"},
+    "biriyani-chicken": {key: "chickenBiriyani", alt: "Fragrant chicken biriyani with saffron rice"},
+    "desserts-gulab-jamun": {key: "gulabJamun", alt: "Gulab jamun in cardamom and saffron syrup"},
   };
   for (const menuItem of menuItems) {
     const categoryId = categoryIds.get(menuItem.category);
@@ -273,21 +285,21 @@ async function seed() {
   }
 
   const voyageSeeds = [
-    ["malabar-coast-signature-masala-grilled-fish", "Kannur", "North Kerala coast", "11.8745° N · 75.3704° E", "Fire and coast", "Chargrilled fish", "malindiFish", "Masala grilled fish representing the fire-led cooking of Kannur", "Kannur's northern shoreline brings together fresh fish, warm spice and fire-led cooking with the confidence of North Malabar."],
-    ["malabar-coast-signature-konju-coconut-fry", "Kozhikode", "North Malabar", "11.2588° N · 75.7804° E", "Coconut and coast", "Coastal fry", "calicutPrawns", "Prawns cooked with coconut and curry leaves in the style of Kozhikode", "Prawns, coconut and curry leaves carry the bold savoury character of Kozhikode and Kerala's Arabian Sea shore."],
-    ["desserts-malabar-coast-special-dessert", "Palakkad", "The Kerala gap", "10.7867° N · 76.6548° E", "Rice and harvest", "Festive sweet", "lisbonDessert", "A warm spiced dessert representing Kerala's festive table", "Palakkad's harvest landscape inspires a gentle, spice-warmed finish rooted in Kerala's traditions of rice, milk and celebration."],
-    ["malabar-coast-signature-prawn-moilee", "Kochi", "Central Kerala coast", "9.9312° N · 76.2673° E", "Harbour kitchen", "Coconut curry", "mozambiqueShellfish", "Prawns in a golden coconut moilee with curry leaves", "A harbour-side style of mild coconut curry, bright with ginger, green chilli and curry leaf around tender prawns."],
-    ["malabar-coast-signature-aattirachi-kurumulak", "Kottayam", "Central Travancore", "9.5916° N · 76.5222° E", "Pepper country", "Pepper-spiced lamb", "capeLamb", "Pepper-spiced lamb representing the kitchens of Kottayam", "Black pepper, shallots and curry leaves echo the robust Syrian-Christian kitchens of Kottayam and central Travancore."],
-    ["malabar-coast-signature-meen-moilee", "Alappuzha", "Backwater coast", "9.4981° N · 76.3388° E", "Backwater kitchen", "Golden fish curry", "scotlandFish", "Fish in a golden coconut moilee representing Alappuzha's backwaters", "Alappuzha's backwater cooking meets tender fish, coconut milk, ginger and curry leaf in a gentle golden moilee."],
+    ["clay-oven-chicken-tikka", "Delhi", "North India", "28.6139° N · 77.2090° E", "Capital tandoor", "Chicken tikka", "chickenTikka", "Charred chicken tikka inspired by Delhi's tandoor kitchens", "Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre."],
+    ["clay-oven-tandoori-chicken", "Amritsar", "Punjab", "31.6340° N · 74.8723° E", "Punjab fire", "Tandoori chicken", "tandooriChicken", "Bone-in tandoori chicken inspired by Amritsar", "Bone-in chicken marinated with yoghurt and warm spices, then roasted over fierce tandoor heat."],
+    ["clay-oven-chicken-shashlik", "Mumbai (Bombay)", "Western India", "19.0760° N · 72.8777° E", "City grill", "Chicken shashlik", "chickenShashlik", "Chicken shashlik with peppers and onion inspired by Mumbai", "Tandoor-grilled chicken, peppers and onion layered on skewers with a bright, smoky finish."],
+    ["clay-oven-lamb-tikka", "Kashmir", "Himalayan north", "34.0837° N · 74.7973° E", "Mountain spice", "Lamb tikka", "lambTikka", "Aromatic lamb tikka inspired by Kashmir", "Boneless lamb steeped in aromatic spices and cooked in the tandoor until tender and lightly charred."],
+    ["biriyani-chicken", "Hyderabad", "Deccan", "17.3850° N · 78.4867° E", "Dum kitchen", "Chicken biriyani", "chickenBiriyani", "Fragrant chicken biriyani inspired by Hyderabad", "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."],
+    ["desserts-gulab-jamun", "Lucknow", "Awadh", "26.8467° N · 80.9462° E", "Festive finish", "Gulab jamun", "gulabJamun", "Gulab jamun in cardamom and saffron syrup", "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup."],
   ] as const;
   await client.createOrReplace({
     _id: "menuPage",
     _type: "menuPage",
-    eyebrow: "A taste of Kerala · North to South",
-    headingLineOne: "Six regions.",
-    headingLineTwo: "One Kerala.",
-    introduction: "Travel through six Kerala food landscapes, from North Malabar's fire and coconut to the backwater curries of Alappuzha.",
-    journeyLinkLabel: "Explore Kerala",
+    eyebrow: "A taste of India · Coast to mountains",
+    headingLineOne: "Six places.",
+    headingLineTwo: "One table.",
+    introduction: "Travel from Delhi and Amritsar's tandoor fire to Mumbai's grills, Kashmir's aromatic lamb, Hyderabad's biriyani and Lucknow's festive sweets.",
+    journeyLinkLabel: "Explore India",
     manifestEyebrow: "The full menu",
     manifestHeading: "What we carry to the table.",
     manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
@@ -304,8 +316,8 @@ async function seed() {
     _type: "siteSettings",
     restaurantName: "Malabar Coast",
     legalName: "Malabar Coast",
-    shortDescription: "Southern Indian coastal cooking from Malabar to Scotland.",
-    description: "Malabar Coast is a Southern Indian coastal restaurant in Holytown, Scotland, serving Kerala-inspired seafood, curries, biriyani and vegetarian dishes.",
+    shortDescription: "Indian Cuisine & Bar, from tandoor fire to the Malabar coast.",
+    description: "Malabar Coast is an Indian restaurant and bar in Holytown, Scotland, serving tandoor dishes, curries, biriyani, vegetarian plates and Malabar coastal specialities.",
     logo: image("logo", "Malabar Coast logo"),
     lightLogo: image("lightLogo", "Malabar Coast white logo"),
     siteUrl: "https://malabarcoast.co.uk",
@@ -339,7 +351,7 @@ async function seed() {
       {_type: "link", _key: "privacy", label: "Privacy", href: "/privacy", openInNewTab: false},
     ],
     copyrightText: "© Malabar Coast 2026. All rights reserved.",
-    defaultSeo: {title: "Malabar Coast | Southern Indian Restaurant in Holytown", description: "Southern Indian coastal cooking from Malabar to Scotland.", image: image("hero", "A Kerala-inspired restaurant table")},
+    defaultSeo: {title: "Malabar Coast | Indian Cuisine & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown.", image: image("hero", "An Indian restaurant table with tandoor and coastal dishes")},
   });
 
   const marketingPages = pageSeeds();

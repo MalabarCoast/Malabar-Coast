@@ -75,10 +75,10 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
           <a className="browseMenu" href="#manifest-title">Browse the full menu <span aria-hidden="true">↓</span></a>
           {voyageStops.length > 0 && <a className="beginVoyage" href="#voyage">Explore the food story <span aria-hidden="true">→</span></a>}
         </div>
-        <div className="prologueCoordinates" aria-hidden="true"><span>11.2588° N</span><i /><span>55.8207° N</span></div>
+        <div className="prologueCoordinates" aria-hidden="true"><span>28.6139° N</span><i /><span>55.8207° N</span></div>
       </section>
 
-      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0} as React.CSSProperties} aria-label="Six Kerala food regions">
+      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0} as React.CSSProperties} aria-label="Six Indian food destinations">
         <div className="voyageStage">
           <div className="voyageTrack">
             {voyageStops.map((stop, index) => {
@@ -98,8 +98,8 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
               );
             })}
           </div>
-          {voyageStops.length > 1 && <div className="routeNavigator" aria-label="Choose a Kerala food region"><div className="routeLineBase"><div /></div><div className="routeShip"><ShipMark /></div>{voyageStops.map((stop, index) => <button type="button" key={`${stop.area}-${index}`} className={index === activeStop ? "isActive" : ""} onClick={() => handleStopSelect(index)} aria-label={`Explore ${stop.area}`} aria-current={index === activeStop ? "step" : undefined}><i /><span>{stop.area}</span></button>)}</div>}
-          <div className="voyageInstruction" aria-hidden="true"><span>Scroll Kerala</span><i><b /></i></div>
+          {voyageStops.length > 1 && <div className="routeNavigator" aria-label="Choose an Indian food destination"><div className="routeLineBase"><div /></div><div className="routeShip"><ShipMark /></div>{voyageStops.map((stop, index) => <button type="button" key={`${stop.area}-${index}`} className={index === activeStop ? "isActive" : ""} onClick={() => handleStopSelect(index)} aria-label={`Explore ${stop.area}`} aria-current={index === activeStop ? "step" : undefined}><i /><span>{stop.area}</span></button>)}</div>}
+          <div className="voyageInstruction" aria-hidden="true"><span>Scroll India</span><i><b /></i></div>
         </div>
       </section>}
 

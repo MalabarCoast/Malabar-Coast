@@ -15,11 +15,13 @@ import { JsonLd } from "./components/json-ld";
 import { absoluteUrl, site } from "./lib/site";
 import { getMenuContent } from "@/sanity/lib/menu";
 import { getSiteSettings } from "@/sanity/lib/site";
+import {getRestaurantSchedule} from "./lib/schedule-store";
+import {dayNames, type RestaurantSchedule} from "./lib/restaurant-schedule";
 
 const fallbackMetadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "Malabar Coast | Southern Indian Restaurant in Holytown",
+    default: "Malabar Coast | Indian Cuisine & Bar in Holytown",
     template: "%s | Malabar Coast",
   },
   description: site.description,
@@ -34,6 +36,9 @@ const fallbackMetadata: Metadata = {
     "Indian restaurant North Lanarkshire",
     "Malabar cuisine Scotland",
     "South Indian seafood",
+    "tandoori restaurant Holytown",
+    "Indian bar Holytown",
+    "Indian catering Holytown",
     "Kerala food delivery Holytown",
     "Southern Indian restaurant Scotland",
     "private event hall Holytown",
@@ -57,22 +62,22 @@ const fallbackMetadata: Metadata = {
     locale: "en_GB",
     url: "/",
     siteName: site.name,
-    title: "Malabar Coast | Southern Indian Restaurant in Holytown",
+    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
     description: site.description,
     images: [
       {
-        url: "/malabar-restaurant-hero-v2.jpg",
+        url: "/og/home.jpg",
         width: 1672,
         height: 941,
-        alt: "A Kerala-inspired restaurant table with coastal dishes in a warm dining room",
+        alt: "An Indian Cuisine & Bar table with tandoor and coastal dishes in a warm dining room",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Malabar Coast | Southern Indian Restaurant in Holytown",
+    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
     description: site.shortDescription,
-    images: ["/malabar-restaurant-hero-v2.jpg"],
+    images: ["/og/home.jpg"],
   },
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
   formatDetection: { address: false, email: false, telephone: false },
@@ -80,16 +85,13 @@ const fallbackMetadata: Metadata = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const canonical = (() => {
-    try { return new URL(settings.siteUrl); } catch { return new URL(site.url); }
-  })();
   const seo = settings.defaultSeo;
-  const title = seo?.title || "Malabar Coast | Southern Indian Restaurant in Holytown";
+  const title = seo?.title || "Malabar Coast | Indian Cuisine & Bar in Holytown";
   const description = seo?.description || settings.description || site.description;
-  const image = seo?.image?.url || "/malabar-restaurant-hero-v2.jpg";
+  const image = seo?.image?.url || "/og/home.jpg";
   return {
     ...fallbackMetadata,
-    metadataBase: canonical,
+    metadataBase: new URL(site.url),
     title: {default: title, template: "%s | Malabar Coast"},
     description,
     applicationName: settings.restaurantName,
@@ -117,7 +119,7 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
+function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, schedule: RestaurantSchedule) {
   const address = {
     streetAddress: settings.address.streetAddress,
     addressLocality: settings.address.locality,
@@ -125,6 +127,19 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
     postalCode: settings.address.postalCode,
     addressCountry: settings.address.country,
   };
+  const openingHoursSpecification = schedule.weekly.flatMap((hours, index) => hours.closed || !hours.opens || !hours.closes ? [] : [{
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: `https://schema.org/${dayNames[index]}`,
+    opens: hours.opens,
+    closes: hours.closes,
+  }]);
+  const specialOpeningHoursSpecification = schedule.exceptions.map((exception) => ({
+    "@type": "OpeningHoursSpecification",
+    validFrom: exception.date,
+    validThrough: exception.date,
+    opens: exception.mode === "closed" ? "00:00" : exception.opens || undefined,
+    closes: exception.mode === "closed" ? "00:00" : exception.closes || undefined,
+  }));
   return {
   "@context": "https://schema.org",
   "@graph": [
@@ -133,7 +148,7 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
       "@id": `${site.url}/#restaurant`,
       name: settings.restaurantName,
       legalName: settings.legalName,
-      url: settings.siteUrl,
+      url: site.url,
       logo: settings.logo.url,
       image: [
         absoluteUrl("/restaurant/dining-room.png"),
@@ -144,6 +159,12 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
       description: settings.description,
       priceRange: site.priceRange,
       servesCuisine: site.cuisine,
+      acceptsReservations: true,
+      email: settings.email || settings.reservationEmail || undefined,
+      telephone: settings.phone || undefined,
+      sameAs: settings.socialLinks.map((profile) => profile.url),
+      openingHoursSpecification: openingHoursSpecification.length ? openingHoursSpecification : undefined,
+      specialOpeningHoursSpecification: specialOpeningHoursSpecification.length ? specialOpeningHoursSpecification : undefined,
       hasMenu: absoluteUrl("/menu"),
       hasMap: settings.mapUrl,
       address: {
@@ -166,7 +187,7 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
     {
       "@type": "WebSite",
       "@id": `${site.url}/#website`,
-      url: settings.siteUrl,
+      url: site.url,
       name: settings.restaurantName,
       description: settings.shortDescription,
       inLanguage: "en-GB",
@@ -185,11 +206,11 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>) {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [{items: currentMenuItems}, siteSettings] = await Promise.all([getMenuContent(), getSiteSettings()]);
+  const [{items: currentMenuItems}, siteSettings, schedule] = await Promise.all([getMenuContent(), getSiteSettings(), getRestaurantSchedule()]);
   return (
     <html lang="en">
       <body>
-        <JsonLd data={globalSchema(siteSettings)} />
+        <JsonLd data={globalSchema(siteSettings, schedule)} />
         <PwaRegistration />
         <SmoothScroll />
         <CartProvider catalogue={currentMenuItems}>

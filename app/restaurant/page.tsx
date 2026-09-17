@@ -7,7 +7,7 @@ import { Reveal } from "../components/reveal";
 import {OpeningHours} from "../components/opening-hours";
 import {getRestaurantSchedule} from "../lib/schedule-store";
 import { formatPrice } from "../lib/menu";
-import { absoluteUrl } from "../lib/site";
+import { absoluteUrl, site } from "../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 import {getMenuContent} from "@/sanity/lib/menu";
 import {foodOfMalabarContent, ourRestaurantsContent} from "../lib/brand-content";
@@ -15,13 +15,13 @@ import {foodOfMalabarContent, ourRestaurantsContent} from "../lib/brand-content"
 const fallbackMetadata: Metadata = {
   title: "Restaurant in Holytown",
   description:
-    "Coastal South Indian cooking, warm hospitality and a dining room shaped by Kerala at Malabar Coast in Holytown, Scotland.",
+    "Indian tandoor cooking, curries, biriyani, Malabar coastal dishes and warm hospitality at Malabar Coast Cuisine & Bar in Holytown.",
   alternates: { canonical: "/restaurant" },
   openGraph: {
     type: "website",
     url: "/restaurant",
     title: "Malabar Coast Restaurant in Holytown, Scotland",
-    description: "A warm neighbourhood dining room for Kerala and Southern Indian coastal cooking at 33 Main Street, Holytown.",
+    description: "A warm neighbourhood dining room for tandoor dishes, curries, biriyani and Malabar coastal cooking at 33 Main Street, Holytown.",
     images: ["/restaurant/dining-room.png"],
   },
 };
@@ -57,11 +57,11 @@ const signatures = [
     copy: "Slow braises, toasted masala and smoke, layered for depth, never heat for its own sake.",
   },
   {
-    id: "desserts-malabar-coast-special-dessert",
-    image: "/menu/lisbon-custard-tart.png",
+    id: "desserts-gulab-jamun",
+    image: "/menu/gulab-jamun.png",
     eyebrow: "To finish",
     title: "A sweet crossing.",
-    copy: "Desserts inspired by the ports and people linked by the old spice route.",
+    copy: "Soft gulab jamun in fragrant cardamom and saffron syrup for a warm finish.",
   },
 ];
 
@@ -110,10 +110,10 @@ export default async function RestaurantPage() {
       </section>
 
       <section className="serviceNotes" aria-label="Restaurant service details">
-        <Reveal><span>Cooking</span><strong>Coastal South Indian</strong></Reveal>
+        <Reveal><span>Cooking</span><strong>Indian coast &amp; tandoor</strong></Reveal>
         <Reveal delay={60}><span>At the table</span><strong>Sharing encouraged</strong></Reveal>
         <Reveal delay={120}><span>Service</span><strong>Lunch &amp; dinner</strong></Reveal>
-        <Reveal delay={180}><span>Regular closure</span><strong>Usually closed Mondays</strong></Reveal>
+        <Reveal delay={180}><span>Events</span><strong>Private hall &amp; catering</strong></Reveal>
       </section>
       <OpeningHours schedule={schedule}/>
 
@@ -228,9 +228,9 @@ export default async function RestaurantPage() {
             <span>Holytown, Scotland</span>
             <span>ML1 4TH</span>
           </address>
-          <div className="locationCoordinates"><span>55.8207° N</span><i /><span>3.9735° W</span></div>
+          <div className="locationCoordinates"><span>{site.geo.latitude.toFixed(4)}° N</span><i /><span>{Math.abs(site.geo.longitude).toFixed(4)}° W</span></div>
           <div className="locationActions">
-            <a href="https://www.google.com/maps/search/?api=1&query=33+Main+Street+Holytown+Holytown+ML1+4TH" target="_blank" rel="noreferrer">Get directions <span>↗</span></a>
+            <a href={site.maps.directionsUrl} target="_blank" rel="noreferrer">Get directions <span>↗</span></a>
             <Link href="/book-a-table">Book a table <span>→</span></Link>
           </div>
         </Reveal>

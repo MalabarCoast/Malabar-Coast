@@ -78,9 +78,9 @@ export const fallbackSiteSettings: SiteSettings = {
   logo: {url: "/malabar af.svg", alt: "Malabar Coast"},
   lightLogo: {url: "/logo-white.png", alt: "Malabar Coast"},
   defaultSeo: {
-    title: "Malabar Coast | Southern Indian Restaurant in Holytown",
+    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
     description: site.description,
-    image: {url: "/malabar-restaurant-hero-v2.jpg", alt: "A Kerala-inspired restaurant table with coastal dishes"},
+    image: {url: "/og/home.jpg", alt: "An Indian restaurant table with tandoor and coastal dishes"},
   },
 };
 
