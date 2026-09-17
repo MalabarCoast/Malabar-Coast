@@ -4,14 +4,14 @@ import Link from "next/link";
 import { JsonLd } from "../components/json-ld";
 import { Reveal } from "../components/reveal";
 import { HallEnquiryForm } from "../components/hall-enquiry-form";
-import { absoluteUrl, site } from "../lib/site";
+import { absoluteUrl, formatPublicDate, pageLastUpdated, site } from "../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 import {getFaqItems} from "@/sanity/lib/faq";
 
 const fallbackMetadata: Metadata = {
   title: "Private Event Hall in Holytown",
   description:
-    "Discover the private event hall at Malabar Coast restaurant in Holytown, with a flexible open floor, built-in bar and raised stage for celebrations and gatherings.",
+    "Discover the private event hall and tailored catering service at Malabar Coast in Holytown, with a flexible open floor, built-in bar and raised stage.",
   keywords: [
     "private event hall Holytown",
     "function hall Holytown",
@@ -26,10 +26,10 @@ const fallbackMetadata: Metadata = {
     type: "website",
     url: "/hall",
     title: "Private Event Hall at Malabar Coast, Holytown",
-    description: "A flexible private room with its own bar and raised stage, within Malabar Coast restaurant at 33 Main Street, Holytown.",
+    description: "A flexible private room with tailored catering, its own bar and a raised stage, within Malabar Coast at 33 Main Street, Holytown.",
     images: [
       {
-        url: "/Hall1.jpeg",
+        url: "/og/hall.jpeg",
         width: 1600,
         height: 1067,
         alt: "The private hall at Malabar Coast with an open floor and built-in wooden bar",
@@ -40,7 +40,7 @@ const fallbackMetadata: Metadata = {
     card: "summary_large_image",
     title: "Private Event Hall at Malabar Coast",
     description: "A flexible hall with a built-in bar and raised stage at Malabar Coast in Holytown.",
-    images: ["/Hall1.jpeg"],
+    images: ["/og/hall.jpeg"],
   },
 };
 
@@ -93,6 +93,7 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
         { "@type": "LocationFeatureSpecification", name: "Built-in bar", value: true },
         { "@type": "LocationFeatureSpecification", name: "Raised stage", value: true },
         { "@type": "LocationFeatureSpecification", name: "Flexible open floor", value: true },
+        { "@type": "LocationFeatureSpecification", name: "Tailored event catering by enquiry", value: true },
       ],
     },
     {
@@ -100,7 +101,7 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
       "@id": `${absoluteUrl("/hall")}#webpage`,
       url: absoluteUrl("/hall"),
       name: "Private Event Hall at Malabar Coast",
-      dateModified: site.lastUpdated,
+      dateModified: pageLastUpdated["/hall"],
       inLanguage: "en-GB",
       about: { "@id": `${absoluteUrl("/hall")}#venue` },
     },
@@ -114,14 +115,14 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
     {
       "@type": "FAQPage",
       "@id": `${absoluteUrl("/hall")}#faq-schema`,
-      datePublished: site.lastUpdated,
-      dateModified: site.lastUpdated,
+      datePublished: pageLastUpdated["/hall"],
+      dateModified: pageLastUpdated["/hall"],
       mainEntity: hallFaqs.map((item) => ({
         "@type": "Question",
         "@id": `${absoluteUrl("/hall")}#${item.id}`,
         name: item.question,
-        datePublished: site.lastUpdated,
-        dateModified: site.lastUpdated,
+        datePublished: pageLastUpdated["/hall"],
+        dateModified: pageLastUpdated["/hall"],
         acceptedAnswer: { "@type": "Answer", text: item.answer },
       })),
     },
@@ -200,7 +201,7 @@ export default async function HallPage() {
             will be added when those details are confirmed.
           </Reveal>
           </>}
-          <Reveal delay={140}><time dateTime={site.lastUpdated}>Last reviewed 2 August 2026</time></Reveal>
+          <Reveal delay={140}><time dateTime={pageLastUpdated["/hall"]}>Last reviewed {formatPublicDate(pageLastUpdated["/hall"])}</time></Reveal>
         </div>
       </section>
 

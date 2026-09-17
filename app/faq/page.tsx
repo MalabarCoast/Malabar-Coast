@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "../components/json-ld";
-import { absoluteUrl, site } from "../lib/site";
+import { absoluteUrl, formatPublicDate, pageLastUpdated } from "../lib/site";
 import {getFaqItems} from "@/sanity/lib/faq";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 
@@ -14,7 +14,7 @@ const fallbackMetadata: Metadata = {
     type: "website",
     url: "/faq",
     title: "Restaurant FAQs | Malabar Coast",
-    description: "Clear answers about dining, the private event hall, ordering and Southern Indian coastal food at Malabar Coast.",
+    description: "Clear answers about Indian cuisine, tandoor dishes, catering, the private event hall, ordering and dining at Malabar Coast.",
     images: ["/restaurant/table-for-two.png"],
   },
 };
@@ -41,15 +41,15 @@ export default async function FaqPage() {
     "@id": `${absoluteUrl("/faq")}#faq`,
     url: absoluteUrl("/faq"),
     name: "Malabar Coast restaurant frequently asked questions",
-    datePublished: site.lastUpdated,
-    dateModified: site.lastUpdated,
+    datePublished: pageLastUpdated["/faq"],
+    dateModified: pageLastUpdated["/faq"],
     inLanguage: "en-GB",
     mainEntity: faqItems.map((item) => ({
       "@type": "Question",
       "@id": `${absoluteUrl("/faq")}#${item.id}`,
       name: item.question,
-      datePublished: site.lastUpdated,
-      dateModified: site.lastUpdated,
+      datePublished: pageLastUpdated["/faq"],
+      dateModified: pageLastUpdated["/faq"],
       acceptedAnswer: {"@type": "Answer", text: item.answer},
     })),
   };
@@ -63,7 +63,7 @@ export default async function FaqPage() {
           <p>
             {page?.heroText || "Direct answers about the food, private hall, dietary choices, location and ordering at Malabar Coast in Holytown."}
           </p>
-          <time dateTime={site.lastUpdated}>Last reviewed 2 August 2026</time>
+          <time dateTime={pageLastUpdated["/faq"]}>Last reviewed {formatPublicDate(pageLastUpdated["/faq"])}</time>
         </div>
       </header>
 

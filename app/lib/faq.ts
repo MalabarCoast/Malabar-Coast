@@ -3,7 +3,7 @@ export const faqItems = [
     id: "what-is-malabar-coast",
     question: "What is Malabar Coast restaurant in Holytown?",
     answer:
-      "Malabar Coast is a Southern Indian coastal restaurant in Holytown. The menu draws on Kerala’s pepper, coconut, curry leaf and tamarind, then connects those flavours with Scottish seafood and produce in a warm neighbourhood dining room.",
+      "Malabar Coast is an Indian restaurant and bar in Holytown. The menu brings together tandoor cooking, curries, biriyani, vegetarian dishes and Kerala’s pepper, coconut, curry leaf and tamarind in a warm neighbourhood dining room.",
   },
   {
     id: "where-is-malabar-coast",
@@ -15,7 +15,7 @@ export const faqItems = [
     id: "what-cuisine",
     question: "What type of cuisine does Malabar Coast serve?",
     answer:
-      "Malabar Coast serves Kerala and Southern Indian coastal cuisine. The menu centres on seafood, coconut, black pepper, curry leaf, tamarind, rice, slow-cooked curries and biriyani, with selected dishes tracing the wider Indian Ocean spice route.",
+      "Malabar Coast serves Indian cuisine from tandoor-charred North Indian favourites to curries, biriyani, vegetarian plates and Kerala coastal specialities, alongside a full bar.",
   },
   {
     id: "signature-dishes",
@@ -45,7 +45,13 @@ export const faqItems = [
     id: "food-allergies",
     question: "How does Malabar Coast display food allergens?",
     answer:
-      "The supplied menu does not provide a dish-by-dish allergen matrix. Guests must state allergies before ordering so the restaurant can check the current recipe and cross-contact risk. CMS allergen fields are present but remain unpublished until the restaurant confirms them.",
+      "Guests must state allergies before ordering so the restaurant can check the current recipe and cross-contact risk. Dish-by-dish allergen details are confirmed directly rather than inferred online.",
+  },
+  {
+    id: "catering-services",
+    question: "Does Malabar Coast offer catering services?",
+    answer:
+      "Yes. Tailored catering is available for private celebrations and events in the Malabar Coast hall. Send a hall enquiry with your date, guest estimate and food preferences so the team can discuss a suitable menu, availability and price.",
   },
   {
     id: "spice-levels",

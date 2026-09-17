@@ -25,7 +25,7 @@ test("content management keeps secrets server-side and writes in Studio", async 
   assert.match(page, /Open Content Studio/);
 });
 
-test("the menu journey stays limited to six Kerala regions", async () => {
+test("the menu journey stays limited to six Indian food destinations", async () => {
   const [schema, seed, migration] = await Promise.all([
     readFile(new URL("../studio/schemaTypes/documents/menuPage.ts", import.meta.url), "utf8"),
     readFile(new URL("../scripts/seed-sanity.ts", import.meta.url), "utf8"),
@@ -33,12 +33,12 @@ test("the menu journey stays limited to six Kerala regions", async () => {
   ]);
   const seedJourney = seed.slice(seed.indexOf("const voyageSeeds"), seed.indexOf("await client.createOrReplace({", seed.indexOf("const voyageSeeds")));
 
-  for (const area of ["Kannur", "Kozhikode", "Palakkad", "Kochi", "Kottayam", "Alappuzha"]) {
+  for (const area of ["Delhi", "Amritsar", "Mumbai", "Kashmir", "Hyderabad", "Lucknow"]) {
     assert.match(schema, new RegExp(area));
     assert.match(seedJourney, new RegExp(area));
     assert.match(migration, new RegExp(area));
   }
-  for (const oldStop of ["Malindi", "Mozambique", "The Cape", "Lisbon", "Holytown"]) {
+  for (const oldStop of ["Kannur", "Kozhikode", "Palakkad", "Kochi", "Kottayam", "Alappuzha"]) {
     assert.doesNotMatch(seedJourney, new RegExp(oldStop));
     assert.doesNotMatch(migration, new RegExp(oldStop));
   }

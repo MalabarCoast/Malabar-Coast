@@ -8,15 +8,13 @@ import { HomeSignatures } from "./components/home-signatures";
 import { HomeTestimonials } from "./components/home-testimonials";
 import type {MenuItem} from "./lib/menu";
 import type {TestimonialRecord} from "@/sanity/lib/testimonials";
-import type {Promotion} from "@/sanity/lib/promotions";
-import {PromotionPopup} from "./components/promotion-popup";
 import type {DailySpecial} from "@/sanity/lib/daily-specials";
 import type {BookingSettings} from "./lib/bookings";
 import {TableBookingForm} from "./components/table-booking-form";
 import {OpeningHours} from "./components/opening-hours";
 import type {RestaurantSchedule} from "./lib/restaurant-schedule";
 import {malabarCoastIntroduction} from "./lib/brand-content";
-import {site} from "./lib/site";
+import {formatPublicDate, pageLastUpdated, site} from "./lib/site";
 
 const REDUCED_MOTION_INTRO_DELAY_MS = 120;
 const REPLAY_INTRO_EVENT = "malabar:replay-intro";
@@ -55,7 +53,7 @@ function CompassMark() {
   );
 }
 
-export function HomeExperience({content, menuItems, promotions, dailySpecials, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; promotions: Promotion[]; dailySpecials: DailySpecial[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
+export function HomeExperience({content, menuItems, dailySpecials, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; dailySpecials: DailySpecial[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
   const [introActive, setIntroActive] = useState(true);
   const [heroFooterRevealed, setHeroFooterRevealed] = useState(false);
   const latitude = content.coordinates?.latitude ?? site.geo.latitude;
@@ -97,7 +95,6 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
       className={`homePage ${introActive ? "introActive" : "introComplete"}`}
       aria-busy={introActive}
     >
-      <PromotionPopup promotions={promotions} ready={!introActive} />
       <section className="hero" aria-labelledby="hero-title">
       {introActive && (
         <div
@@ -114,7 +111,7 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
           <div className="introBokeh" aria-hidden="true" />
           <div className="introShade" aria-hidden="true" />
           <div className="introKicker" aria-hidden="true">
-            <span>Southern Indian coastal kitchen</span>
+            <span>Indian Cuisine &amp; Bar</span>
             <i />
             <span>Holytown, Scotland</span>
           </div>
@@ -161,7 +158,7 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
 
       <section className="heroContent" id="top" aria-labelledby="hero-title">
         <div className="eyebrow">
-          <span>{content.heroEyebrow?.split(" · ")[0] || "Southern Indian coastal kitchen"}</span>
+          <span>{content.heroEyebrow?.split(" · ")[0] || "Indian Cuisine & Bar"}</span>
           <i aria-hidden="true" />
           <span>{content.heroEyebrow?.split(" · ").slice(1).join(" · ") || "Holytown · Scotland"}</span>
         </div>
@@ -176,7 +173,7 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
           <CompassMark />
           <div>
             <p>
-              {content.heroText || "Malabar Coast is a Southern Indian coastal restaurant in Holytown, bringing Kerala's pepper, coconut and seafood to a Scottish table."}
+              {content.heroText || "Tandoor fire, fragrant biriyani, rich curries and Malabar coastal flavours, served with a full bar in the heart of Holytown."}
             </p>
             <div className="heroActions">
               <Link href={content.heroPrimaryLink?.href || "/menu"}>{content.heroPrimaryLink?.label || "Explore the menu"} <span aria-hidden="true">↗</span></Link>
@@ -185,24 +182,6 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
           </div>
         </div>
       </section>
-
-      <Link className="heroDish" href="/offers" aria-label="Explore the latest Malabar Coast offers">
-        <span className="heroDishImage">
-          <Image
-            src={promotions[0]?.poster.url || "/malabar-hero.jpg"}
-            alt={promotions[0]?.poster.alt || "Malabar Coast offers and seasonal specials"}
-            fill
-            sizes="180px"
-            priority
-          />
-        </span>
-        <span className="heroDishCopy">
-          <small>{promotions[0]?.badge || "Offers from the coast"}</small>
-          <strong>{promotions[0]?.title || "Discover our latest offers"}</strong>
-          <i>Explore all offers ↗</i>
-        </span>
-      </Link>
-
 
       <footer className={`heroFooter ${heroFooterRevealed ? "" : "heroFooterHidden"}`} aria-hidden={!heroFooterRevealed}>
         <div className="chapter">
@@ -223,7 +202,7 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
       <section className="homeOverview" aria-labelledby="home-overview-title">
         <div className="homeOverviewMeta">
           <span>{content.overviewEyebrow || "Malabar Coast · In brief"}</span>
-          <time dateTime="2026-08-02">Last reviewed 2 August 2026</time>
+          <time dateTime={pageLastUpdated["/"]}>Last reviewed {formatPublicDate(pageLastUpdated["/"])}</time>
         </div>
         <div className="homeOverviewLead">
           <h2 id="home-overview-title">{content.overviewHeading || <>What is<br />Malabar Coast?</>}</h2>
@@ -234,10 +213,10 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
           </div>
         </div>
         <dl className="homeOverviewFacts">
-          <div><dt>Cuisine</dt><dd>Kerala and Southern Indian coastal cooking</dd></div>
+          <div><dt>Cuisine &amp; bar</dt><dd>Indian tandoor dishes, curries, biriyani and Malabar coastal cooking</dd></div>
           <div><dt>Good to know</dt><dd>Vegetarian choices; ask about vegan and allergen needs</dd></div>
           <div><dt>Ways to enjoy</dt><dd>Dine in, collect or order delivery</dd></div>
-          <div><dt>Private events</dt><dd>Flexible hall with a built-in bar and stage</dd></div>
+          <div><dt>Catering &amp; events</dt><dd>Tailored catering for private celebrations in our flexible hall</dd></div>
         </dl>
       </section>
 
@@ -251,7 +230,8 @@ export function HomeExperience({content, menuItems, promotions, dailySpecials, b
           <p>Choose your date, arrival time and party size right here. We check live capacity and the restaurant calendar before your table is confirmed.</p>
           <nav aria-label="Book your table and explore">
             <Link href="/menu">Browse the menu <span aria-hidden="true">↗</span></Link>
-            <Link href="/hall">Planning a gathering? <span aria-hidden="true">↗</span></Link>
+            <Link href="/offers">See current offers <span aria-hidden="true">↗</span></Link>
+            <Link href="/hall">Catering or a gathering? <span aria-hidden="true">↗</span></Link>
             <Link href="/book-a-table">Open the full booking page <span aria-hidden="true">→</span></Link>
           </nav>
         </div>

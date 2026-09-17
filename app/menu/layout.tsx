@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { JsonLd } from "../components/json-ld";
-import { absoluteUrl, site } from "../lib/site";
+import { absoluteUrl, pageLastUpdated } from "../lib/site";
 import { getMenuContent } from "@/sanity/lib/menu";
 
 const fallbackMetadata: Metadata = {
-  title: "South Indian Menu",
+  title: "Indian Menu",
   description:
-    "Explore Malabar Coast's current Southern Indian menu in Holytown, with Kerala seafood, curries, biriyani, vegetarian choices and published food prices.",
+    "Explore Malabar Coast's Indian menu in Holytown, with tandoor dishes, curries, biriyani, Malabar seafood, vegetarian choices and published food prices.",
   alternates: { canonical: "/menu" },
   openGraph: {
     type: "website",
     url: "/menu",
-    title: "South Indian Menu | Malabar Coast Holytown",
-    description: "Kerala-inspired seafood, curries, biriyani and vegetarian choices with current food prices and clear dietary-review notices.",
-    images: ["/menu/calicut-pepper-prawns.png"],
+    title: "Indian Menu | Malabar Coast Holytown",
+    description: "Tandoor dishes, curries, biriyani, Malabar seafood and vegetarian choices with current food prices and clear dietary-review notices.",
+    images: ["/og/menu.png"],
   },
 };
 
@@ -53,7 +53,7 @@ export default async function MenuLayout({ children }: Readonly<{ children: Reac
     name: "Malabar Coast menu",
     url: absoluteUrl("/menu"),
     inLanguage: "en-GB",
-    dateModified: site.lastUpdated,
+    dateModified: pageLastUpdated["/menu"],
     mainEntityOfPage: absoluteUrl("/menu"),
     hasMenuSection: categories.map((category) => ({
       "@type": "MenuSection",

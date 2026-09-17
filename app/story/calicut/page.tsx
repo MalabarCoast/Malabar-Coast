@@ -3,7 +3,7 @@ import Image from "next/image";
 import { StoryTransitionLink } from "../story-transition-link";
 import { DetailCanvas } from "./detail-canvas";
 import { JsonLd } from "../../components/json-ld";
-import { absoluteUrl } from "../../lib/site";
+import { absoluteUrl, pageLastUpdated } from "../../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 
 const fallbackMetadata: Metadata = {
@@ -33,7 +33,7 @@ const calicutSchema = {
       image: absoluteUrl("/story/calicut-spice-port.png"),
       mainEntityOfPage: absoluteUrl("/story/calicut"),
       datePublished: "2026-07-13",
-      dateModified: "2026-08-02",
+      dateModified: pageLastUpdated["/story/calicut"],
       author: { "@id": `${absoluteUrl("/")}#restaurant` },
       publisher: { "@id": `${absoluteUrl("/")}#restaurant` },
     },

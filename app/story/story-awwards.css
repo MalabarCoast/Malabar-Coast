@@ -318,6 +318,7 @@
 .storyTableDish:hover img { transform: scale(1.025); }
 .storyTableDish > span { display: block; color: #805621; font-size: .5rem; letter-spacing: .18em; text-transform: uppercase; }
 .storyTableDish > strong { display: block; margin: .65rem 0 .8rem; font-family: "Iowan Old Style", Georgia, serif; font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 400; }
+.storyTableDish > p { min-height: 3.2rem; margin: 0 0 1rem; color: rgba(16,32,28,.68); font-family: "Iowan Old Style", Georgia, serif; font-size: .9rem; line-height: 1.5; }
 .storyTableDish > i { display: flex; justify-content: space-between; padding-top: .8rem; border-top: 1px solid rgba(16,32,28,.3); font-size: .52rem; font-style: normal; letter-spacing: .16em; text-transform: uppercase; }
 
 /* Calicut detail */

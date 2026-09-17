@@ -32,23 +32,23 @@ export type MenuPageContent = {
 };
 
 const fallbackMenuPage: MenuPageContent = {
-  eyebrow: "A taste of Kerala · North to South",
-  headingLineOne: "Six regions.",
-  headingLineTwo: "One Kerala.",
-  introduction: "Travel through six Kerala food landscapes, from Malabar's biriyani kitchens to Kuttanad's banana-leaf fish and the coconut-rich curries of the southern coast.",
-  journeyLinkLabel: "Explore Kerala",
+  eyebrow: "A taste of India · Coast to mountains",
+  headingLineOne: "Six places.",
+  headingLineTwo: "One table.",
+  introduction: "Travel from Delhi and Amritsar's tandoor fire to Mumbai's grills, Kashmir's aromatic lamb, Hyderabad's biriyani and Lucknow's festive sweets.",
+  journeyLinkLabel: "Explore India",
   manifestEyebrow: "The full menu",
   manifestHeading: "What we carry to the table.",
   manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
   dietaryNotice: "Dietary labels are based on the supplied menu names and still require confirmation from the restaurant. Please tell the team about allergies before ordering; the kitchen handles all 14 regulated allergens and cross-contact may occur.",
   alcoholNotice: "Alcoholic-drink prices are not published online. Please ask the restaurant team for the current bar price list. Alcohol is not available through online ordering.",
   voyageStops: [
-    {itemId: "malabar-coast-signature-masala-grilled-fish", area: "Kannur", region: "North Kerala coast", coordinates: "11.8745° N · 75.3704° E", year: "Fire and coast", course: "Chargrilled fish", image: {url: "/menu/malindi-sea-bass.png", alt: "Masala grilled fish representing the fire-led cooking of Kannur"}, description: "Kannur's northern shoreline brings together fresh fish, warm spice and fire-led cooking with the confidence of North Malabar."},
-    {itemId: "malabar-coast-signature-konju-coconut-fry", area: "Kozhikode", region: "North Malabar", coordinates: "11.2588° N · 75.7804° E", year: "Coconut and coast", course: "Coastal fry", image: {url: "/menu/calicut-pepper-prawns.png", alt: "Prawns cooked with coconut and curry leaves in the style of Kozhikode"}, description: "Prawns, coconut and curry leaves carry the bold savoury character of Kozhikode and Kerala's Arabian Sea shore."},
-    {itemId: "desserts-malabar-coast-special-dessert", area: "Palakkad", region: "The Kerala gap", coordinates: "10.7867° N · 76.6548° E", year: "Rice and harvest", course: "Festive sweet", image: {url: "/menu/lisbon-custard-tart.png", alt: "A warm spiced dessert representing Kerala's festive table"}, description: "Palakkad's harvest landscape inspires a gentle, spice-warmed finish rooted in Kerala's traditions of rice, milk and celebration."},
-    {itemId: "malabar-coast-signature-prawn-moilee", area: "Kochi", region: "Central Kerala coast", coordinates: "9.9312° N · 76.2673° E", year: "Harbour kitchen", course: "Coconut curry", image: {url: "/menu/mozambique-lobster.png", alt: "Prawns in a golden coconut moilee with curry leaves"}, description: "A harbour-side style of mild coconut curry, bright with ginger, green chilli and curry leaf around tender prawns."},
-    {itemId: "malabar-coast-signature-aattirachi-kurumulak", area: "Kottayam", region: "Central Travancore", coordinates: "9.5916° N · 76.5222° E", year: "Pepper country", course: "Pepper-spiced lamb", image: {url: "/menu/cape-malay-lamb.png", alt: "Pepper-spiced lamb representing the kitchens of Kottayam"}, description: "Black pepper, shallots and curry leaves echo the robust Syrian-Christian kitchens of Kottayam and central Travancore."},
-    {itemId: "malabar-coast-signature-meen-moilee", area: "Alappuzha", region: "Backwater coast", coordinates: "9.4981° N · 76.3388° E", year: "Backwater kitchen", course: "Golden fish curry", image: {url: "/menu/scotland-haddock.png", alt: "Fish in a golden coconut moilee representing Alappuzha's backwaters"}, description: "Alappuzha's backwater cooking meets tender fish, coconut milk, ginger and curry leaf in a gentle golden moilee."},
+    {itemId: "clay-oven-chicken-tikka", area: "Delhi", region: "North India", coordinates: "28.6139° N · 77.2090° E", year: "Capital tandoor", course: "Chicken tikka", image: {url: "/menu/chicken-tikka.png", alt: "Charred chicken tikka inspired by Delhi's tandoor kitchens"}, description: "Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre."},
+    {itemId: "clay-oven-tandoori-chicken", area: "Amritsar", region: "Punjab", coordinates: "31.6340° N · 74.8723° E", year: "Punjab fire", course: "Tandoori chicken", image: {url: "/menu/tandoori-chicken.png", alt: "Bone-in tandoori chicken inspired by Amritsar"}, description: "Bone-in chicken marinated with yoghurt and warm spices, then roasted over fierce tandoor heat."},
+    {itemId: "clay-oven-chicken-shashlik", area: "Mumbai (Bombay)", region: "Western India", coordinates: "19.0760° N · 72.8777° E", year: "City grill", course: "Chicken shashlik", image: {url: "/menu/chicken-shashlik.png", alt: "Chicken shashlik with peppers and onion inspired by Mumbai"}, description: "Tandoor-grilled chicken, peppers and onion layered on skewers with a bright, smoky finish."},
+    {itemId: "clay-oven-lamb-tikka", area: "Kashmir", region: "Himalayan north", coordinates: "34.0837° N · 74.7973° E", year: "Mountain spice", course: "Lamb tikka", image: {url: "/menu/lamb-tikka.png", alt: "Aromatic lamb tikka inspired by Kashmir"}, description: "Boneless lamb steeped in aromatic spices and cooked in the tandoor until tender and lightly charred."},
+    {itemId: "biriyani-chicken", area: "Hyderabad", region: "Deccan", coordinates: "17.3850° N · 78.4867° E", year: "Dum kitchen", course: "Chicken biriyani", image: {url: "/menu/chicken-biriyani.png", alt: "Fragrant chicken biriyani inspired by Hyderabad"}, description: "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."},
+    {itemId: "desserts-gulab-jamun", area: "Lucknow", region: "Awadh", coordinates: "26.8467° N · 80.9462° E", year: "Festive finish", course: "Gulab jamun", image: {url: "/menu/gulab-jamun.png", alt: "Gulab jamun in cardamom and saffron syrup"}, description: "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup."},
   ],
 };
 
@@ -76,7 +76,7 @@ function normaliseItem(raw: RawMenuItem): MenuItem | null {
     id: raw.id,
     category: raw.category,
     name: raw.name,
-    description: raw.description ?? fallback?.description ?? "",
+    description: raw.description?.trim() || fallback?.description || "",
     subheading: raw.subheading ?? fallback?.subheading,
     pricePence,
     priceLabel: isAlcoholic ? "Ask the coast crew" : raw.priceLabel ?? fallback?.priceLabel,
@@ -115,7 +115,16 @@ export async function getMenuContent() {
     })) : menuCategories;
     const cmsItems = (result.items ?? []).map(normaliseItem).filter((entry): entry is MenuItem => Boolean(entry));
     const items = cmsItems.length ? cmsItems : menuItems;
-    const page = {...fallbackMenuPage, ...(result.page ?? {}), voyageStops: result.page?.voyageStops?.length ? result.page.voyageStops : fallbackMenuPage.voyageStops};
+    const page = {
+      ...fallbackMenuPage,
+      ...(result.page ?? {}),
+      eyebrow: fallbackMenuPage.eyebrow,
+      headingLineOne: fallbackMenuPage.headingLineOne,
+      headingLineTwo: fallbackMenuPage.headingLineTwo,
+      introduction: fallbackMenuPage.introduction,
+      journeyLinkLabel: fallbackMenuPage.journeyLinkLabel,
+      voyageStops: fallbackMenuPage.voyageStops,
+    };
     return {categories, items, page, source: "sanity" as const};
   } catch (error) {
     console.error("Sanity menu fetch failed; using the checked-in menu fallback.", error instanceof Error ? error.name : "UnknownError");

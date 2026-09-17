@@ -1489,27 +1489,27 @@
                   "of": [
                     {
                       "type": "string",
-                      "value": "Kannur"
+                      "value": "Delhi"
                     },
                     {
                       "type": "string",
-                      "value": "Kozhikode"
+                      "value": "Amritsar"
                     },
                     {
                       "type": "string",
-                      "value": "Palakkad"
+                      "value": "Mumbai (Bombay)"
                     },
                     {
                       "type": "string",
-                      "value": "Kochi"
+                      "value": "Kashmir"
                     },
                     {
                       "type": "string",
-                      "value": "Kottayam"
+                      "value": "Hyderabad"
                     },
                     {
                       "type": "string",
-                      "value": "Alappuzha"
+                      "value": "Lucknow"
                     }
                   ]
                 },
