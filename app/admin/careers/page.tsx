@@ -1,7 +1,9 @@
 import {redirect} from "next/navigation";
+import Link from "next/link";
 import {getAdminSession} from "../../lib/admin-auth";
 import {listCareers} from "../../lib/career-store";
-import type {CareerOpportunity} from "../../lib/careers";
+import {careerSlug, type CareerOpportunity} from "../../lib/careers";
+import {AdminDeleteButton} from "../components/admin-delete-button";
 import {AdminFrame, AdminPageHeader, EmptyState} from "../components/admin-ui";
 
 export const dynamic = "force-dynamic";
@@ -16,9 +18,48 @@ export default async function CareersAdminPage({searchParams}: {searchParams: Pr
   const session = await getAdminSession("content:write");
   if (!session) redirect("/admin/login");
   const [items, query] = await Promise.all([listCareers(), searchParams]);
-  return <AdminFrame active="/admin/careers" session={session}><AdminPageHeader eyebrow="People and hiring" title="Career opportunities." description="Write, publish and close roles from the admin portal. Drafts stay private."/>
-    {query.update && <p className={`adminAlert ${query.update === "saved" ? "isSuccess" : "isError"}`}>{query.update === "saved" ? "Job opportunity saved." : query.update === "setup" ? "The careers database update must be applied before jobs can be published." : "The job could not be saved. Check the required details and try again."}</p>}
+  const success = query.update === "saved" || query.update === "deleted";
+  const updateMessage = query.update === "saved" ? "Job opportunity saved." : query.update === "deleted" ? "Job opportunity removed from the active register." : query.update === "setup" ? "The careers database update must be applied before this action is available." : "The job action could not be completed. Check the details and try again.";
+  return <AdminFrame active="/admin/careers" session={session}><AdminPageHeader eyebrow="People and hiring" title="Career opportunities." description="Create, edit, preview, publish, close and remove job postings. Drafts stay private."/>
+    {query.update && <p className={`adminAlert ${success ? "isSuccess" : "isError"}`}>{updateMessage}</p>}
     <section className="adminPanel"><details className="adminCreateRecord"><summary>Post a job opportunity</summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields/><button className="adminButton">Save opportunity</button></form></details></section>
-    <section className="adminPanel"><div className="adminPanelHeading"><div><p>Roles</p><h2>Current register</h2></div><span>{items.length} recorded</span></div>{items.length ? <div className="careerAdminList">{items.map((item) => <details className="adminEditRecord" key={item.id}><summary><strong>{item.title}</strong><span>{item.status} · {item.location} · {item.employmentType}</span></summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields item={item}/><button className="adminButton">Save changes</button></form></details>)}</div> : <EmptyState title="No roles yet" detail="Create a draft, then publish it when the details are ready."/>}</section>
+    <section className="adminPanel">
+      <div className="adminPanelHeading"><div><p>Roles</p><h2>Current register</h2></div><span>{items.length} recorded</span></div>
+      {items.length ? <div className="careerAdminList">{items.map((item) =>
+        <article className="careerAdminRecord" key={item.id}>
+          <div className="careerAdminRecordInfo">
+            <strong>{item.title}</strong>
+            <span>{item.status} · {item.location} · {item.employmentType}</span>
+          </div>
+          <div className="careerAdminRecordControls" role="group" aria-label={`Actions for ${item.title}`}>
+            {item.status === "published" && <Link className="adminTextButton" href={`/careers/${careerSlug(item)}`} target="_blank" rel="noreferrer">Preview</Link>}
+            <details className="adminEditRecord">
+              <summary><span className="careerAdminEditLabel">Edit</span><span className="careerAdminCloseLabel">Close</span></summary>
+              <div className="careerAdminDialog" role="dialog" aria-modal="true" aria-label={`Edit ${item.title}`}>
+                <div className="careerAdminActions">
+                  <strong>Editing {item.title}</strong>
+                  {item.status === "published" && <Link className="adminTextButton" href={`/careers/${careerSlug(item)}`} target="_blank" rel="noreferrer">Preview public vacancy ↗</Link>}
+                  <form method="post" action={`/api/admin/careers/${item.id}`}>
+                    <input type="hidden" name="csrf" value={session.csrfToken}/>
+                    <input type="hidden" name="action" value="delete"/>
+                    <AdminDeleteButton confirmMessage={`Delete ${item.title}? It will immediately disappear from the careers page and active register. An audit record will be retained.`}/>
+                  </form>
+                </div>
+                <form className="adminRecordForm" method="post" action="/api/admin/careers">
+                  <input type="hidden" name="csrf" value={session.csrfToken}/>
+                  <CareerFields item={item}/>
+                  <button className="adminButton">Save changes</button>
+                </form>
+              </div>
+            </details>
+            <form method="post" action={`/api/admin/careers/${item.id}`}>
+              <input type="hidden" name="csrf" value={session.csrfToken}/>
+              <input type="hidden" name="action" value="delete"/>
+              <AdminDeleteButton confirmMessage={`Delete ${item.title}? It will immediately disappear from the careers page and active register. An audit record will be retained.`}/>
+            </form>
+          </div>
+        </article>
+      )}</div> : <EmptyState title="No roles yet" detail="Create a draft, then publish it when the details are ready."/>}
+    </section>
   </AdminFrame>;
 }

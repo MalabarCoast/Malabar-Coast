@@ -6,6 +6,7 @@ import { getAllowedAdminTransitions, orderStatusLabels, type OrderRecord, type O
 import { displayDate, money } from "../../lib/admin-reporting";
 import {AdminDeleteButton} from "./admin-delete-button";
 import {AdminActivityNotifications} from "./admin-activity-notifications";
+import {AdminNativePicker} from "./admin-native-picker";
 
 const navigation = [
   { href: "/admin", label: "Overview", mark: "01", permission: "dashboard:read" },
@@ -45,6 +46,7 @@ export function AdminFrame({ active, session, children }: { active: string; sess
         </div>
       </aside>
       <div className="adminWorkspace">{children}</div>
+      <AdminNativePicker/>
       <AdminActivityNotifications supabaseUrl={realtimeUrl} publishableKey={realtimePublishableKey}/>
     </main>
   );

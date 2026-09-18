@@ -21,6 +21,8 @@ export type CareerOpportunity = {
   status: CareerStatus;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
+  deletedBy?: string;
 };
 
 export function slugifyCareer(value: string) {

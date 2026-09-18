@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {readFile} from "node:fs/promises";
 import test from "node:test";
 import {careerApplicationMailto, careerPayLabel} from "../app/lib/careers";
 
@@ -31,4 +32,26 @@ test("career application email prompts for useful details and a CV", () => {
   assert.match(body, /Full name:/);
   assert.match(body, /Availability \/ notice period:/);
   assert.match(body, /attached my CV/i);
+});
+
+test("career management exposes preview and confirmed protected deletion", async () => {
+  const [page, route, store] = await Promise.all([
+    readFile(new URL("../app/admin/careers/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/admin/careers/[id]/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/career-store.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /Preview public vacancy/);
+  assert.match(page, /AdminDeleteButton/);
+  assert.match(page, /className="careerAdminRecordControls"/);
+  assert.match(page, /careerAdminEditLabel">Edit/);
+  assert.match(page, /careerAdminRecordControls[\s\S]*AdminDeleteButton/);
+  assert.match(page, /className="careerAdminDialog"/);
+  assert.match(page, /className="careerAdminActions"[\s\S]*action={`\/api\/admin\/careers\/\$\{item\.id\}`}/);
+  assert.match(page, /audit record will be retained/i);
+  assert.match(route, /getAdminSession\("content:write"\)/);
+  assert.match(route, /isTrustedOrigin\(request\)/);
+  assert.match(route, /verifyAdminCsrf/);
+  assert.match(route, /careerIdPattern\.test\(id\)/);
+  assert.match(store, /admin_delete_career_opportunity/);
+  assert.match(store, /filter\(\(item\) => !item\.deletedAt\)/);
 });
