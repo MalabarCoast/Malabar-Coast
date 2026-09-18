@@ -3,6 +3,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {JsonLd} from "../../components/json-ld";
 import {getCareerBySlug} from "../../lib/career-store";
+import {careerApplicationMailto, careerPayLabel} from "../../lib/careers";
 import {absoluteUrl} from "../../lib/site";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +50,8 @@ export default async function CareerDetailPage({params}: {params: Promise<{slug:
 
   const salaryMin = job.salaryMin ?? null;
   const salaryMax = job.salaryMax ?? null;
+  const pay = careerPayLabel(job);
+  const applicationHref = careerApplicationMailto(job);
   const jobSchema = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
@@ -81,14 +84,12 @@ export default async function CareerDetailPage({params}: {params: Promise<{slug:
 
   return <main className="careersPage careerDetailPage">
     <JsonLd data={[jobSchema, breadcrumbSchema]}/>
-    <header className="careersHero careerDetailHero"><p>{job.team || "Malabar Coast team"} · {job.location}</p><h1>{job.title}</h1><span>{job.summary}</span></header>
+    <header className="careersHero careerDetailHero"><div className="careersHeroInner"><Link className="careerBack" href="/careers">← All opportunities</Link><p>{job.team || "Malabar Coast team"}</p><h1>{job.title}</h1><ul className="careerMeta" aria-label="Role details"><li>{job.location}</li><li>{job.employmentType}</li>{pay && <li>{pay}</li>}{job.hours && <li>{job.hours}</li>}</ul><span>{job.summary}</span><a className="careerApply" href={applicationHref}>Apply by email <span aria-hidden="true">↗</span></a></div></header>
     <article className="careerDetail">
-      <Link className="careerBack" href="/careers">← All opportunities</Link>
-      <dl><div><dt>Location</dt><dd>{job.location}</dd></div><div><dt>Employment</dt><dd>{job.employmentType}</dd></div>{job.hours && <div><dt>Hours</dt><dd>{job.hours}</dd></div>}{job.pay && <div><dt>Pay</dt><dd>{job.pay}</dd></div>}{job.closingDate && <div><dt>Apply by</dt><dd>{job.closingDate}</dd></div>}</dl>
-      {job.responsibilities && <section><p>Role</p><h2>What you&apos;ll do</h2><ul>{lines(job.responsibilities).map((line) => <li key={line}>{line}</li>)}</ul></section>}
-      <section><p>Experience</p><h2>Skills and experience</h2><ul>{lines(job.skills).map((line) => <li key={line}>{line}</li>)}</ul></section>
-      {job.benefits && <section><p>Benefits</p><h2>What we offer</h2><ul>{lines(job.benefits).map((line) => <li key={line}>{line}</li>)}</ul></section>}
-      <a className="careerApply" href={`mailto:${job.applicationEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}>Apply by email <span aria-hidden="true">↗</span></a>
+      {job.responsibilities && <section><h2>What you&apos;ll do</h2><ul>{lines(job.responsibilities).map((line) => <li key={line}>{line}</li>)}</ul></section>}
+      <section><h2>What we&apos;re looking for</h2><ul>{lines(job.skills).map((line) => <li key={line}>{line}</li>)}</ul></section>
+      {job.benefits && <section><h2>What we offer</h2><ul>{lines(job.benefits).map((line) => <li key={line}>{line}</li>)}</ul></section>}
+      <footer className="careerApplyPanel"><div className="careerApplicationCopy"><h2>How to apply</h2><p>Attach your CV and include your full name, phone number, current location, availability or notice period, and a short note about your relevant experience.</p>{job.closingDate && <p>Applications close on {job.closingDate}.</p>}<small>Please do not email passport, bank or other sensitive documents at this stage.</small></div><a className="careerApply" href={applicationHref}>Open application email <span aria-hidden="true">↗</span></a></footer>
     </article>
   </main>;
 }

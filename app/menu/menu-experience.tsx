@@ -41,8 +41,10 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
         if (!section || voyageStops.length < 2) return;
         const distance = Math.max(section.offsetHeight - window.innerHeight, 1);
         const progress = Math.min(Math.max((window.scrollY - section.offsetTop) / distance, 0), 1);
-        section.style.setProperty("--voyage-progress", String(progress));
         const next = Math.min(Math.round(progress * (voyageStops.length - 1)), voyageStops.length - 1);
+        section.style.setProperty("--voyage-progress", String(progress));
+        section.style.setProperty("--voyage-index", String(next));
+        section.style.setProperty("--voyage-offset", `${next * -100}vw`);
         setActiveStop((current) => current === next ? current : next);
       });
     };
@@ -78,7 +80,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
         <div className="prologueCoordinates" aria-hidden="true"><span>28.6139° N</span><i /><span>55.8207° N</span></div>
       </section>
 
-      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0} as React.CSSProperties} aria-label="Six Indian food destinations">
+      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0, "--voyage-index": 0, "--voyage-offset": "0vw", "--voyage-height": `${100 + Math.max(voyageStops.length - 1, 0) * 72}vh`} as React.CSSProperties} aria-label="Six Indian food destinations">
         <div className="voyageStage">
           <div className="voyageTrack">
             {voyageStops.map((stop, index) => {
@@ -91,7 +93,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                     <p className="portRegion">Region {String(index + 1).padStart(2, "0")} · {stop.region}</p>
                     <h2>{stop.area}</h2><div className="dishRule" /><p className="courseLabel">{stop.course}</p><h3>{dish.name}</h3>
                     <p className="dishDescription">{stop.description}</p>
-                    <div className="dishFooter"><strong>{formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact />{dish.dietaryReviewStatus === "needs-review" && dish.dietaryStatus !== "notApplicable" && <span className="dishAttribute">Recipe check pending</span>}</div>
+                    <div className="dishFooter"><strong>{formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact /></div>
                     {dish.onlineOrdering && <AddToOrder id={dish.id} />}
                   </div>
                 </article>
@@ -131,7 +133,6 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                         {dish.description && <span>{dish.description}</span>}
                         <div className="manifestDishMeta">
                           <DietaryMarker status={dish.dietaryStatus} compact />
-                          {dish.dietaryReviewStatus === "needs-review" && dish.dietaryStatus !== "notApplicable" && <small>Dietary details need restaurant confirmation</small>}
                           {dish.allergens.length > 0 && <small>Contains {dish.allergens.join(", ")}</small>}
                           {!dish.available && <small>Temporarily unavailable</small>}
                         </div>

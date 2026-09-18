@@ -4,6 +4,7 @@ import {getSanityClient} from "./client";
 export type AdminMenuRecord = {
   _id: string;
   name: string;
+  description?: string;
   category?: string;
   categorySlug?: string;
   pricePence?: number | null;
@@ -58,6 +59,7 @@ export const adminContentOverviewQuery = defineQuery(`{
   "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {
     _id,
     name,
+    description,
     "category": category->title,
     "categorySlug": category->slug.current,
     pricePence,

@@ -7,14 +7,15 @@ export function getSanityClient() {
   if (!sanityConfigured) return null;
   if (client !== undefined) return client;
 
-  const token = process.env.SANITY_API_TOKEN?.trim();
+  // All application queries use the published perspective on the public
+  // dataset. Keep the write token out of runtime reads so an expired or
+  // mistyped migration credential cannot take the public CMS offline.
   client = createClient({
     projectId: sanityProjectId,
     dataset: sanityDataset,
     apiVersion: sanityApiVersion,
     perspective: "published",
-    useCdn: !token,
-    token: token || undefined,
+    useCdn: true,
   });
 
   return client;

@@ -1054,8 +1054,14 @@ create table if not exists public.restaurant_schedule (
 alter table public.restaurant_schedule enable row level security;
 revoke all on public.restaurant_schedule from anon, authenticated;
 grant select on public.restaurant_schedule to service_role;
-insert into public.restaurant_schedule(id, data) values (1, '{"weekly":[{"closed":false,"opens":"","closes":""},{"closed":true,"opens":"","closes":""},{"closed":false,"opens":"","closes":""},{"closed":false,"opens":"","closes":""},{"closed":false,"opens":"","closes":""},{"closed":false,"opens":"","closes":""},{"closed":false,"opens":"","closes":""}],"exceptions":[]}'::jsonb)
+insert into public.restaurant_schedule(id, data) values (1, '{"weekly":[{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":true,"opens":"","closes":"","secondOpens":"","secondCloses":""},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"22:00"},{"closed":false,"opens":"11:00","closes":"22:00","secondOpens":"","secondCloses":""},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"22:00"}],"exceptions":[]}'::jsonb)
 on conflict (id) do nothing;
+update public.restaurant_schedule
+set data = jsonb_set(data, '{weekly}', '[{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":true,"opens":"","closes":"","secondOpens":"","secondCloses":""},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"21:00"},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"22:00"},{"closed":false,"opens":"11:00","closes":"22:00","secondOpens":"","secondCloses":""},{"closed":false,"opens":"11:00","closes":"15:00","secondOpens":"16:00","secondCloses":"22:00"}]'::jsonb), revision = revision + 1, updated_at = now()
+where id = 1 and not exists (
+  select 1 from jsonb_array_elements(data->'weekly') as day
+  where coalesce(day->>'opens', '') <> '' or coalesce(day->>'closes', '') <> ''
+);
 
 create or replace function public.admin_update_restaurant_schedule(p_data jsonb, p_expected_revision integer, p_actor_user_id uuid)
 returns boolean language plpgsql security definer set search_path = public as $$

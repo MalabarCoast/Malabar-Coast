@@ -109,13 +109,14 @@
 .dotIndia { right: 10%; bottom: 16%; }
 .dotEurope { left: 19%; top: 15%; }
 
-.menuVoyage { position: relative; height: 390vh; background: #071310; }
+.menuVoyage { position: relative; height: var(--voyage-height, 460vh); background: #071310; }
 .voyageStage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .voyageTrack {
   display: flex;
-  width: 600vw;
+  width: max-content;
   height: 100%;
-  transform: translate3d(calc(var(--voyage-progress) * -500vw), 0, 0);
+  transform: translate3d(var(--voyage-offset, 0vw), 0, 0);
+  transition: transform .72s cubic-bezier(.22, 1, .36, 1);
   will-change: transform;
 }
 

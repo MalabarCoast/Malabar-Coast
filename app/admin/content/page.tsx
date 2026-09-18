@@ -33,6 +33,7 @@ function updatedLabel(value: string) {
 
 function menuIssue(item: AdminMenuRecord) {
   if (!item.categorySlug) return "Category required";
+  if (!item.description?.trim()) return "Description required";
   if (item.onlineOrdering && item.pricePence == null) return "Price required";
   if (item.isAlcoholic && item.onlineOrdering) return "Disable online ordering";
   return null;
@@ -101,7 +102,7 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
         <tbody>{menuItems.map((item) => {
           const issue = menuIssue(item);
           return <tr key={item._id} className={issue ? "hasContentIssue" : undefined}>
-            <td><strong>{item.name}</strong><small>{item.featured ? "Featured dish" : item.isAlcoholic ? "Alcoholic item" : "Standard dish"}</small></td>
+            <td><strong>{item.name}</strong><small>{item.description?.trim() || (item.featured ? "Featured dish" : item.isAlcoholic ? "Alcoholic item" : "Standard dish")}</small></td>
             <td><strong>{item.category || "Uncategorised"}</strong><small>{item.categorySlug || "Category link missing"}</small></td>
             <td><strong>{item.pricePence == null ? "Not set" : money(item.pricePence)}</strong><small>{item.isAlcoholic ? "Not sold online" : "Server-checked price"}</small></td>
             <td><span className={`adminContentState ${item.available ? "isLive" : "isPaused"}`}>{item.available ? "Available" : "Paused"}</span>{issue && <small className="adminContentIssue">{issue}</small>}</td>
@@ -134,6 +135,7 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
         <div className="adminPanelHeading"><div><p>Pages and trust content</p><h2>Website surfaces</h2></div></div>
         <div className="adminSurfaceRows">
           <a href={studioIntent(studioUrl, "edit", "siteSettings", "siteSettings") || studioUrl || "#"} target="_blank" rel="noreferrer"><span>Brand & contact</span><strong>{overview?.hasSiteSettings ? "Connected" : "Needs setup"}</strong></a>
+          <Link href="/admin/schedule"><span>Opening hours</span><strong>Website, bookings & orders</strong></Link>
           <a href={studioIntent(studioUrl, "edit", "menuPage", "menuPage") || studioUrl || "#"} target="_blank" rel="noreferrer"><span>Menu storytelling</span><strong>{overview?.hasMenuPage ? "Connected" : "Needs setup"}</strong></a>
           {overview?.pages.map((page) => <a href={studioIntent(studioUrl, "edit", page._type, page._id) || studioUrl || "#"} target="_blank" rel="noreferrer" key={page._id}><span>{page.title}</span><small>{page.pageKey} · {updatedLabel(page.updatedAt)}</small></a>)}
           <a href={studioUrl || "#"} target="_blank" rel="noreferrer"><span>FAQs</span><strong>{overview?.faqCount ?? 0}</strong></a>

@@ -31,6 +31,64 @@ export function careerSlug(job: Pick<CareerOpportunity, "slug" | "title" | "id">
   return job.slug || `${slugifyCareer(job.title)}-${job.id.slice(-8).toLowerCase()}`;
 }
 
+const salaryUnitLabels: Record<NonNullable<CareerOpportunity["salaryUnit"]>, string> = {
+  HOUR: "hour",
+  DAY: "day",
+  WEEK: "week",
+  MONTH: "month",
+  YEAR: "year",
+};
+
+function salaryAmount(value: number | null | undefined) {
+  if (value === null || value === undefined) return null;
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
+
+export function careerPayLabel(job: Pick<CareerOpportunity, "pay" | "salaryMin" | "salaryMax" | "salaryCurrency" | "salaryUnit">) {
+  const minimum = salaryAmount(job.salaryMin);
+  const maximum = salaryAmount(job.salaryMax);
+  if (minimum === null && maximum === null) return job.pay?.trim() || "";
+
+  const currency = /^[A-Z]{3}$/.test(job.salaryCurrency || "") ? job.salaryCurrency! : "GBP";
+  const amounts = [minimum, maximum].filter((amount): amount is number => amount !== null);
+  const usesPence = amounts.some((amount) => !Number.isInteger(amount));
+  const formatter = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: usesPence ? 2 : 0,
+    maximumFractionDigits: 2,
+  });
+  const unit = salaryUnitLabels[job.salaryUnit || "HOUR"];
+
+  if (minimum !== null && maximum !== null) {
+    const range = minimum === maximum ? formatter.format(minimum) : `${formatter.format(minimum)}–${formatter.format(maximum)}`;
+    return `${range} per ${unit}`;
+  }
+  if (minimum !== null) return `From ${formatter.format(minimum)} per ${unit}`;
+  return `Up to ${formatter.format(maximum!)} per ${unit}`;
+}
+
+export function careerApplicationMailto(job: Pick<CareerOpportunity, "title" | "applicationEmail">) {
+  const subject = `Application: ${job.title}`;
+  const body = [
+    "Hello Malabar Coast team,",
+    "",
+    `I would like to apply for the ${job.title} position.`,
+    "",
+    "Full name:",
+    "Phone number:",
+    "Current location:",
+    "Availability / notice period:",
+    "Relevant experience:",
+    "",
+    "I have attached my CV.",
+    "",
+    "Kind regards,",
+  ].join("\n");
+  return `mailto:${job.applicationEmail}?${new URLSearchParams({subject, body}).toString()}`;
+}
+
 export function validateCareer(value: unknown): Omit<CareerOpportunity, "id" | "createdAt" | "updatedAt"> {
   if (!value || typeof value !== "object") throw new Error("Job details are missing.");
   const input = value as Record<string, unknown>;

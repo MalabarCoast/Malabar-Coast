@@ -15,6 +15,7 @@
     "stripe:webhook:sync": "tsx scripts/sync-stripe-webhook-events.ts",
     "sanity:seed": "tsx scripts/seed-sanity.ts",
     "sanity:sync-menu-descriptions": "tsx scripts/sync-menu-descriptions.ts",
+    "sanity:sync-menu-page": "tsx scripts/update-menu-regions.ts",
     "sanity:sync-brand-content": "tsx scripts/sync-brand-content.ts",
     "sanity:sync-map": "tsx scripts/sync-map-settings.ts",
     "sanity:typegen": "npm --prefix studio run typegen"

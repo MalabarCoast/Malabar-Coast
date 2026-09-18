@@ -2,6 +2,12 @@ import {createReadStream, existsSync} from 'node:fs'
 import {basename, join} from 'node:path'
 import {createClient} from '@sanity/client'
 
+try {
+  process.loadEnvFile?.('.env.local')
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+}
+
 const apply = process.argv.includes('--apply')
 const skipImageUpload = process.argv.includes('--skip-image-upload')
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID?.trim()
@@ -33,6 +39,13 @@ const baseUpdate = {
   headingLineTwo: 'One table.',
   introduction: 'Travel from Delhi and Amritsar’s tandoor fire to Mumbai’s grills, Kashmir’s aromatic lamb, Hyderabad’s biriyani and Lucknow’s festive sweets.',
   journeyLinkLabel: 'Explore India',
+  manifestEyebrow: 'The full menu',
+  manifestHeading: 'What we carry to the table.',
+  manifestIntroduction: 'The current Malabar Coast menu, prepared for sharing and available to order online where shown.',
+  dietaryNotice: 'Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.',
+  alcoholNotice: 'Alcoholic-drink prices are not published online. Please ask the restaurant team for the current bar price list. Alcohol is not available through online ordering.',
+  'seo.title': 'Indian Cuisine & Bar Menu in Holytown',
+  'seo.description': 'Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast.',
 }
 
 function block(text: string) {
@@ -123,11 +136,12 @@ async function main() {
   }})
   await transaction.commit()
 
-  const verified = await client.fetch<Array<{_id: string; headingLineOne?: string; headingLineTwo?: string; areas: string[]}>>(
-    `*[_id in ["menuPage", "drafts.menuPage"]] | order(_id asc){_id,headingLineOne,headingLineTwo,"areas":voyageStops[].area}`,
+  const verified = await client.fetch<Array<{_id: string; headingLineOne?: string; headingLineTwo?: string; journeyLinkLabel?: string; areas: string[]}>>(
+    `*[_id in ["menuPage", "drafts.menuPage"]] | order(_id asc){_id,eyebrow,headingLineOne,headingLineTwo,introduction,journeyLinkLabel,manifestEyebrow,manifestHeading,manifestIntroduction,dietaryNotice,alcoholNotice,seo,"areas":voyageStops[].area}`,
   )
   const expectedAreas = definitions.map((definition) => definition.area)
   if (!verified.every((document) => JSON.stringify(document.areas) === JSON.stringify(expectedAreas))) throw new Error('Post-migration verification found an unexpected Indian destination list.')
+  if (!verified.every((document) => document.headingLineOne === baseUpdate.headingLineOne && document.headingLineTwo === baseUpdate.headingLineTwo && document.journeyLinkLabel === baseUpdate.journeyLinkLabel)) throw new Error('Post-migration verification found stale menu-page copy.')
   console.log(JSON.stringify({mode: 'applied-and-verified', documents: verified, headings: [baseUpdate.headingLineOne, baseUpdate.headingLineTwo]}, null, 2))
 }
 

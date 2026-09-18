@@ -9,5 +9,5 @@ export const dynamic = "force-dynamic";
 export default async function SchedulePage() {
   const session = await getAdminSession("reservations:read");
   if (!session) redirect("/admin/login");
-  return <AdminFrame active="/admin/schedule" session={session}><AdminPageHeader eyebrow="Restaurant calendar" title="Opening and exceptions." description="Set the weekly hours and plan holidays from one calendar. Review existing commitments before saving."/><ScheduleEditor initial={await getRestaurantSchedule()} csrf={session.csrfToken} canWrite={adminCan(session.role, "reservations:write")}/></AdminFrame>;
+  return <AdminFrame active="/admin/schedule" session={session}><AdminPageHeader eyebrow="Restaurant calendar" title="Opening hours and exceptions." description="Edit lunch and dinner services from one calendar. The same schedule controls the website, bookings, collection and delivery; existing commitments are reviewed before saving."/><ScheduleEditor initial={await getRestaurantSchedule()} csrf={session.csrfToken} canWrite={adminCan(session.role, "reservations:write")}/></AdminFrame>;
 }
