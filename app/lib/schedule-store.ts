@@ -13,9 +13,14 @@ function normalise(value: unknown): RestaurantSchedule {
     revision: Number.isInteger(input.revision) ? input.revision : 0,
     weekly: defaultRestaurantSchedule.weekly.map((fallback, index) => {
       const day = input.weekly?.[index];
-      return day && typeof day.closed === "boolean" ? {closed: day.closed, opens: day.opens || "", closes: day.closes || ""} : fallback;
+      if (!day || typeof day.closed !== "boolean") return fallback;
+      // The original schedule row was deployed with open days but blank times.
+      // Fill only those legacy blanks from the newly confirmed official hours;
+      // preserve every schedule that staff have already configured.
+      if (!day.closed && !day.opens && !day.closes) return fallback;
+      return {closed: day.closed, opens: day.opens || "", closes: day.closes || "", secondOpens: day.secondOpens || "", secondCloses: day.secondCloses || ""};
     }),
-    exceptions: Array.isArray(input.exceptions) ? input.exceptions : [],
+    exceptions: Array.isArray(input.exceptions) ? input.exceptions.map((item) => ({...item, closed: item.mode === "closed", secondOpens: item.secondOpens || "", secondCloses: item.secondCloses || ""})) : [],
   };
 }
 

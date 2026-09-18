@@ -16,7 +16,7 @@ import { absoluteUrl, site } from "./lib/site";
 import { getMenuContent } from "@/sanity/lib/menu";
 import { getSiteSettings } from "@/sanity/lib/site";
 import {getRestaurantSchedule} from "./lib/schedule-store";
-import {dayNames, type RestaurantSchedule} from "./lib/restaurant-schedule";
+import {dayNames, servicePeriods, type RestaurantSchedule} from "./lib/restaurant-schedule";
 
 const fallbackMetadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -127,19 +127,25 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, sch
     postalCode: settings.address.postalCode,
     addressCountry: settings.address.country,
   };
-  const openingHoursSpecification = schedule.weekly.flatMap((hours, index) => hours.closed || !hours.opens || !hours.closes ? [] : [{
+  const openingHoursSpecification = schedule.weekly.flatMap((hours, index) => hours.closed ? [] : servicePeriods(hours).map((period) => ({
     "@type": "OpeningHoursSpecification",
     dayOfWeek: `https://schema.org/${dayNames[index]}`,
-    opens: hours.opens,
-    closes: hours.closes,
-  }]);
-  const specialOpeningHoursSpecification = schedule.exceptions.map((exception) => ({
+    opens: period.opens,
+    closes: period.closes,
+  })));
+  const specialOpeningHoursSpecification = schedule.exceptions.flatMap((exception) => exception.mode === "closed" ? [{
     "@type": "OpeningHoursSpecification",
     validFrom: exception.date,
     validThrough: exception.date,
-    opens: exception.mode === "closed" ? "00:00" : exception.opens || undefined,
-    closes: exception.mode === "closed" ? "00:00" : exception.closes || undefined,
-  }));
+    opens: "00:00",
+    closes: "00:00",
+  }] : servicePeriods(exception).map((period) => ({
+    "@type": "OpeningHoursSpecification",
+    validFrom: exception.date,
+    validThrough: exception.date,
+    opens: period.opens,
+    closes: period.closes,
+  })));
   return {
   "@context": "https://schema.org",
   "@graph": [

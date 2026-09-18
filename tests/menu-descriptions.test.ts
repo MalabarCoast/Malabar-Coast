@@ -12,15 +12,19 @@ test("every catalogue item has one concise public description", () => {
   }
 });
 
-test("menu descriptions remain editable and required in Sanity", async () => {
-  const [schema, sync, menuQuery, menuView] = await Promise.all([
+test("menu descriptions remain editable, required and visible to content editors", async () => {
+  const [schema, sync, menuQuery, menuView, adminQuery, adminPage] = await Promise.all([
     readFile(new URL("../studio/schemaTypes/documents/menuItem.ts", import.meta.url), "utf8"),
     readFile(new URL("../scripts/sync-menu-descriptions.ts", import.meta.url), "utf8"),
     readFile(new URL("../sanity/lib/queries.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/menu/menu-experience.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../sanity/lib/admin-content.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/admin/content/page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(schema, /name: 'description'[\s\S]*?rule\.required\(\)\.max\(180\)/);
   assert.match(sync, /!document\.description\?\.trim\(\)/);
   assert.match(menuQuery, /description/);
   assert.match(menuView, /dish\.description/);
+  assert.match(adminQuery, /name,\s+description,/);
+  assert.match(adminPage, /Description required/);
 });

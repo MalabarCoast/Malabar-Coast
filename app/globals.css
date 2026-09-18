@@ -1911,7 +1911,7 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 
 /* Opening calendar and careers */
 .openingHours { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:clamp(2rem,7vw,8rem); padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); background:#10201c; color:#f2ead9; }
-.openingHoursLead p,.careersHero > p,.careersIntro > p,.careerCardHeading p { margin:0 0 1.5rem; color:#c8a45d; font-size:.62rem; font-weight:700; letter-spacing:.17em; text-transform:uppercase; }
+.openingHoursLead p,.careersHeroInner > p { margin:0 0 1.5rem; color:#805621; font-size:.62rem; font-weight:700; letter-spacing:.17em; text-transform:uppercase; }
 .openingHoursLead h2 { margin:0 0 2rem; font:400 clamp(3rem,6vw,6.5rem)/.88 "Bodoni 72",Didot,serif; text-transform:uppercase; }
 .openingHoursLead > span { display:block; color:#dbc8a7; font:1.1rem/1.5 Georgia,serif; }
 .openingHoursList dl { margin:0; border-top:1px solid #698077; }
@@ -1920,31 +1920,44 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .openingHoursExceptions { margin-top:2rem; padding:1.25rem; border:1px solid #496158; }
 .openingHoursExceptions strong { display:block; margin-bottom:.8rem; color:#c8a45d; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; }
 .openingHoursExceptions p { margin:.5rem 0; color:#f2ead9; line-height:1.5; }
-.careersPage { min-height:100vh; padding-top:6rem; background:#f4efe4; color:#10201c; }
-.careersHero { padding:clamp(5rem,8vw,9rem) clamp(1.25rem,7vw,8rem); background:#10201c; color:#f2ead9; }
-.careersHero h1 { max-width:75rem; margin:0 0 2rem; font:400 clamp(4rem,9vw,10rem)/.82 "Bodoni 72",Didot,serif; letter-spacing:-.05em; text-transform:uppercase; }
-.careersHero > span { display:block; max-width:36rem; color:#decfb5; font:1.15rem/1.6 Georgia,serif; }
-.careersBody { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:clamp(2rem,6vw,6rem); padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); }
-.careersIntro { min-width:0; }
-.careersIntro h2 { max-width:12ch; margin:0 0 1rem; font:400 clamp(2.8rem,3.5vw,4.5rem)/.9 "Bodoni 72",Didot,serif; letter-spacing:-.03em; text-transform:uppercase; }
-.careersIntro > span { display:block; max-width:25rem; color:#52605b; line-height:1.65; }
-.careersList { display:grid; gap:1.5rem; min-width:0; }.careerCard { padding:clamp(1.5rem,3vw,3rem); border:1px solid #cec1aa; background:#e9dfca; }
-.careerCardHeading { display:flex; align-items:start; justify-content:space-between; gap:1rem; }.careerCardHeading p { margin-bottom:.5rem; color:#805621; }.careerCardHeading h3 { margin:0; font:400 clamp(2rem,4vw,3.5rem)/.95 "Bodoni 72",Didot,serif; }.careerCardHeading > span { padding:.55rem .7rem; border:1px solid #b8a988; font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
-.careerSummary { max-width:48rem; margin:1.5rem 0; color:#40504a; font:1.1rem/1.6 Georgia,serif; white-space:pre-line; }
-.careerCard dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:2rem 0; padding:1rem 0; border-block:1px solid #c7b99d; }.careerCard dt { margin-bottom:.35rem; color:#805621; font-size:.6rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }.careerCard dd { margin:0; }
-.careerCard section { margin-top:1.5rem; }.careerCard h4 { margin:0 0 .7rem; font:400 1.5rem Georgia,serif; }.careerCard ul { margin:0; padding-left:1.2rem; color:#40504a; line-height:1.65; }.careerCard li + li { margin-top:.4rem; }
-.careerApply { display:inline-flex; min-height:3rem; align-items:center; justify-content:space-between; gap:2rem; margin-top:2rem; padding:.8rem 1rem; background:#10201c; color:#f4efe4; font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-.careersEmpty { min-width:0; align-self:start; padding:clamp(2rem,4vw,3rem); border:1px solid #cec1aa; }.careersEmpty h3 { margin:0 0 1.25rem; font:400 clamp(2rem,3vw,2.5rem)/1.1 Georgia,serif; }.careersEmpty p { margin:0 0 1rem; }.careersEmpty a { color:#805621; text-decoration:underline; }
-.careerDetailHero h1 { max-width: 15ch; }
-.careerDetail { max-width: 70rem; margin: 0 auto; padding: clamp(3rem,7vw,7rem) clamp(1.25rem,7vw,8rem); }
-.careerBack { display: inline-flex; margin-bottom: 2.5rem; color: #805621; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.careerDetail > dl { display: grid; grid-template-columns: repeat(auto-fit,minmax(10rem,1fr)); gap: 1.25rem; margin: 0 0 clamp(3rem,6vw,5rem); padding-block: 1.5rem; border-block: 1px solid #c7b99d; }
-.careerDetail dt { margin-bottom: .4rem; color: #805621; font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.careerDetail dd { margin: 0; color: #283a34; }
-.careerDetail section { max-width: 48rem; margin: 0 0 3rem; }
-.careerDetail section > p { margin: 0 0 .6rem; color: #805621; font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
-.careerDetail section h2 { margin: 0 0 1.2rem; font: 400 clamp(2rem,4vw,3.5rem)/.95 "Bodoni 72",Didot,serif; text-transform: uppercase; }
-.careerDetail section ul { margin: 0; padding-left: 1.25rem; color: #40504a; font: 1.05rem/1.7 Georgia,serif; }
-.careerDetail section li + li { margin-top: .55rem; }
-@media (max-width:1100px) { .careersBody { grid-template-columns:1fr; }.careersIntro h2 { max-width:14ch; } }
-@media (max-width:820px) { .openingHours { grid-template-columns:1fr; }.careersHero h1 { overflow-wrap:anywhere; }.careerCardHeading { flex-direction:column; }.careerCard dl { grid-template-columns:1fr; } }
+.careersPage { min-height:100vh; padding-top:6rem; background:#f7f4ed; color:#10201c; }
+.careersHero { padding:clamp(2rem,4vw,3.25rem) clamp(1.25rem,4vw,3rem); border-bottom:1px solid #d8d0c1; background:#fff; }
+.careersHeroInner,.careersBody,.careerDetail { width:min(100%,68rem); margin-inline:auto; }
+.careersHero h1 { max-width:18ch; margin:0 0 .75rem; font:400 clamp(2.4rem,5vw,4.25rem)/.95 "Bodoni 72",Didot,serif; letter-spacing:-.035em; }
+.careersHeroInner > span { display:block; max-width:42rem; color:#52605b; font:1.05rem/1.65 Georgia,serif; }
+.careersBody { padding:clamp(1.75rem,4vw,3rem) clamp(1.25rem,3vw,2rem); }
+.careersIntro { margin-bottom:1.25rem; }
+.careersIntro h2 { margin:0 0 .5rem; font:400 clamp(2rem,4vw,3rem)/1 Georgia,serif; }
+.careersIntro p { max-width:38rem; margin:0; color:#52605b; line-height:1.6; }
+.careersList { display:grid; gap:.75rem; }
+.careerCard { padding:clamp(1.05rem,2vw,1.5rem); border:1px solid #d8d0c1; border-radius:.35rem; background:#fff; }
+.careerCardHeading { display:flex; align-items:start; justify-content:space-between; gap:1.25rem; }
+.careerCardHeading h3 { margin:0 0 .4rem; font:400 clamp(1.55rem,3vw,2.25rem)/1.1 Georgia,serif; }
+.careerCardHeading h3 a:hover,.careerCardHeading h3 a:focus-visible,.careerTextLink:hover,.careerTextLink:focus-visible { color:#805621; }
+.careerCardHeading p { margin:0; color:#66736c; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; }
+.careerCardHeading > span { flex:0 0 auto; padding:.45rem .65rem; border-radius:999px; background:#eee8dc; color:#40504a; font-size:.68rem; font-weight:700; }
+.careerMeta { display:flex; flex-wrap:wrap; gap:.45rem 1rem; margin:.8rem 0 0; padding:0; color:#40504a; list-style:none; font-size:.88rem; }
+.careerMeta li { display:flex; align-items:center; gap:.5rem; }
+.careerMeta li + li::before { content:"•"; color:#b39765; }
+.careerSummary { max-width:48rem; margin:.9rem 0; color:#40504a; line-height:1.55; white-space:pre-line; }
+.careerCardFooter { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-top:.75rem; border-top:1px solid #e3ddd2; color:#66736c; font-size:.8rem; }
+.careerTextLink { color:#805621; font-weight:700; white-space:nowrap; }
+.careerApply { display:inline-flex; min-height:2.75rem; align-items:center; justify-content:center; gap:1rem; margin-top:1rem; padding:.65rem .9rem; border-radius:.2rem; background:#10201c; color:#fff; font-size:.72rem; font-weight:700; }
+.careersEmpty { padding:2rem; border:1px solid #d8d0c1; border-radius:.35rem; background:#fff; }
+.careersEmpty h3 { margin:0 0 .75rem; font:400 1.6rem/1.2 Georgia,serif; }
+.careersEmpty p { margin:0 0 1rem; color:#52605b; }
+.careersEmpty a { color:#805621; font-weight:700; }
+.careerDetailHero .careerBack { display:inline-flex; margin-bottom:1.25rem; color:#805621; font-size:.78rem; font-weight:700; }
+.careerDetailHero .careerMeta { margin:0 0 1rem; }
+.careerDetail { padding:clamp(1.75rem,4vw,3rem) clamp(1.25rem,3vw,2rem); }
+.careerDetail section { max-width:48rem; margin:0 0 1.9rem; }
+.careerDetail section h2 { margin:0 0 .7rem; font:400 clamp(1.55rem,3vw,2rem)/1.1 Georgia,serif; }
+.careerDetail section ul { margin:0; padding-left:1.2rem; color:#40504a; line-height:1.7; }
+.careerDetail section li + li { margin-top:.45rem; }
+.careerApplyPanel { display:flex; align-items:center; justify-content:space-between; gap:1.25rem; max-width:48rem; margin-top:2rem; padding:1.25rem; border:1px solid #d8d0c1; border-radius:.35rem; background:#fff; }
+.careerApplyPanel h2 { margin:0; font:400 1.45rem/1.2 Georgia,serif; }
+.careerApplicationCopy { max-width:34rem; }
+.careerApplyPanel p { margin:.4rem 0 0; color:#52605b; font-size:.88rem; line-height:1.5; }
+.careerApplyPanel small { display:block; margin-top:.55rem; color:#78817d; font-size:.72rem; line-height:1.45; }
+.careerApplyPanel .careerApply { flex:0 0 auto; margin-top:0; }
+@media (max-width:820px) { .openingHours { grid-template-columns:1fr; }.careersHero h1 { overflow-wrap:anywhere; }.careerCardHeading,.careerCardFooter,.careerApplyPanel { align-items:flex-start; flex-direction:column; }.careerMeta { display:grid; gap:.55rem; }.careerMeta li + li::before { display:none; }.careerApplyPanel .careerApply { width:100%; } }

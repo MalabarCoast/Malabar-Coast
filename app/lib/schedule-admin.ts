@@ -2,22 +2,25 @@ import {createHash} from "node:crypto";
 import {listHallEnquiriesInDateRange, listReservationsInDateRange} from "./booking-store";
 import {listOrdersPage} from "./order-store";
 import {inferPaymentStatus} from "./orders";
-import {dayNames, isValidHours, isValidScheduleDate, isWithinSchedule, type RestaurantSchedule, type ScheduleException} from "./restaurant-schedule";
+import {dayNames, isValidScheduleDate, isValidServiceHours, isWithinSchedule, type RestaurantSchedule, type ScheduleException} from "./restaurant-schedule";
 
 export type ScheduleChange =
-  | {kind: "weekly"; day: number; closed: boolean; opens: string; closes: string}
-  | {kind: "exception"; date: string; mode: ScheduleException["mode"] | "remove"; opens: string; closes: string; reason: string};
+  | {kind: "weekly"; day: number; closed: boolean; opens: string; closes: string; secondOpens: string; secondCloses: string}
+  | {kind: "exception"; date: string; mode: ScheduleException["mode"] | "remove"; opens: string; closes: string; secondOpens: string; secondCloses: string; reason: string};
 
 export function parseScheduleChange(value: unknown): ScheduleChange {
   if (!value || typeof value !== "object") throw new Error("Schedule change is missing.");
   const input = value as Record<string, unknown>;
   const opens = String(input.opens || "");
   const closes = String(input.closes || "");
+  const secondOpens = String(input.secondOpens || "");
+  const secondCloses = String(input.secondCloses || "");
+  const hours = {opens, closes, secondOpens, secondCloses};
   if (input.kind === "weekly") {
     const day = Number(input.day);
     if (!Number.isInteger(day) || day < 0 || day >= dayNames.length || typeof input.closed !== "boolean") throw new Error("Choose a valid weekday.");
-    if (!input.closed && (opens || closes) && !isValidHours(opens, closes)) throw new Error("Enter a valid opening and closing time.");
-    return {kind: "weekly", day, closed: input.closed, opens: input.closed ? "" : opens, closes: input.closed ? "" : closes};
+    if (!input.closed && !isValidServiceHours(hours, true)) throw new Error("Enter valid service times. A second service must begin after the first one closes.");
+    return {kind: "weekly", day, closed: input.closed, opens: input.closed ? "" : opens, closes: input.closed ? "" : closes, secondOpens: input.closed ? "" : secondOpens, secondCloses: input.closed ? "" : secondCloses};
   }
   if (input.kind === "exception") {
     const date = String(input.date || "");
@@ -25,18 +28,19 @@ export function parseScheduleChange(value: unknown): ScheduleChange {
     if (!isValidScheduleDate(date) || !["closed", "open", "reduced", "remove"].includes(mode)) throw new Error("Choose a valid date and opening mode.");
     const today = new Intl.DateTimeFormat("sv-SE", {timeZone: "Europe/London"}).format(new Date());
     if (date < today) throw new Error("Choose today or a future date.");
-    if ((mode === "open" || mode === "reduced") && !isValidHours(opens, closes)) throw new Error("Exceptional opening needs valid opening and closing times.");
-    return {kind: "exception", date, mode: mode as ScheduleException["mode"] | "remove", opens: mode === "closed" || mode === "remove" ? "" : opens, closes: mode === "closed" || mode === "remove" ? "" : closes, reason: String(input.reason || "").trim().slice(0, 180)};
+    if ((mode === "open" || mode === "reduced") && !isValidServiceHours(hours)) throw new Error("Exceptional opening needs valid service times. A second service must begin after the first one closes.");
+    const clearHours = mode === "closed" || mode === "remove";
+    return {kind: "exception", date, mode: mode as ScheduleException["mode"] | "remove", opens: clearHours ? "" : opens, closes: clearHours ? "" : closes, secondOpens: clearHours ? "" : secondOpens, secondCloses: clearHours ? "" : secondCloses, reason: String(input.reason || "").trim().slice(0, 180)};
   }
   throw new Error("Choose a schedule change.");
 }
 
 export function applyScheduleChange(schedule: RestaurantSchedule, change: ScheduleChange): RestaurantSchedule {
   const next = structuredClone(schedule);
-  if (change.kind === "weekly") next.weekly[change.day] = {closed: change.closed, opens: change.opens, closes: change.closes};
+  if (change.kind === "weekly") next.weekly[change.day] = {closed: change.closed, opens: change.opens, closes: change.closes, secondOpens: change.secondOpens, secondCloses: change.secondCloses};
   else {
     next.exceptions = next.exceptions.filter((item) => item.date !== change.date);
-    if (change.mode !== "remove") next.exceptions.push({date: change.date, mode: change.mode, opens: change.opens, closes: change.closes, reason: change.reason});
+    if (change.mode !== "remove") next.exceptions.push({date: change.date, mode: change.mode, closed: change.mode === "closed", opens: change.opens, closes: change.closes, secondOpens: change.secondOpens, secondCloses: change.secondCloses, reason: change.reason});
     next.exceptions.sort((a, b) => a.date.localeCompare(b.date));
   }
   return next;

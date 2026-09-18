@@ -14,11 +14,13 @@ test("database schema contains the atomic checkout and transition boundary", asy
   assert.match(schema, /create or replace function public\.admin_delete_order/i);
   assert.match(schema, /create or replace function public\.admin_delete_table_reservation/i);
   assert.match(schema, /create or replace function public\.admin_delete_hall_enquiry/i);
+  assert.match(schema, /create or replace function public\.admin_delete_career_opportunity/i);
   assert.match(schema, /create or replace function public\.admin_create_table_reservation/i);
   assert.match(schema, /create or replace function public\.admin_update_table_reservation/i);
   assert.match(schema, /create or replace function public\.admin_create_hall_enquiry/i);
   assert.match(schema, /create or replace function public\.admin_update_hall_enquiry/i);
   assert.match(schema, /deleted_at timestamptz/i);
+  assert.match(schema, /'career\.deleted'/i);
   assert.match(schema, /grant execute on function public\.order_database_health\(\) to service_role/i);
 });
 

@@ -10,9 +10,9 @@ async function readLocal(): Promise<CareerOpportunity[]> {try {return JSON.parse
 async function writeLocal(items: CareerOpportunity[]) {await mkdir(path.dirname(localPath), {recursive: true}); const temporary = `${localPath}.${process.pid}.tmp`; await writeFile(temporary, JSON.stringify(items, null, 2), "utf8"); await rename(temporary, localPath);}
 
 export async function listCareers(): Promise<CareerOpportunity[]> {
-  if (isSupabaseServerConfigured()) {try {const response = await supabaseServerRequest("career_opportunities?select=data&order=created_at.desc&limit=500"); return (await response.json() as {data: CareerOpportunity}[]).map((row) => row.data);} catch (error) {if (error instanceof Error && error.message.includes("(404)")) return []; throw error;}}
+  if (isSupabaseServerConfigured()) {try {const response = await supabaseServerRequest("career_opportunities?select=data&order=created_at.desc&limit=500"); return (await response.json() as {data: CareerOpportunity}[]).map((row) => row.data).filter((item) => !item.deletedAt);} catch (error) {if (error instanceof Error && error.message.includes("(404)")) return []; throw error;}}
   if (process.env.NODE_ENV === "production") throw new Error("Careers storage is not configured.");
-  return (await readLocal()).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return (await readLocal()).filter((item) => !item.deletedAt).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function getCareerBySlug(slug: string) {
@@ -31,4 +31,24 @@ export async function saveCareer(input: Omit<CareerOpportunity, "id" | "createdA
   queue = queue.then(async () => {const items = await readLocal(); const index = items.findIndex((candidate) => candidate.id === item.id); if (existingId && index < 0) return; if (index >= 0) items[index] = {...item, createdAt: items[index].createdAt}; else items.push(item); await writeLocal(items); saved = true;});
   await queue;
   return saved;
+}
+
+export async function deleteCareerFromAdmin(id: string, actorUserId: string) {
+  if (isSupabaseServerConfigured()) {
+    try {return await supabaseServerRpc<boolean>("admin_delete_career_opportunity", {p_career_id: id, p_actor_user_id: actorUserId});}
+    catch (error) {if (error instanceof Error && error.message.includes("(404)")) throw new Error("The careers management database update must be applied before deleting jobs."); throw error;}
+  }
+  if (process.env.NODE_ENV === "production") throw new Error("Careers storage is not configured.");
+  let deleted = false;
+  queue = queue.then(async () => {
+    const items = await readLocal();
+    const index = items.findIndex((item) => item.id === id && !item.deletedAt);
+    if (index < 0) return;
+    const now = new Date().toISOString();
+    items[index] = {...items[index], status: "closed", updatedAt: now, deletedAt: now, deletedBy: actorUserId};
+    await writeLocal(items);
+    deleted = true;
+  });
+  await queue;
+  return deleted;
 }

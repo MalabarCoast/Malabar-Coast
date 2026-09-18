@@ -303,12 +303,12 @@ async function seed() {
     manifestEyebrow: "The full menu",
     manifestHeading: "What we carry to the table.",
     manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
-    dietaryNotice: "Dietary labels are based on the supplied menu names and still require confirmation from the restaurant. Please tell the team about allergies before ordering; the kitchen handles all 14 regulated allergens and cross-contact may occur.",
+    dietaryNotice: "Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.",
     alcoholNotice: "Alcoholic-drink prices are not published online. Please ask the restaurant team for the current bar price list. Alcohol is not available through online ordering.",
     voyageStops: voyageSeeds.map(([itemId, area, region, coordinates, yearLabel, courseLabel, imageKey, alt, description], index) => ({
       _type: "object", _key: `voyage-${index + 1}`, dish: {_type: "reference", _ref: itemIds.get(itemId)!}, area, region, coordinates, yearLabel, courseLabel, image: image(imageKey, alt), description,
     })),
-    seo: {title: "South Indian Menu", description: "The current Malabar Coast menu with food prices, ordering availability and carefully reviewed dietary status."},
+    seo: {title: "Indian Cuisine & Bar Menu in Holytown", description: "Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast."},
   });
 
   await client.createOrReplace({

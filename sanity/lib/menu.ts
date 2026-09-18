@@ -40,8 +40,12 @@ const fallbackMenuPage: MenuPageContent = {
   manifestEyebrow: "The full menu",
   manifestHeading: "What we carry to the table.",
   manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
-  dietaryNotice: "Dietary labels are based on the supplied menu names and still require confirmation from the restaurant. Please tell the team about allergies before ordering; the kitchen handles all 14 regulated allergens and cross-contact may occur.",
+  dietaryNotice: "Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.",
   alcoholNotice: "Alcoholic-drink prices are not published online. Please ask the restaurant team for the current bar price list. Alcohol is not available through online ordering.",
+  seo: {
+    title: "Indian Cuisine & Bar Menu in Holytown",
+    description: "Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast.",
+  },
   voyageStops: [
     {itemId: "clay-oven-chicken-tikka", area: "Delhi", region: "North India", coordinates: "28.6139° N · 77.2090° E", year: "Capital tandoor", course: "Chicken tikka", image: {url: "/menu/chicken-tikka.png", alt: "Charred chicken tikka inspired by Delhi's tandoor kitchens"}, description: "Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre."},
     {itemId: "clay-oven-tandoori-chicken", area: "Amritsar", region: "Punjab", coordinates: "31.6340° N · 74.8723° E", year: "Punjab fire", course: "Tandoori chicken", image: {url: "/menu/tandoori-chicken.png", alt: "Bone-in tandoori chicken inspired by Amritsar"}, description: "Bone-in chicken marinated with yoghurt and warm spices, then roasted over fierce tandoor heat."},
@@ -115,16 +119,13 @@ export async function getMenuContent() {
     })) : menuCategories;
     const cmsItems = (result.items ?? []).map(normaliseItem).filter((entry): entry is MenuItem => Boolean(entry));
     const items = cmsItems.length ? cmsItems : menuItems;
-    const page = {
-      ...fallbackMenuPage,
-      ...(result.page ?? {}),
-      eyebrow: fallbackMenuPage.eyebrow,
-      headingLineOne: fallbackMenuPage.headingLineOne,
-      headingLineTwo: fallbackMenuPage.headingLineTwo,
-      introduction: fallbackMenuPage.introduction,
-      journeyLinkLabel: fallbackMenuPage.journeyLinkLabel,
-      voyageStops: fallbackMenuPage.voyageStops,
-    };
+    const cmsPage = result.page ?? {};
+    const cmsCopy = [cmsPage.eyebrow, cmsPage.headingLineOne, cmsPage.headingLineTwo, cmsPage.introduction, cmsPage.journeyLinkLabel].filter(Boolean).join(" ").toLocaleLowerCase("en-GB");
+    const legacyKeralaJourney = /one kerala|explore kerala|six kerala|six regions/.test(cmsCopy)
+      || (cmsPage.voyageStops ?? []).some((stop) => ["Kottayam", "Alappuzha", "Kannur", "Kozhikode", "Palakkad", "Kochi"].includes(stop.area));
+    const page = legacyKeralaJourney
+      ? {...fallbackMenuPage, seo: {...cmsPage.seo, ...fallbackMenuPage.seo}}
+      : {...fallbackMenuPage, ...cmsPage};
     return {categories, items, page, source: "sanity" as const};
   } catch (error) {
     console.error("Sanity menu fetch failed; using the checked-in menu fallback.", error instanceof Error ? error.name : "UnknownError");

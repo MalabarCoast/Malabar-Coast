@@ -1,6 +1,12 @@
 import {createClient} from '@sanity/client'
 import {menuItems} from '../app/lib/menu'
 
+try {
+  process.loadEnvFile?.('.env.local')
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+}
+
 const apply = process.argv.includes('--apply')
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID?.trim()
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET?.trim() || 'production'
