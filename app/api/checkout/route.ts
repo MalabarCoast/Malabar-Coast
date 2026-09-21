@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { applyPaymentEvent, attachCheckoutProviderReference, createCheckoutOrderAtomic } from "../../lib/order-store";
 import { CheckoutValidationError, type OrderRecord, validateCheckout } from "../../lib/orders";
+import {findActiveDiscountCode} from "../../lib/discount-store";
 import { setOrderAccess, isOrderAccessConfigured } from "../../lib/order-access";
 import { createStripeCheckout, isStripeConfigured } from "../../lib/payments/stripe";
 import {getRestaurantSchedule} from "../../lib/schedule-store";
@@ -12,7 +13,13 @@ function digest(value: string) {
   return createHash("sha256").update(value).digest("hex");
 }
 
-function checkoutFingerprint(checkout: Awaited<ReturnType<typeof validateCheckout>>) {
+type DiscountedCheckout = Awaited<ReturnType<typeof validateCheckout>> & {
+  discountPercent?: number;
+  discountPence: number;
+  originalTotalPence: number;
+};
+
+function checkoutFingerprint(checkout: DiscountedCheckout) {
   return digest(JSON.stringify({
     provider: checkout.provider,
     fulfilment: checkout.fulfilment,
@@ -21,6 +28,9 @@ function checkoutFingerprint(checkout: Awaited<ReturnType<typeof validateCheckou
     requestedTime: checkout.requestedTime,
     orderNote: checkout.orderNote,
     lines: checkout.lines,
+    discountCode: checkout.discountCode,
+    discountPercent: checkout.discountPercent,
+    discountPence: checkout.discountPence,
     totalPence: checkout.totalPence,
   }));
 }
@@ -44,7 +54,23 @@ export async function POST(request: Request) {
     }
     if (!isOrderAccessConfigured()) throw new Error("Order access signing is not configured.");
 
-    const checkout = await validateCheckout(await readLimitedJson(request, 64_000), await getRestaurantSchedule());
+    const validatedCheckout = await validateCheckout(await readLimitedJson(request, 64_000), await getRestaurantSchedule());
+    const discount = validatedCheckout.discountCode ? await findActiveDiscountCode(validatedCheckout.discountCode) : null;
+    if (validatedCheckout.discountCode && !discount) {
+      throw new CheckoutValidationError("That discount code is not recognized or is no longer active.");
+    }
+    if (discount && validatedCheckout.discountPercent !== discount.percentOff) {
+      throw new CheckoutValidationError("That discount has changed. Please reapply the code and review the updated total.");
+    }
+    const discountPence = discount ? Math.min(validatedCheckout.subtotalPence, Math.round(validatedCheckout.subtotalPence * discount.percentOff / 100)) : 0;
+    const checkout = {
+      ...validatedCheckout,
+      discountCode: discount?.code,
+      discountPercent: discount?.percentOff,
+      discountPence,
+      originalTotalPence: validatedCheckout.totalPence,
+      totalPence: validatedCheckout.totalPence - discountPence,
+    };
     const requestedKey = request.headers.get("idempotency-key") || "";
     if (!/^[a-zA-Z0-9_-]{16,100}$/.test(requestedKey)) {
       throw new CheckoutValidationError("A valid idempotency key is required.");
@@ -61,6 +87,8 @@ export async function POST(request: Request) {
       customer: checkout.customer, fulfilment: checkout.fulfilment, requestedTime: checkout.requestedTime,
       deliveryAddress: checkout.deliveryAddress, orderNote: checkout.orderNote, lines: checkout.lines,
       subtotalPence: checkout.subtotalPence, deliveryFeePence: checkout.deliveryFeePence,
+      discountCode: checkout.discountCode, discountPercent: checkout.discountPercent,
+      discountPence: checkout.discountPence, originalTotalPence: checkout.originalTotalPence,
       totalPence: checkout.totalPence, currency: "GBP",
       statusHistory: [{ status: "pending_payment", at: now, actor: "system" }],
     };

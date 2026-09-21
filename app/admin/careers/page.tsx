@@ -25,41 +25,20 @@ export default async function CareersAdminPage({searchParams}: {searchParams: Pr
     <section className="adminPanel"><details className="adminCreateRecord"><summary>Post a job opportunity</summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields/><button className="adminButton">Save opportunity</button></form></details></section>
     <section className="adminPanel">
       <div className="adminPanelHeading"><div><p>Roles</p><h2>Current register</h2></div><span>{items.length} recorded</span></div>
-      {items.length ? <div className="careerAdminList">{items.map((item) =>
-        <article className="careerAdminRecord" key={item.id}>
-          <div className="careerAdminRecordInfo">
-            <strong>{item.title}</strong>
-            <span>{item.status} · {item.location} · {item.employmentType}</span>
-          </div>
-          <div className="careerAdminRecordControls" role="group" aria-label={`Actions for ${item.title}`}>
-            {item.status === "published" && <Link className="adminTextButton" href={`/careers/${careerSlug(item)}`} target="_blank" rel="noreferrer">Preview</Link>}
-            <details className="adminEditRecord">
-              <summary><span className="careerAdminEditLabel">Edit</span><span className="careerAdminCloseLabel">Close</span></summary>
-              <div className="careerAdminDialog" role="dialog" aria-modal="true" aria-label={`Edit ${item.title}`}>
-                <div className="careerAdminActions">
-                  <strong>Editing {item.title}</strong>
-                  {item.status === "published" && <Link className="adminTextButton" href={`/careers/${careerSlug(item)}`} target="_blank" rel="noreferrer">Preview public vacancy ↗</Link>}
-                  <form method="post" action={`/api/admin/careers/${item.id}`}>
-                    <input type="hidden" name="csrf" value={session.csrfToken}/>
-                    <input type="hidden" name="action" value="delete"/>
-                    <AdminDeleteButton confirmMessage={`Delete ${item.title}? It will immediately disappear from the careers page and active register. An audit record will be retained.`}/>
-                  </form>
-                </div>
-                <form className="adminRecordForm" method="post" action="/api/admin/careers">
-                  <input type="hidden" name="csrf" value={session.csrfToken}/>
-                  <CareerFields item={item}/>
-                  <button className="adminButton">Save changes</button>
-                </form>
-              </div>
-            </details>
-            <form method="post" action={`/api/admin/careers/${item.id}`}>
-              <input type="hidden" name="csrf" value={session.csrfToken}/>
-              <input type="hidden" name="action" value="delete"/>
-              <AdminDeleteButton confirmMessage={`Delete ${item.title}? It will immediately disappear from the careers page and active register. An audit record will be retained.`}/>
-            </form>
-          </div>
-        </article>
-      )}</div> : <EmptyState title="No roles yet" detail="Create a draft, then publish it when the details are ready."/>}
+      {items.length ? <div className="adminTableWrap"><table className="adminOrdersTable adminCareerTable">
+        <thead><tr><th>Role</th><th>Location</th><th>Employment</th><th>Status</th><th>Closing date</th><th>Action</th></tr></thead>
+        <tbody>{items.map((item) => <tr key={item.id}>
+          <td data-label="Role"><strong>{item.title}</strong><small>{item.team || "Restaurant team"}</small></td>
+          <td data-label="Location"><strong>{item.location}</strong><small>{item.hours || "Hours discussed at interview"}</small></td>
+          <td data-label="Employment"><strong>{item.employmentType}</strong><small>{item.pay || "Pay details in vacancy"}</small></td>
+          <td data-label="Status"><span className={`adminContentState ${item.status === "published" ? "isLive" : item.status === "closed" ? "isPaused" : "isNeutral"}`}>{item.status}</span></td>
+          <td data-label="Closing date"><strong>{item.closingDate || "Open until filled"}</strong>{item.status === "published" && <small><Link href={`/careers/${careerSlug(item)}`} target="_blank" rel="noreferrer">Preview public vacancy ↗</Link></small>}</td>
+          <td data-label="Actions"><div className="adminEntryActions adminRecordActions" role="group" aria-label={`Actions for ${item.title}`}>
+            <details className="adminEditRecord"><summary>Edit</summary><form className="adminRecordForm" method="post" action="/api/admin/careers"><input type="hidden" name="csrf" value={session.csrfToken}/><CareerFields item={item}/><button className="adminButton">Save changes</button></form></details>
+            <form method="post" action={`/api/admin/careers/${item.id}`}><input type="hidden" name="csrf" value={session.csrfToken}/><input type="hidden" name="action" value="delete"/><AdminDeleteButton confirmMessage={`Delete ${item.title}? It will immediately disappear from the careers page and active register. An audit record will be retained.`}/></form>
+          </div></td>
+        </tr>)}</tbody>
+      </table></div> : <EmptyState title="No roles yet" detail="Create a draft, then publish it when the details are ready."/>}
     </section>
   </AdminFrame>;
 }

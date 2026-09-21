@@ -17,6 +17,7 @@ import { useCart } from "./cart-provider";
 import { SmartDateInput } from "./smart-date-input";
 
 type PaymentConfig = { stripe: boolean; deliveryFeePence: number };
+type AppliedDiscount = { code: string; percentOff: number };
 
 function recoveryIsForClosedDate(attempt: CheckoutAttempt | null, schedule: RestaurantSchedule) {
   if (!attempt) return false;
@@ -37,6 +38,10 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
   const closedDate = Boolean(requestedTime) && !isWithinSchedule(liveSchedule, requestedTime.slice(0, 10), requestedTime.slice(11));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<AppliedDiscount | null>(null);
+  const [discountMessage, setDiscountMessage] = useState("");
+  const [checkingDiscount, setCheckingDiscount] = useState(false);
   const [recovery, setRecovery] = useState<CheckoutAttempt | null>(null);
   const closedRecovery = recoveryIsForClosedDate(recovery, liveSchedule);
 
@@ -61,7 +66,9 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
   }, []);
 
   const deliveryFee = fulfilment === "delivery" ? config?.deliveryFeePence ?? 350 : 0;
-  const totalPence = subtotalPence + deliveryFee;
+  const originalTotalPence = subtotalPence + deliveryFee;
+  const discountPence = appliedDiscount ? Math.min(subtotalPence, Math.round(subtotalPence * appliedDiscount.percentOff / 100)) : 0;
+  const totalPence = originalTotalPence - discountPence;
   const paymentReady = config?.stripe === true;
   const paymentButtonLabel = submitting
     ? "Opening secure payment…"
@@ -70,6 +77,36 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
       : paymentReady
         ? `Continue to payment · ${formatPrice(totalPence)}`
         : "Payment temporarily unavailable";
+
+  async function applyDiscount() {
+    const code = discountCode.trim().toUpperCase();
+    if (!/^[A-Z0-9]{3,32}$/.test(code)) {
+      setAppliedDiscount(null);
+      setDiscountMessage("Enter 3–32 letters and numbers.");
+      return;
+    }
+    setCheckingDiscount(true);
+    setDiscountMessage("");
+    try {
+      const response = await fetch("/api/discounts/validate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({code}),
+      });
+      const result = await response.json() as {code?: string; percentOff?: number; error?: string};
+      if (!response.ok || !result.code || !Number.isInteger(result.percentOff)) {
+        throw new Error(result.error || "That code could not be applied.");
+      }
+      setDiscountCode(result.code);
+      setAppliedDiscount({code: result.code, percentOff: result.percentOff!});
+      setDiscountMessage(`${result.percentOff}% discount applied to your food.`);
+    } catch (caught) {
+      setAppliedDiscount(null);
+      setDiscountMessage(caught instanceof Error ? caught.message : "That code could not be applied.");
+    } finally {
+      setCheckingDiscount(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -88,6 +125,8 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
     const requestPayload = JSON.stringify({
       provider: "stripe",
       fulfilment,
+      discountCode: appliedDiscount?.code,
+      discountPercent: appliedDiscount?.percentOff,
       cart: items,
       customer: { name: data.get("name"), email: data.get("email"), phone: data.get("phone") },
       requestedTime: data.get("requestedTime"),
@@ -251,6 +290,32 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
                   {config === null ? "Checking" : paymentReady ? "Ready" : "Unavailable"}
                 </span>
               </div>
+              <div className="discountEntry">
+                <label htmlFor="discountCode">Discount code</label>
+                <div>
+                  <input
+                    id="discountCode"
+                    value={discountCode}
+                    inputMode="text"
+                    autoComplete="off"
+                    maxLength={32}
+                    placeholder="Enter code"
+                    onChange={(event) => {
+                      const code = event.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+                      setDiscountCode(code);
+                      if (appliedDiscount && code !== appliedDiscount.code) {
+                        setAppliedDiscount(null);
+                        setDiscountMessage("");
+                      }
+                    }}
+                  />
+                  <button type="button" onClick={applyDiscount} disabled={checkingDiscount || !discountCode}>
+                    {checkingDiscount ? "Checking…" : appliedDiscount ? "Reapply" : "Apply"}
+                  </button>
+                </div>
+                {discountMessage && <p className={appliedDiscount ? "isApplied" : "isInvalid"} role="status">{discountMessage}</p>}
+                <small>Codes use letters and numbers only. One code can be applied per order.</small>
+              </div>
               <ul className="paymentPromises" aria-label="Secure payment details">
                 <li><span>01</span><div><strong>Details stay private</strong><p>Your card information is handled by Stripe, not stored by us.</p></div></li>
                 <li><span>02</span><div><strong>Nothing changes unexpectedly</strong><p>The final amount is shown beside the payment button before you continue.</p></div></li>
@@ -286,7 +351,11 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
           <div className="summaryTotals">
             <p><span>Subtotal</span><b>{formatPrice(subtotalPence)}</b></p>
             <p><span>Delivery</span><b>{deliveryFee ? formatPrice(deliveryFee) : "Included"}</b></p>
-            <strong><span>Total to pay</span><b>{formatPrice(totalPence)}</b></strong>
+            {appliedDiscount && <p className="summaryDiscount"><span>{appliedDiscount.code} · {appliedDiscount.percentOff}% off food</span><b>−{formatPrice(discountPence)}</b></p>}
+            <strong className={appliedDiscount ? "hasDiscount" : undefined}>
+              <span>Total to pay</span>
+              <b>{appliedDiscount && <del>{formatPrice(originalTotalPence)}</del>}{formatPrice(totalPence)}</b>
+            </strong>
           </div>
           {error && <div className="checkoutError" role="alert" aria-live="assertive">{error}</div>}
           <button className="payButton" type="submit" disabled={submitting || !paymentReady || closedDate} aria-busy={submitting}>

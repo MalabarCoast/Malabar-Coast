@@ -27,15 +27,27 @@ function activityKind(value: unknown): value is ActivityKind {
 
 export function AdminActivityNotifications({supabaseUrl, publishableKey}: {supabaseUrl: string; publishableKey: string}) {
   const [notices, setNotices] = useState<Notice[]>([]);
-  const [soundReady, setSoundReady] = useState(false);
   const seen = useRef(new Set<string>());
 
   useEffect(() => {
     if (!supabaseUrl || !publishableKey) return;
     const seenKeys = seen.current;
-    const arm = () => { void armOrderNotificationSound().then(setSoundReady); };
-    window.addEventListener("pointerdown", arm, {once: true});
-    window.addEventListener("keydown", arm, {once: true});
+    let soundArmed = false;
+    const arm = () => {
+      if (soundArmed) return;
+      void armOrderNotificationSound().then((ready) => {
+        soundArmed = ready;
+        if (ready) {
+          window.removeEventListener("pointerdown", arm);
+          window.removeEventListener("keydown", arm);
+        }
+      });
+    };
+    arm();
+    window.addEventListener("pointerdown", arm);
+    window.addEventListener("keydown", arm);
+    window.addEventListener("focus", arm);
+    document.addEventListener("visibilitychange", arm);
 
     const supabase = createClient(supabaseUrl, publishableKey, {auth: {autoRefreshToken: false, persistSession: false}});
     const verify = async (payload: BroadcastPayload) => {
@@ -70,14 +82,14 @@ export function AdminActivityNotifications({supabaseUrl, publishableKey}: {supab
     return () => {
       window.removeEventListener("pointerdown", arm);
       window.removeEventListener("keydown", arm);
+      window.removeEventListener("focus", arm);
+      document.removeEventListener("visibilitychange", arm);
       seenKeys.clear();
       void supabase.removeChannel(channel);
     };
   }, [publishableKey, supabaseUrl]);
 
-  const enableSound = async () => setSoundReady(await armOrderNotificationSound());
   return <aside className="adminNotificationRail" aria-label="Live restaurant alerts">
-    {!soundReady && supabaseUrl && publishableKey && <button className="adminSoundButton" type="button" onClick={enableSound}>Enable alert sound</button>}
     <div className="adminNotifications" aria-live="polite" aria-atomic="false">
       {notices.map((notice) => <article className="adminNotification" key={notice.key}>
         <span>Live alert</span><strong>{notice.title}</strong><p>{notice.detail}</p>

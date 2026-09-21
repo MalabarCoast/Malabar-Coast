@@ -145,6 +145,7 @@ function orderItemsTable(order: OrderRecord) {
       ${items}
       <tr><td colspan="2" style="padding:12px 12px 3px 0;color:#65706c;font-size:12px">Subtotal</td><td align="right" style="padding:12px 0 3px;font-size:13px">${esc(money(order.subtotalPence))}</td></tr>
       <tr><td colspan="2" style="padding:5px 12px 12px 0;color:#65706c;font-size:12px">Delivery</td><td align="right" style="padding:5px 0 12px;font-size:13px">${order.deliveryFeePence ? esc(money(order.deliveryFeePence)) : "Included"}</td></tr>
+      ${(order.discountPence ?? 0) > 0 ? `<tr><td colspan="2" style="padding:5px 12px 12px 0;color:#31553a;font-size:12px">Discount · ${esc(order.discountCode || "")}</td><td align="right" style="padding:5px 0 12px;color:#31553a;font-size:13px">−${esc(money(order.discountPence || 0))}</td></tr>` : ""}
       <tr><td colspan="2" style="padding:14px 12px 0 0;border-top:2px solid #10201c;font-family:Georgia,'Times New Roman',serif;font-size:18px">Total paid</td><td align="right" style="padding:14px 0 0;border-top:2px solid #10201c;font-family:Georgia,'Times New Roman',serif;font-size:20px">${esc(money(order.totalPence))}</td></tr>
     </table>
   </div>`;
@@ -199,7 +200,7 @@ export async function notifyPaidOrder(order: OrderRecord) {
         cta: { label: "Explore the menu", href: `${siteOrigin()}/menu` },
         footerNote: "Thank you for ordering from Malabar Coast.",
       }),
-      text: `MALABAR COAST\n\nPAYMENT CONFIRMED\nYour order is with us.\n\nHello ${order.customer.name},\nYour payment has been received and the restaurant now has your order.\n\nOrder reference: ${reference}\nPayment: Paid securely by card\nFulfilment: ${fulfilment}\nRequested for: ${requested}\n\nORDER DETAILS\n${plainItems}\n\nSubtotal: ${money(order.subtotalPence)}\nDelivery: ${order.deliveryFeePence ? money(order.deliveryFeePence) : "Included"}\nTotal paid: ${money(order.totalPence)}${order.deliveryAddress ? `\n\nDelivery address: ${[order.deliveryAddress.line1, order.deliveryAddress.line2, order.deliveryAddress.city, order.deliveryAddress.postcode].filter(Boolean).join(", ")}` : ""}${order.orderNote ? `\n\nOrder note: ${order.orderNote}` : ""}\n\nWe will confirm and prepare your order for the requested time.\n\n${restaurantAddress}`,
+      text: `MALABAR COAST\n\nPAYMENT CONFIRMED\nYour order is with us.\n\nHello ${order.customer.name},\nYour payment has been received and the restaurant now has your order.\n\nOrder reference: ${reference}\nPayment: Paid securely by card\nFulfilment: ${fulfilment}\nRequested for: ${requested}\n\nORDER DETAILS\n${plainItems}\n\nSubtotal: ${money(order.subtotalPence)}\nDelivery: ${order.deliveryFeePence ? money(order.deliveryFeePence) : "Included"}${(order.discountPence ?? 0) > 0 ? `\nDiscount (${order.discountCode}): −${money(order.discountPence || 0)}` : ""}\nTotal paid: ${money(order.totalPence)}${order.deliveryAddress ? `\n\nDelivery address: ${[order.deliveryAddress.line1, order.deliveryAddress.line2, order.deliveryAddress.city, order.deliveryAddress.postcode].filter(Boolean).join(", ")}` : ""}${order.orderNote ? `\n\nOrder note: ${order.orderNote}` : ""}\n\nWe will confirm and prepare your order for the requested time.\n\n${restaurantAddress}`,
     }),
     sendBrevoEmail({
       eventKey: `order:${order.id}:paid:owner`,

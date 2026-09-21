@@ -59,7 +59,13 @@ export async function armOrderNotificationSound() {
 
 export function playOrderNotificationSound() {
   const context = getAudioContext();
-  if (!context || context.state !== "running") return;
+  if (!context) return;
+  if (context.state !== "running") {
+    void armOrderNotificationSound().then((ready) => {
+      if (ready && notificationSound) playLoadedSound(context, notificationSound);
+    });
+    return;
+  }
   if (notificationSound) {
     playLoadedSound(context, notificationSound);
     return;

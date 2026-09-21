@@ -82,6 +82,10 @@ export type OrderRecord = {
   lines: OrderLine[];
   subtotalPence: number;
   deliveryFeePence: number;
+  discountCode?: string;
+  discountPercent?: number;
+  discountPence?: number;
+  originalTotalPence?: number;
   totalPence: number;
   currency: "GBP";
 };
@@ -298,6 +302,14 @@ export async function validateCheckout(input: unknown, schedule: RestaurantSched
 
   const subtotalPence = lines.reduce((total, line) => total + line.lineTotalPence, 0);
   const deliveryFeePence = fulfilment === "delivery" ? getDeliveryFeePence() : 0;
+  const discountCode = cleanText(body.discountCode, "Discount code", 32, false).toUpperCase();
+  if (discountCode && !/^[A-Z0-9]{3,32}$/.test(discountCode)) {
+    throw new CheckoutValidationError("Enter a valid discount code.");
+  }
+  const discountPercent = discountCode ? Number(body.discountPercent) : undefined;
+  if (discountCode && (!Number.isInteger(discountPercent) || (discountPercent ?? 0) < 1 || (discountPercent ?? 0) > 99)) {
+    throw new CheckoutValidationError("Please reapply the discount code before continuing.");
+  }
   const totalPence = subtotalPence + deliveryFeePence;
   const configuredMaximum = Number(process.env.MAX_ORDER_TOTAL_PENCE);
   const maximumTotal = Number.isInteger(configuredMaximum) && configuredMaximum > 0 ? configuredMaximum : 100_000;
@@ -313,6 +325,8 @@ export async function validateCheckout(input: unknown, schedule: RestaurantSched
     lines,
     subtotalPence,
     deliveryFeePence,
+    discountCode: discountCode || undefined,
+    discountPercent,
     totalPence,
   };
 }
