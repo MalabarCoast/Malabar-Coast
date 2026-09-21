@@ -47,6 +47,7 @@ export default async function CustomerOrderPage({ params }: { params: Promise<{ 
           <div><dt>Payment</dt><dd>{paymentStatusLabels[inferPaymentStatus(order)]}</dd></div>
           <div><dt>Method</dt><dd>{order.fulfilment}</dd></div>
           <div><dt>Requested</dt><dd>{order.requestedTime.replace("T", " ")}</dd></div>
+          {(order.discountPence ?? 0) > 0 && <div><dt>Discount</dt><dd>{order.discountCode} · {order.discountPercent}% off food</dd></div>}
           <div><dt>Total</dt><dd>{money(order.totalPence)}</dd></div>
         </dl>
       </section>

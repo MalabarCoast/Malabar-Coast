@@ -12,6 +12,10 @@ test("admin activity alerts verify records before showing or sounding", async ()
   assert.match(notifier, /await fetch\(endpoints\[payload\.kind\]/);
   assert.match(notifier, /if \(!response\.ok\) return/);
   assert.match(notifier, /playOrderNotificationSound\(\)/);
+  assert.match(notifier, /armOrderNotificationSound\(\)/);
+  assert.match(notifier, /window\.addEventListener\("focus", arm\)/);
+  assert.match(notifier, /document\.addEventListener\("visibilitychange", arm\)/);
+  assert.doesNotMatch(notifier, /Enable alert sound/);
   assert.match(notifier, /New paid food order/);
   assert.match(notifier, /New table booking/);
   assert.match(notifier, /New hall enquiry/);

@@ -55,15 +55,23 @@ export async function createStripeCheckout(order: OrderRecord, baseUrl: string) 
     "payment_intent_data[metadata][orderId]": order.id,
   });
 
-  order.lines.forEach((line, index) => {
-    params.set(`line_items[${index}][quantity]`, String(line.quantity));
-    params.set(`line_items[${index}][price_data][currency]`, "gbp");
-    params.set(`line_items[${index}][price_data][unit_amount]`, String(line.unitPricePence));
-    params.set(`line_items[${index}][price_data][product_data][name]`, line.name);
-    if (line.note) params.set(`line_items[${index}][price_data][product_data][description]`, `Note: ${line.note}`);
-  });
+  if ((order.discountPence ?? 0) > 0) {
+    params.set("line_items[0][quantity]", "1");
+    params.set("line_items[0][price_data][currency]", "gbp");
+    params.set("line_items[0][price_data][unit_amount]", String(order.subtotalPence - (order.discountPence ?? 0)));
+    params.set("line_items[0][price_data][product_data][name]", "Food order");
+    params.set("line_items[0][price_data][product_data][description]", `${order.discountCode} · ${order.discountPercent}% discount applied`);
+  } else {
+    order.lines.forEach((line, index) => {
+      params.set(`line_items[${index}][quantity]`, String(line.quantity));
+      params.set(`line_items[${index}][price_data][currency]`, "gbp");
+      params.set(`line_items[${index}][price_data][unit_amount]`, String(line.unitPricePence));
+      params.set(`line_items[${index}][price_data][product_data][name]`, line.name);
+      if (line.note) params.set(`line_items[${index}][price_data][product_data][description]`, `Note: ${line.note}`);
+    });
+  }
   if (order.deliveryFeePence > 0) {
-    const index = order.lines.length;
+    const index = (order.discountPence ?? 0) > 0 ? 1 : order.lines.length;
     params.set(`line_items[${index}][quantity]`, "1");
     params.set(`line_items[${index}][price_data][currency]`, "gbp");
     params.set(`line_items[${index}][price_data][unit_amount]`, String(order.deliveryFeePence));

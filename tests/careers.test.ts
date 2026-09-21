@@ -42,11 +42,12 @@ test("career management exposes preview and confirmed protected deletion", async
   ]);
   assert.match(page, /Preview public vacancy/);
   assert.match(page, /AdminDeleteButton/);
-  assert.match(page, /className="careerAdminRecordControls"/);
-  assert.match(page, /careerAdminEditLabel">Edit/);
-  assert.match(page, /careerAdminRecordControls[\s\S]*AdminDeleteButton/);
-  assert.match(page, /className="careerAdminDialog"/);
-  assert.match(page, /className="careerAdminActions"[\s\S]*action={`\/api\/admin\/careers\/\$\{item\.id\}`}/);
+  assert.match(page, /className="adminOrdersTable adminCareerTable"/);
+  assert.match(page, /className="adminEntryActions adminRecordActions"/);
+  assert.match(page, /<summary>Edit<\/summary>/);
+  assert.match(page, /adminRecordActions[\s\S]*AdminDeleteButton/);
+  assert.match(page, /className="adminEditRecord"[\s\S]*className="adminRecordForm"/);
+  assert.match(page, /action={`\/api\/admin\/careers\/\$\{item\.id\}`}/);
   assert.match(page, /audit record will be retained/i);
   assert.match(route, /getAdminSession\("content:write"\)/);
   assert.match(route, /isTrustedOrigin\(request\)/);

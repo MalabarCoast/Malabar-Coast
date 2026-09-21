@@ -96,6 +96,17 @@
 .paymentSecureMark { display: grid; place-items: center; width: 2.65rem; height: 2.65rem; border: 1px solid #8a5d24; border-radius: 50%; color: #8a5d24; font-size: .9rem; }
 .paymentHandoffLead strong { display: block; font-family: "Iowan Old Style",Georgia,serif; font-size: 1.3rem; font-weight: 400; }
 .paymentHandoffLead p { max-width: 37rem; margin: .35rem 0 0; color: rgba(16,32,28,.66); font-size: .75rem; line-height: 1.5; }
+.discountEntry { padding: 1.25rem; border-bottom: 1px solid rgba(16,32,28,.18); }
+.discountEntry > label { display: block; margin-bottom: .55rem; color: rgba(16,32,28,.72); font-size: .55rem; letter-spacing: .13em; text-transform: uppercase; }
+.discountEntry > div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .55rem; }
+.discountEntry input { width: 100%; min-height: 3rem; padding: .7rem .8rem; border: 1px solid rgba(16,32,28,.3); background: rgba(255,255,255,.35); color: #10201c; font: 700 .75rem/1.2 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing: .08em; text-transform: uppercase; }
+.discountEntry input:focus { border-color: #8a5d24; outline: 1px solid #8a5d24; outline-offset: -1px; }
+.discountEntry button { min-width: 6.5rem; min-height: 3rem; padding: .7rem .9rem; border: 1px solid #10201c; background: #10201c; color: #efe6d4; cursor: pointer; font: inherit; font-size: .52rem; letter-spacing: .12em; text-transform: uppercase; }
+.discountEntry button:disabled { opacity: .45; cursor: not-allowed; }
+.discountEntry > p { margin: .7rem 0 0; font: .86rem/1.45 "Iowan Old Style",Georgia,serif; }
+.discountEntry > p.isApplied { color: #31553a; }
+.discountEntry > p.isInvalid { color: #8a382e; }
+.discountEntry > small { display: block; margin-top: .55rem; color: rgba(16,32,28,.56); font-size: .62rem; line-height: 1.45; }
 .paymentReadiness { padding: .5rem .65rem; border: 1px solid rgba(16,32,28,.25); color: rgba(16,32,28,.6); font-size: .48rem; letter-spacing: .14em; text-transform: uppercase; }
 .paymentReadiness.isReady { border-color: rgba(69,105,75,.55); background: rgba(69,105,75,.1); color: #31553a; }
 .paymentPromises { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin: 0; padding: 0; list-style: none; }
@@ -122,6 +133,9 @@
 .summaryTotals p,.summaryTotals > strong { display: flex; justify-content: space-between; gap: 1rem; margin: 0 0 .7rem; font-size: .75rem; font-weight: 400; }
 .summaryTotals > strong { margin: 1rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(16,32,28,.22); font-family: "Iowan Old Style",Georgia,serif; font-size: 1.25rem; }
 .summaryTotals b { font-weight: 400; }
+.summaryTotals .summaryDiscount { color: #31553a; }
+.summaryTotals > strong.hasDiscount b { display: flex; align-items: baseline; gap: .55rem; }
+.summaryTotals > strong.hasDiscount del { color: rgba(16,32,28,.48); font-family: Arial,sans-serif; font-size: .72rem; font-weight: 400; }
 .checkoutSummary .checkoutError { margin: 0 1.4rem 1rem; }
 .payButton { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: calc(100% - 2.8rem); min-height: 4.1rem; margin: 0 1.4rem; padding: .9rem 1rem; border: 0; background: #071310; color: #efe6d4; cursor: pointer; font: inherit; font-size: .6rem; line-height: 1.35; letter-spacing: .14em; text-align: left; text-transform: uppercase; transition: background .2s,color .2s; }
 .payButton span { min-width: 0; overflow-wrap: anywhere; }
@@ -208,6 +222,9 @@
   .checkoutSectionHeading > span { font-size: 1.05rem; }
   .checkoutSection input,.checkoutSection textarea { font-size: 1rem; }
   .paymentHandoffLead { padding: 1rem; }
+  .discountEntry { padding: 1rem; }
+  .discountEntry > div { grid-template-columns: 1fr; }
+  .discountEntry button { width: 100%; }
   .paymentPromises li { padding: 1rem; }
   .summaryLines article { padding-inline: 1rem; }
   .summaryHeading,.summaryTotals { padding-inline: 1rem; }

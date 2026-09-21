@@ -28,6 +28,32 @@ function ReservationFields({item, settings}: {item?: TableReservation; settings:
   </div>;
 }
 
+function ReservationDetails({item}: {item: TableReservation}) {
+  return <details className="adminViewRecord">
+    <summary><span className="adminViewOpenLabel">View details</span><span className="adminViewCloseLabel">Close</span></summary>
+    <section className="adminRecordDialog" role="dialog" aria-modal="true" aria-label={`Full details for ${item.reference}`}>
+      <header><div><p>Table booking · {item.reference}</p><h2>{item.name}</h2></div><span className={`adminStatus booking_${item.status}`}>{item.status.replace("_", " ")}</span></header>
+      <dl className="adminDetailGrid">
+        <div><dt>Guest</dt><dd>{item.name}</dd></div>
+        <div><dt>Email</dt><dd><a href={`mailto:${item.email}`}>{item.email}</a></dd></div>
+        <div><dt>Phone</dt><dd><a href={`tel:${item.phone}`}>{item.phone}</a></dd></div>
+        <div><dt>Booking date</dt><dd>{item.bookingDate}</dd></div>
+        <div><dt>Arrival</dt><dd>{item.startTime}</dd></div>
+        <div><dt>Table until</dt><dd>{item.endTime}</dd></div>
+        <div><dt>Party size</dt><dd>{item.partySize}</dd></div>
+        <div><dt>Occasion</dt><dd>{item.occasion || "Not supplied"}</dd></div>
+        <div><dt>Status</dt><dd>{item.status.replace("_", " ")}</dd></div>
+        <div><dt>Submitted</dt><dd>{item.createdAt.replace("T", " ").slice(0, 16)}</dd></div>
+        <div><dt>Last updated</dt><dd>{item.updatedAt.replace("T", " ").slice(0, 16)}</dd></div>
+        <div className="adminDetailWide"><dt>Dietary requirements</dt><dd>{item.dietaryRequirements || "None supplied."}</dd></div>
+        <div className="adminDetailWide"><dt>Accessibility needs</dt><dd>{item.accessibilityNeeds || "None supplied."}</dd></div>
+        <div className="adminDetailWide"><dt>Guest notes</dt><dd>{item.notes || "No guest notes supplied."}</dd></div>
+        <div className="adminDetailWide"><dt>Private staff notes</dt><dd>{item.adminNotes || "No staff notes added."}</dd></div>
+      </dl>
+    </section>
+  </details>;
+}
+
 function updateMessage(value?: string) {
   if (value === "created") return "Reservation created in the admin register.";
   if (value === "deleted") return "Reservation deleted from the active register.";
@@ -66,7 +92,7 @@ export default async function ReservationsAdminPage({searchParams}: {searchParam
       </form>
     </section>
     <section className="adminPanel"><div className="adminPanelHeading"><div><p>Guest list</p><h2>Upcoming and recent</h2></div><span>{reservations.length} active record{reservations.length===1?"":"s"}</span></div>
-      {!reservations.length?<EmptyState title="No table reservations" detail="Confirmed customer bookings will appear here."/>:<div className="adminTableWrap"><table className="adminOrdersTable"><thead><tr><th>Reference</th><th>Date &amp; time</th><th>Guest</th><th>Party</th><th>Requirements</th><th>Status</th><th>Action</th></tr></thead><tbody>{reservations.map((item)=><tr key={item.id}><td><strong>{item.reference}</strong><small>{item.createdAt.slice(0,10)}</small></td><td><strong>{item.bookingDate}</strong><small>{item.startTime} to {item.endTime}</small></td><td><strong>{item.name}</strong><small>{item.phone} · {item.email}</small></td><td><strong>{item.partySize}</strong><small>{item.occasion||"No occasion"}</small></td><td><strong>{item.dietaryRequirements||"None noted"}</strong><small>{item.accessibilityNeeds||item.notes||"No other requirements"}</small></td><td><span className={`adminStatus booking_${item.status}`}>{item.status.replace("_"," ")}</span></td><td><div className="adminEntryActions">{canWrite&&<details className="adminEditRecord"><summary>Edit</summary><form className="adminRecordForm" action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><ReservationFields item={item} settings={settings}/><button className="adminButton" type="submit">Save full record</button></form></details>}{canWrite&&item.status==="cancelled"&&<form action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><input type="hidden" name="action" value="resend-cancellation"/><button className="adminTextButton" type="submit">Retry email</button></form>}{canDelete&&<form action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><input type="hidden" name="action" value="delete"/><AdminDeleteButton confirmMessage={`Delete reservation ${item.reference}? This removes it from the active register.`}/></form>}</div></td></tr>)}</tbody></table></div>}
+      {!reservations.length?<EmptyState title="No table reservations" detail="Confirmed customer bookings will appear here."/>:<div className="adminTableWrap"><table className="adminOrdersTable adminReservationTable"><thead><tr><th>Reference</th><th>Date &amp; time</th><th>Guest</th><th>Party</th><th>Requirements</th><th>Status</th><th>Action</th></tr></thead><tbody>{reservations.map((item)=><tr key={item.id}><td data-label="Reference"><strong>{item.reference}</strong><small>{item.createdAt.slice(0,10)}</small></td><td data-label="Date & time"><strong>{item.bookingDate}</strong><small>{item.startTime} to {item.endTime}</small></td><td data-label="Guest"><strong>{item.name}</strong><small>{item.phone} · {item.email}</small></td><td data-label="Party"><strong>{item.partySize}</strong><small>{item.occasion||"No occasion"}</small></td><td data-label="Requirements"><strong>{item.dietaryRequirements||"None noted"}</strong><small className="adminRecordPreview">{item.accessibilityNeeds||item.notes||"No other requirements"}</small></td><td data-label="Status"><span className={`adminStatus booking_${item.status}`}>{item.status.replace("_"," ")}</span></td><td data-label="Actions"><div className="adminEntryActions adminRecordActions" role="group" aria-label={`Actions for reservation ${item.reference}`}><ReservationDetails item={item}/>{canWrite&&<details className="adminEditRecord"><summary>Edit</summary><form className="adminRecordForm" action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><ReservationFields item={item} settings={settings}/><button className="adminButton" type="submit">Save full record</button></form></details>}{canWrite&&item.status==="cancelled"&&<form action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><input type="hidden" name="action" value="resend-cancellation"/><button className="adminTextButton" type="submit">Retry email</button></form>}{canDelete&&<form action={`/api/admin/reservations/${item.id}`} method="post"><input type="hidden" name="csrf" value={session.csrfToken}/><input type="hidden" name="action" value="delete"/><AdminDeleteButton confirmMessage={`Delete reservation ${item.reference}? This removes it from the active register.`}/></form>}</div></td></tr>)}</tbody></table></div>}
     </section>
   </AdminFrame>;
 }

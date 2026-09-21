@@ -15,12 +15,14 @@ export type AdminPermission =
   | "hall:write"
   | "hall:delete"
   | "reports:read"
+  | "discounts:read"
+  | "discounts:write"
   | "content:write"
   | "settings:read";
 
 const permissionsByRole: Record<AdminRole, readonly AdminPermission[]> = {
-  owner: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "content:write", "settings:read"],
-  admin: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "content:write", "settings:read"],
+  owner: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "settings:read"],
+  admin: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "settings:read"],
   manager: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "kitchen:read", "reservations:read", "reservations:write", "hall:read", "hall:write", "reports:read"],
   kitchen: ["dashboard:read", "orders:read", "orders:transition", "kitchen:read"],
   viewer: ["dashboard:read", "orders:read", "reservations:read", "hall:read"],
