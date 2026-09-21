@@ -40,6 +40,7 @@ export const pageLastUpdated = {
   "/menu": "2026-09-17",
   "/offers": "2026-08-16",
   "/book-a-table": "2026-09-14",
+  "/special-days": "2026-09-21",
   "/restaurant": "2026-09-17",
   "/hall": "2026-09-17",
   "/careers": "2026-09-17",

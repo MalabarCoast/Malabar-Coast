@@ -40,6 +40,7 @@ const imageFiles = {
   lambTikka: "menu/lamb-tikka.png",
   chickenBiriyani: "menu/chicken-biriyani.png",
   gulabJamun: "menu/gulab-jamun.png",
+  christmasHero: "christmas/christmas-booking-hero.png",
 } as const;
 
 type AssetKey = keyof typeof imageFiles;
@@ -396,6 +397,48 @@ async function seed() {
     terms: "Add the confirmed offer conditions before publishing.",
     displayOrder: 100,
   });
+
+  const christmasCampaignId = await upsertByField("specialDayCampaign", "slug.current", "christmas", {
+    title: "A Malabar Coast Christmas",
+    slug: {_type: "slug", current: "christmas"},
+    status: "active",
+    desktopHero: image("christmasHero", "A Nordic and Indian Christmas night at Malabar Coast"),
+    mobileHero: image("christmasHero", "A Nordic and Indian Christmas night at Malabar Coast"),
+    logoRibbon: "Christmas at the coast",
+    greeting: "God Jul · Merry Christmas · ക്രിസ്മസ് ആശംസകൾ",
+    heroHeading: "A table wrapped",
+    heroAccent: "in Christmas.",
+    heroText: "Nordic winter magic, Indian warmth and the people you love around one table.",
+    primaryActionLabel: "Reserve your table",
+    soundActionLabel: "Ring the bells",
+    scrollLabel: "Follow the starlight",
+    storyEyebrow: "Two coasts, one Christmas",
+    storyHeading: "From saffron glow to Nordic snow.",
+    storyItems: [
+      {_type: "object", _key: "star", symbol: "✦", title: "Star lantern", copy: "The warm glow of Kerala paper stars meets the Swedish julstjärna."},
+      {_type: "object", _key: "heart", symbol: "♥", title: "Woven heart", copy: "A Scandinavian Christmas heart, coloured with Malabar marigold and saffron."},
+      {_type: "object", _key: "dala", symbol: "♞", title: "Dala & diya", copy: "Nordic folk red sits beside the gentle gleam of a traditional brass lamp."},
+    ],
+    bookingEyebrow: "Your festive gathering",
+    bookingHeading: "Save a seat for Christmas.",
+    bookingText: "Not quite julbord. Not quite a Kerala feast. Entirely Malabar Coast—prepared with care for family suppers, work parties and winter date nights.",
+    occasionLabel: "Christmas gathering",
+    confirmationEyebrow: "Christmas is on the calendar",
+    formHeading: "Tell us who's coming.",
+    confirmationHeading: "Your table is confirmed.",
+    promiseTitle: "Made for every guest",
+    promiseText: "Tell us about allergies, accessibility needs and little details that help us welcome you well.",
+    submitLabel: "Reserve our Christmas table",
+    closingEyebrow: "God jul från Malabar Coast",
+    closingHeading: "Warm spice. Winter light. A very merry table.",
+    closingLink: {_type: "link", label: "Explore the menu", href: "/menu", openInNewTab: false},
+    palette: {night: "#061A1D", evergreen: "#174C38", berry: "#931F2E", gold: "#F6C96F", cream: "#F4EAD4", ink: "#102D28"},
+    emblemStyle: "winter",
+    ambientEffect: "snow",
+    enableSound: true,
+    seo: {title: "Christmas Table Booking", description: "Reserve a festive Christmas table at Malabar Coast in Holytown.", image: image("christmasHero", "A Nordic and Indian Christmas night at Malabar Coast")},
+  });
+  await client.createOrReplace({_id: "bookingExperienceSettings", _type: "bookingExperienceSettings", bookingMode: "regular", activeCampaign: {_type: "reference", _ref: christmasCampaignId}, note: "Switch to special when the seasonal booking page should replace /book-a-table."});
 
   const legalSeeds = [
     {pageKey: "privacy", title: "Privacy Policy", summary: "How Malabar Coast collects, uses, shares and protects personal data under UK data protection law.", body: [block("The complete checked-in privacy policy remains the website fallback. Update and legally review the CMS version before publishing substantial policy changes.", "privacy-body")]},

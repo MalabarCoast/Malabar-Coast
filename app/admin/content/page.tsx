@@ -56,6 +56,8 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
   const createDish = studioIntent(studioUrl, "create", "menuItem");
   const createPromotion = studioIntent(studioUrl, "create", "promotion");
   const createSpecial = studioIntent(studioUrl, "create", "dailySpecial");
+  const createSpecialDay = studioIntent(studioUrl, "create", "specialDayCampaign");
+  const bookingRoute = studioIntent(studioUrl, "edit", "bookingExperienceSettings", "bookingExperienceSettings");
 
   return <AdminFrame active="/admin/content" session={session}>
     <AdminPageHeader
@@ -74,6 +76,7 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
       <MetricCard label="Orderable now" value={orderableItems.length} detail="Available with a valid online price" tone={orderableItems.length ? "good" : undefined}/>
       <MetricCard label="Today's specials" value={activeSpecials.length} detail={`${overview?.dailySpecials.length ?? 0} prepared in CMS`} tone={activeSpecials.length ? "good" : undefined}/>
       <MetricCard label="Active offers" value={activePromotions.length} detail={`${activePromotions.filter((promotion) => promotion.showOnHomepage).length} in homepage popup`}/>
+      <MetricCard label="Booking route" value={overview?.bookingExperience?.bookingMode === "special" ? "Special" : "Regular"} detail={overview?.bookingExperience?.activeCampaign?.title || "Standard table booking"} tone="good"/>
     </section>
 
     {!projectReady && <section className="adminAlert isError adminContentConnection">
@@ -134,6 +137,9 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
       <article className="adminPanel adminWebsiteSurfaces">
         <div className="adminPanelHeading"><div><p>Pages and trust content</p><h2>Website surfaces</h2></div></div>
         <div className="adminSurfaceRows">
+          <a href={bookingRoute || studioUrl || "#"} target="_blank" rel="noreferrer"><span>Booking route switch</span><strong>{overview?.bookingExperience?.bookingMode === "special" ? `Special · ${overview.bookingExperience.activeCampaign?.title || "select a page"}` : "Regular booking page"}</strong></a>
+          {createSpecialDay && <a href={createSpecialDay} target="_blank" rel="noreferrer"><span>Create special-day page</span><strong>{overview?.specialDays.length ?? 0} reusable campaigns</strong></a>}
+          {overview?.specialDays.map((campaign) => <a href={studioIntent(studioUrl, "edit", "specialDayCampaign", campaign._id) || studioUrl || "#"} target="_blank" rel="noreferrer" key={campaign._id}><span>{campaign.title}</span><small>/special-days/{campaign.slug} · {campaign.status}</small></a>)}
           <a href={studioIntent(studioUrl, "edit", "siteSettings", "siteSettings") || studioUrl || "#"} target="_blank" rel="noreferrer"><span>Brand & contact</span><strong>{overview?.hasSiteSettings ? "Connected" : "Needs setup"}</strong></a>
           <Link href="/admin/schedule"><span>Opening hours</span><strong>Website, bookings & orders</strong></Link>
           <a href={studioIntent(studioUrl, "edit", "menuPage", "menuPage") || studioUrl || "#"} target="_blank" rel="noreferrer"><span>Menu storytelling</span><strong>{overview?.hasMenuPage ? "Connected" : "Needs setup"}</strong></a>

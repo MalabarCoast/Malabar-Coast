@@ -2,6 +2,7 @@ import type {MetadataRoute} from "next";
 import {listCareers} from "./lib/career-store";
 import {careerSlug} from "./lib/careers";
 import {absoluteUrl, pageLastUpdated} from "./lib/site";
+import {getLiveSpecialDayCampaigns} from "@/sanity/lib/special-days";
 
 const updated = (path: keyof typeof pageLastUpdated) => new Date(`${pageLastUpdated[path]}T00:00:00.000Z`);
 
@@ -11,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {url: absoluteUrl("/menu"), lastModified: updated("/menu"), changeFrequency: "weekly", priority: .95},
     {url: absoluteUrl("/offers"), lastModified: updated("/offers"), changeFrequency: "daily", priority: .9},
     {url: absoluteUrl("/book-a-table"), lastModified: updated("/book-a-table"), changeFrequency: "weekly", priority: .95},
+    {url: absoluteUrl("/special-days"), lastModified: updated("/special-days"), changeFrequency: "weekly", priority: .75},
     {url: absoluteUrl("/restaurant"), lastModified: updated("/restaurant"), changeFrequency: "monthly", priority: .9},
     {url: absoluteUrl("/hall"), lastModified: updated("/hall"), changeFrequency: "monthly", priority: .9},
     {url: absoluteUrl("/careers"), lastModified: updated("/careers"), changeFrequency: "weekly", priority: .7},
@@ -25,10 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const today = new Intl.DateTimeFormat("sv-SE", {timeZone: "Europe/London"}).format(new Date());
-    const careers: MetadataRoute.Sitemap = (await listCareers())
+    const [careerRecords, specialDayCampaigns] = await Promise.all([listCareers(), getLiveSpecialDayCampaigns()]);
+    const careers: MetadataRoute.Sitemap = careerRecords
       .filter((job) => job.status === "published" && (!job.closingDate || job.closingDate >= today))
       .map((job) => ({url: absoluteUrl(`/careers/${careerSlug(job)}`), lastModified: new Date(job.updatedAt), changeFrequency: "weekly" as const, priority: .65}));
-    return [...pages, ...careers];
+    const specialDays: MetadataRoute.Sitemap = specialDayCampaigns.map((campaign) => ({url: absoluteUrl(`/special-days/${campaign.slug}`), lastModified: new Date(campaign.updatedAt), changeFrequency: "weekly" as const, priority: .85}));
+    return [...pages, ...specialDays, ...careers];
   } catch (error) {
     console.error("Career sitemap entries could not be loaded; returning the public page sitemap.", error instanceof Error ? error.name : "UnknownError");
     return pages;

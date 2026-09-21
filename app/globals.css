@@ -1828,6 +1828,7 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .promotionPopupClose:focus-visible { outline: 2px solid #c79b55; outline-offset: 3px; }
 .promotionPopupPoster { position: relative; min-height: 37rem; background: #111d19; }
 .promotionPopupPoster img { object-fit: contain; }
+.promotionPopupPosterMobile { display: none; }
 .promotionPopupCopy { display: flex; flex-direction: column; justify-content: center; padding: clamp(3rem, 5vw, 5.5rem) clamp(1.5rem, 4vw, 4.5rem); }
 .promotionPopupCopy > p { margin: 0 0 1.1rem; color: #c79b55; font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; }
 .promotionPopupCopy h2 { margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(2.8rem, 5vw, 5.2rem); font-weight: 400; line-height: .86; letter-spacing: -.045em; text-transform: uppercase; }
@@ -1877,6 +1878,8 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   .promotionPopup { padding: max(.65rem, env(safe-area-inset-top)) max(.65rem, env(safe-area-inset-right)) max(.65rem, env(safe-area-inset-bottom)) max(.65rem, env(safe-area-inset-left)); }
   .promotionPopupDialog { display: block; max-height: calc(100dvh - max(1.3rem, env(safe-area-inset-top) + env(safe-area-inset-bottom))); overscroll-behavior: contain; }
   .promotionPopupPoster { min-height: min(56svh, 30rem); }
+  .promotionPopupPosterDesktop { display: none; }
+  .promotionPopupPosterMobile { display: block; }
   .promotionPopupCopy { padding: 2rem 1.25rem 5rem; }
   .promotionPopupCopy h2 { font-size: clamp(2.6rem, 12vw, 4rem); }
   .promotionPopupNav { left: 1rem; }

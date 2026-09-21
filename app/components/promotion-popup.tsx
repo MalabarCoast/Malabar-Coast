@@ -5,7 +5,7 @@ import Link from "next/link";
 import {useEffect, useMemo, useRef, useState} from "react";
 import type {Promotion} from "@/sanity/lib/promotions";
 
-const POPUP_DELAY_MS = 900;
+const POPUP_DELAY_MS = 450;
 const SLIDE_INTERVAL_MS = 6500;
 
 export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; ready: boolean}) {
@@ -14,7 +14,7 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
   const [activeIndex, setActiveIndex] = useState(0);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const storageKey = useMemo(() => `malabar-offers-seen:${popupPromotions.map((promotion) => promotion._id).join(",")}`, [popupPromotions]);
+  const storageKey = useMemo(() => `malabar-offers-seen:${popupPromotions.map((promotion) => `${promotion._id}:${promotion._updatedAt}`).join(",")}`, [popupPromotions]);
 
   useEffect(() => {
     if (!ready || popupPromotions.length === 0 || window.sessionStorage.getItem(storageKey)) return;
@@ -65,6 +65,8 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
 
   if (!open || popupPromotions.length === 0) return null;
   const activePromotion = popupPromotions[Math.min(activeIndex, popupPromotions.length - 1)];
+  const desktopPoster = activePromotion.popupDesktopPoster || activePromotion.poster;
+  const mobilePoster = activePromotion.popupMobilePoster || activePromotion.popupDesktopPoster || activePromotion.poster;
 
   const close = () => {
     window.sessionStorage.setItem(storageKey, "1");
@@ -78,14 +80,24 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
     <div className="promotionPopup" role="presentation" onMouseDown={(event) => event.currentTarget === event.target && close()}>
       <div ref={dialogRef} className="promotionPopupDialog" role="dialog" aria-modal="true" aria-labelledby="promotion-popup-title">
         <button ref={closeButtonRef} className="promotionPopupClose" type="button" onClick={close} aria-label="Close offers popup">×</button>
-        <div className="promotionPopupPoster">
+        <div className="promotionPopupPoster promotionPopupPosterDesktop">
           <Image
-            src={activePromotion.poster.url}
-            alt={activePromotion.poster.alt}
+            src={desktopPoster.url}
+            alt={desktopPoster.alt}
             fill
             sizes="(max-width: 720px) 92vw, 480px"
-            placeholder={activePromotion.poster.lqip ? "blur" : "empty"}
-            blurDataURL={activePromotion.poster.lqip}
+            placeholder={desktopPoster.lqip ? "blur" : "empty"}
+            blurDataURL={desktopPoster.lqip}
+          />
+        </div>
+        <div className="promotionPopupPoster promotionPopupPosterMobile">
+          <Image
+            src={mobilePoster.url}
+            alt={mobilePoster.alt}
+            fill
+            sizes="92vw"
+            placeholder={mobilePoster.lqip ? "blur" : "empty"}
+            blurDataURL={mobilePoster.lqip}
           />
         </div>
         <div className="promotionPopupCopy">

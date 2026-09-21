@@ -13,6 +13,9 @@ import {siteSettings} from './documents/siteSettings'
 import {testimonial} from './documents/testimonial'
 import {promotion} from './documents/promotion'
 import {dailySpecial} from './documents/dailySpecial'
+import {campaignPalette} from './objects/campaignPalette'
+import {specialDayCampaign} from './documents/specialDayCampaign'
+import {bookingExperienceSettings} from './documents/bookingExperienceSettings'
 
 export const schemaTypes = [
   imageWithAlt,
@@ -30,4 +33,7 @@ export const schemaTypes = [
   testimonial,
   promotion,
   dailySpecial,
+  campaignPalette,
+  specialDayCampaign,
+  bookingExperienceSettings,
 ]

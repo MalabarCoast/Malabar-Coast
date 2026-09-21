@@ -15,6 +15,8 @@ import {OpeningHours} from "./components/opening-hours";
 import type {RestaurantSchedule} from "./lib/restaurant-schedule";
 import {malabarCoastIntroduction} from "./lib/brand-content";
 import {formatPublicDate, pageLastUpdated, site} from "./lib/site";
+import {PromotionPopup} from "./components/promotion-popup";
+import type {Promotion} from "@/sanity/lib/promotions";
 
 const REDUCED_MOTION_INTRO_DELAY_MS = 120;
 const REPLAY_INTRO_EVENT = "malabar:replay-intro";
@@ -53,7 +55,7 @@ function CompassMark() {
   );
 }
 
-export function HomeExperience({content, menuItems, dailySpecials, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; dailySpecials: DailySpecial[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
+export function HomeExperience({content, menuItems, dailySpecials, promotions, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; dailySpecials: DailySpecial[]; promotions: Promotion[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
   const [introActive, setIntroActive] = useState(true);
   const [heroFooterRevealed, setHeroFooterRevealed] = useState(false);
   const latitude = content.coordinates?.latitude ?? site.geo.latitude;
@@ -95,6 +97,7 @@ export function HomeExperience({content, menuItems, dailySpecials, bookingSettin
       className={`homePage ${introActive ? "introActive" : "introComplete"}`}
       aria-busy={introActive}
     >
+      <PromotionPopup promotions={promotions} ready={!introActive}/>
       <section className="hero" aria-labelledby="hero-title">
       {introActive && (
         <div

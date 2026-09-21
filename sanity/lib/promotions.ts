@@ -4,6 +4,7 @@ import {sanitisePublicLink} from './links'
 
 export type Promotion = {
   _id: string
+  _updatedAt: string
   title: string
   badge?: string
   summary?: string
@@ -21,6 +22,8 @@ export type Promotion = {
     lqip?: string
     dimensions?: {width: number; height: number; aspectRatio: number}
   }
+  popupDesktopPoster?: Promotion['poster']
+  popupMobilePoster?: Promotion['poster']
 }
 
 export async function getActivePromotions(): Promise<Promotion[]> {
