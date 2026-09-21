@@ -43,10 +43,21 @@ export type AdminPageRecord = {
   updatedAt: string;
 };
 
+export type AdminSpecialDayRecord = {
+  _id: string;
+  title: string;
+  slug: string;
+  status: "active" | "paused";
+  updatedAt: string;
+  desktopHero?: {url?: string; alt?: string};
+};
+
 export type AdminContentOverview = {
   menuItems: AdminMenuRecord[];
   promotions: AdminPromotionRecord[];
   dailySpecials: AdminDailySpecialRecord[];
+  specialDays: AdminSpecialDayRecord[];
+  bookingExperience?: {bookingMode: "regular" | "special"; activeCampaign?: {_id: string; title: string; slug: string}};
   pages: AdminPageRecord[];
   categoryCount: number;
   faqCount: number;
@@ -86,6 +97,18 @@ export const adminContentOverviewQuery = defineQuery(`{
     pricePence,
     "updatedAt": _updatedAt,
     image {alt, "url": asset->url}
+  },
+  "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    "status": coalesce(status, "paused"),
+    "updatedAt": _updatedAt,
+    desktopHero {alt, "url": asset->url}
+  },
+  "bookingExperience": *[_id == "bookingExperienceSettings"][0] {
+    "bookingMode": coalesce(bookingMode, "regular"),
+    activeCampaign->{_id, title, "slug": slug.current}
   },
   "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {
     _id,

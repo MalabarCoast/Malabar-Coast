@@ -16,6 +16,8 @@ export const promotion = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({name: 'poster', title: 'Offer poster', type: 'imageWithAlt', validation: (rule) => rule.required()}),
+    defineField({name: 'popupDesktopPoster', title: 'Homepage popup · desktop poster', type: 'imageWithAlt', description: 'Optional wide or landscape artwork for the homepage popup. Falls back to the offer poster.'}),
+    defineField({name: 'popupMobilePoster', title: 'Homepage popup · mobile poster', type: 'imageWithAlt', description: 'Optional portrait artwork for phones. Falls back to the desktop popup poster, then the offer poster.'}),
     defineField({name: 'badge', title: 'Short badge', type: 'string', description: 'For example “Weekend offer” or “New”.', validation: (rule) => rule.max(35)}),
     defineField({name: 'summary', title: 'Short description', type: 'text', rows: 3, validation: (rule) => rule.max(220)}),
     defineField({name: 'offerCode', title: 'Offer code', type: 'string', validation: (rule) => rule.max(30)}),

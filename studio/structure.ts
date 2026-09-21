@@ -9,11 +9,13 @@ export const structure: StructureResolver = (S) =>
     .items([
       singleton(S, 'Site settings', 'siteSettings', 'siteSettings'),
       singleton(S, 'Menu page', 'menuPage', 'menuPage'),
+      singleton(S, 'Booking route', 'bookingExperienceSettings', 'bookingExperienceSettings'),
       S.divider(),
       S.listItem().title('Menu items').schemaType('menuItem').child(S.documentTypeList('menuItem').title('Menu items').defaultOrdering([{field: 'displayOrder', direction: 'asc'}])),
       S.listItem().title('Menu categories').schemaType('menuCategory').child(S.documentTypeList('menuCategory').title('Menu categories').defaultOrdering([{field: 'orderRank', direction: 'asc'}])),
       S.divider(),
       S.listItem().title('Promotions & offers').schemaType('promotion').child(S.documentTypeList('promotion').title('Promotions & offers').defaultOrdering([{field: 'displayOrder', direction: 'asc'}])),
+      S.listItem().title('Special-day booking pages').schemaType('specialDayCampaign').child(S.documentTypeList('specialDayCampaign').title('Special-day booking pages').defaultOrdering([{field: '_createdAt', direction: 'desc'}])),
       S.listItem().title("Today's specials").schemaType('dailySpecial').child(S.documentTypeList('dailySpecial').title("Today's specials").defaultOrdering([{field: 'displayOrder', direction: 'asc'}])),
       S.divider(),
       S.listItem().title('Website pages').schemaType('marketingPage').child(S.documentTypeList('marketingPage').title('Website pages')),

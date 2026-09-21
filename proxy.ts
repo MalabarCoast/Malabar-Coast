@@ -33,7 +33,7 @@ export default function proxy(request: NextRequest) {
     // without CSP level 3 support; nonce-aware browsers discard it.
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https:${isDevelopment ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com",
+    "img-src 'self' data: blob: https://cdn.sanity.io https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com",
     "font-src 'self' data:",
     `connect-src 'self'${supabaseConnectSources()}`,
     "frame-src 'self' https://www.google.com https://maps.google.com",

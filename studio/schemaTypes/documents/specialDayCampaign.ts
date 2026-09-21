@@ -1,0 +1,68 @@
+import {defineArrayMember, defineField, defineType} from 'sanity'
+
+export const specialDayCampaign = defineType({
+  name: 'specialDayCampaign',
+  title: 'Special-day booking page',
+  type: 'document',
+  groups: [
+    {name: 'identity', title: 'Identity', default: true},
+    {name: 'hero', title: 'Hero'},
+    {name: 'story', title: 'Story'},
+    {name: 'booking', title: 'Booking introduction'},
+    {name: 'theme', title: 'Theme'},
+    {name: 'seo', title: 'SEO'},
+  ],
+  fields: [
+    defineField({name: 'title', title: 'Internal campaign name', type: 'string', group: 'identity', validation: (rule) => rule.required().min(3).max(90)}),
+    defineField({name: 'slug', title: 'Public URL slug', type: 'slug', group: 'identity', options: {source: 'title'}, description: 'Published at /special-days/your-slug.', validation: (rule) => rule.required()}),
+    defineField({name: 'status', title: 'Campaign status', type: 'string', group: 'identity', options: {list: [{title: 'Active', value: 'active'}, {title: 'Paused', value: 'paused'}], layout: 'radio'}, initialValue: 'active', validation: (rule) => rule.required()}),
+    defineField({name: 'startsAt', title: 'Available from', type: 'datetime', group: 'identity'}),
+    defineField({name: 'endsAt', title: 'Available until', type: 'datetime', group: 'identity', validation: (rule) => rule.custom((value, context) => !value || !context.document?.startsAt || new Date(String(value)) > new Date(String(context.document.startsAt)) || 'Available until must be later than Available from.')}),
+
+    defineField({name: 'desktopHero', title: 'Desktop hero banner', type: 'imageWithAlt', group: 'hero', description: 'Wide artwork, ideally 16:9.', validation: (rule) => rule.required()}),
+    defineField({name: 'mobileHero', title: 'Mobile hero banner', type: 'imageWithAlt', group: 'hero', description: 'Portrait artwork, ideally 4:5. Falls back to the desktop banner.'}),
+    defineField({name: 'campaignLogo', title: 'Optional campaign logo', type: 'imageWithAlt', group: 'hero', description: 'Use a seasonal Malabar Coast logo here. The standard logo is used when empty.'}),
+    defineField({name: 'logoRibbon', title: 'Logo ribbon label', type: 'string', group: 'hero', validation: (rule) => rule.required().max(45)}),
+    defineField({name: 'greeting', title: 'Greeting line', type: 'string', group: 'hero', validation: (rule) => rule.required().max(140)}),
+    defineField({name: 'heroHeading', title: 'Hero heading', type: 'string', group: 'hero', validation: (rule) => rule.required().max(90)}),
+    defineField({name: 'heroAccent', title: 'Hero accent line', type: 'string', group: 'hero', description: 'Rendered in italic beneath the main heading.', validation: (rule) => rule.max(70)}),
+    defineField({name: 'heroText', title: 'Hero introduction', type: 'text', rows: 3, group: 'hero', validation: (rule) => rule.required().max(260)}),
+    defineField({name: 'primaryActionLabel', title: 'Booking button label', type: 'string', group: 'hero', initialValue: 'Reserve your table', validation: (rule) => rule.required().max(45)}),
+    defineField({name: 'soundActionLabel', title: 'Jingle button label', type: 'string', group: 'hero', initialValue: 'Ring the bells', validation: (rule) => rule.max(35)}),
+    defineField({name: 'jingle', title: 'Optional campaign jingle', type: 'file', group: 'hero', options: {accept: 'audio/*'}, description: 'Played only after a guest presses the sound button. The built-in bell melody is used when empty.'}),
+    defineField({name: 'scrollLabel', title: 'Scroll prompt', type: 'string', group: 'hero', initialValue: 'Follow the starlight', validation: (rule) => rule.max(45)}),
+
+    defineField({name: 'storyEyebrow', title: 'Story eyebrow', type: 'string', group: 'story', validation: (rule) => rule.max(60)}),
+    defineField({name: 'storyHeading', title: 'Story heading', type: 'string', group: 'story', validation: (rule) => rule.required().max(100)}),
+    defineField({name: 'storyItems', title: 'Interactive story stickers', type: 'array', group: 'story', validation: (rule) => rule.required().min(1).max(6), of: [defineArrayMember({type: 'object', fields: [
+      defineField({name: 'symbol', title: 'Symbol or emoji', type: 'string', validation: (rule) => rule.required().max(8)}),
+      defineField({name: 'title', title: 'Sticker title', type: 'string', validation: (rule) => rule.required().max(35)}),
+      defineField({name: 'copy', title: 'Sticker explanation', type: 'text', rows: 2, validation: (rule) => rule.required().max(180)}),
+    ], preview: {select: {title: 'title', subtitle: 'copy'}}})]}),
+
+    defineField({name: 'bookingEyebrow', title: 'Booking eyebrow', type: 'string', group: 'booking', validation: (rule) => rule.max(60)}),
+    defineField({name: 'bookingHeading', title: 'Booking heading', type: 'string', group: 'booking', validation: (rule) => rule.required().max(100)}),
+    defineField({name: 'bookingText', title: 'Booking introduction', type: 'text', rows: 4, group: 'booking', validation: (rule) => rule.required().max(420)}),
+    defineField({name: 'occasionLabel', title: 'Default occasion label', type: 'string', group: 'booking', description: 'The first option in the fixed booking form.', validation: (rule) => rule.required().max(55)}),
+    defineField({name: 'confirmationEyebrow', title: 'Confirmation eyebrow', type: 'string', group: 'booking', validation: (rule) => rule.max(70)}),
+    defineField({name: 'formHeading', title: 'Form heading', type: 'string', group: 'booking', initialValue: "Tell us who's coming.", validation: (rule) => rule.required().max(80)}),
+    defineField({name: 'confirmationHeading', title: 'Confirmation heading', type: 'string', group: 'booking', initialValue: 'Your table is confirmed.', validation: (rule) => rule.required().max(80)}),
+    defineField({name: 'promiseTitle', title: 'Guest promise title', type: 'string', group: 'booking', validation: (rule) => rule.max(70)}),
+    defineField({name: 'promiseText', title: 'Guest promise text', type: 'text', rows: 3, group: 'booking', validation: (rule) => rule.max(240)}),
+    defineField({name: 'submitLabel', title: 'Submit button label', type: 'string', group: 'booking', validation: (rule) => rule.required().max(55)}),
+    defineField({name: 'closingEyebrow', title: 'Closing eyebrow', type: 'string', group: 'booking', validation: (rule) => rule.max(70)}),
+    defineField({name: 'closingHeading', title: 'Closing heading', type: 'string', group: 'booking', validation: (rule) => rule.required().max(120)}),
+    defineField({name: 'closingLink', title: 'Closing link', type: 'link', group: 'booking'}),
+
+    defineField({name: 'palette', title: 'Page colours', type: 'campaignPalette', group: 'theme', initialValue: {night: '#061A1D', evergreen: '#174C38', berry: '#931F2E', gold: '#F6C96F', cream: '#F4EAD4', ink: '#102D28'}, validation: (rule) => rule.required()}),
+    defineField({name: 'emblemStyle', title: 'Logo decoration', type: 'string', group: 'theme', options: {list: [{title: 'Winter wreath and hat', value: 'winter'}, {title: 'Festival flowers', value: 'floral'}, {title: 'Classic logo', value: 'classic'}], layout: 'radio'}, initialValue: 'classic', validation: (rule) => rule.required()}),
+    defineField({name: 'ambientEffect', title: 'Ambient page effect', type: 'string', group: 'theme', options: {list: [{title: 'No effect', value: 'none'}, {title: 'Falling snow', value: 'snow'}, {title: 'Falling flower petals', value: 'petals'}], layout: 'radio'}, initialValue: 'none', validation: (rule) => rule.required()}),
+    defineField({name: 'enableSound', title: 'Show the sound button', type: 'boolean', group: 'theme', initialValue: false, description: 'Enable only when a suitable campaign jingle is uploaded or the built-in Christmas bells are appropriate.'}),
+    defineField({name: 'seo', title: 'Search and sharing', type: 'seo', group: 'seo'}),
+  ],
+  orderings: [{title: 'Newest first', name: 'newestFirst', by: [{field: '_createdAt', direction: 'desc'}]}],
+  preview: {
+    select: {title: 'title', slug: 'slug.current', status: 'status', media: 'desktopHero'},
+    prepare: ({title, slug, status, media}) => ({title, subtitle: `${status === 'active' ? 'Active' : 'Paused'} · /special-days/${slug || 'add-a-slug'}`, media}),
+  },
+})

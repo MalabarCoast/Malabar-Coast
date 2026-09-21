@@ -195,6 +195,7 @@ export const activePromotionsQuery = defineQuery(`
     (!defined(endsAt) || endsAt >= now())
   ] | order(displayOrder asc, startsAt desc, _createdAt desc) {
     _id,
+    _updatedAt,
     title,
     badge,
     summary,
@@ -213,9 +214,119 @@ export const activePromotionsQuery = defineQuery(`
       "url": asset->url,
       "dimensions": asset->metadata.dimensions,
       "lqip": asset->metadata.lqip
+    },
+    popupDesktopPoster {
+      alt,
+      caption,
+      hotspot,
+      crop,
+      "url": asset->url,
+      "dimensions": asset->metadata.dimensions,
+      "lqip": asset->metadata.lqip
+    },
+    popupMobilePoster {
+      alt,
+      caption,
+      hotspot,
+      crop,
+      "url": asset->url,
+      "dimensions": asset->metadata.dimensions,
+      "lqip": asset->metadata.lqip
     }
   }
 `);
+
+export const bookingExperienceSettingsQuery = defineQuery(`*[_id == "bookingExperienceSettings"][0] {
+  "bookingMode": coalesce(bookingMode, "regular"),
+  activeCampaign->{
+    _id,
+    "slug": slug.current,
+    "status": coalesce(status, "paused"),
+    startsAt,
+    endsAt
+  }
+}`);
+
+export const specialDayCampaignQuery = defineQuery(`*[
+  _type == "specialDayCampaign" && slug.current == $slug
+][0] {
+  _id,
+  _updatedAt,
+  title,
+  "slug": slug.current,
+  "status": coalesce(status, "paused"),
+  startsAt,
+  endsAt,
+  logoRibbon,
+  greeting,
+  heroHeading,
+  heroAccent,
+  heroText,
+  primaryActionLabel,
+  soundActionLabel,
+  scrollLabel,
+  storyEyebrow,
+  storyHeading,
+  storyItems[] {_key, symbol, title, copy},
+  bookingEyebrow,
+  bookingHeading,
+  bookingText,
+  occasionLabel,
+  confirmationEyebrow,
+  formHeading,
+  confirmationHeading,
+  promiseTitle,
+  promiseText,
+  submitLabel,
+  closingEyebrow,
+  closingHeading,
+  closingLink,
+  palette,
+  emblemStyle,
+  ambientEffect,
+  enableSound,
+  desktopHero {
+    alt,
+    caption,
+    hotspot,
+    crop,
+    "url": asset->url,
+    "dimensions": asset->metadata.dimensions,
+    "lqip": asset->metadata.lqip
+  },
+  mobileHero {
+    alt,
+    caption,
+    hotspot,
+    crop,
+    "url": asset->url,
+    "dimensions": asset->metadata.dimensions,
+    "lqip": asset->metadata.lqip
+  },
+  campaignLogo {
+    alt,
+    caption,
+    hotspot,
+    crop,
+    "url": asset->url,
+    "dimensions": asset->metadata.dimensions,
+    "lqip": asset->metadata.lqip
+  },
+  "jingleUrl": jingle.asset->url,
+  seo {
+    title,
+    description,
+    noIndex,
+    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}
+  }
+}`);
+
+export const liveSpecialDayCampaignsQuery = defineQuery(`*[
+  _type == "specialDayCampaign" &&
+  status == "active" &&
+  (!defined(startsAt) || startsAt <= now()) &&
+  (!defined(endsAt) || endsAt >= now())
+] | order(_updatedAt desc) {"slug": slug.current, "updatedAt": _updatedAt}`);
 
 export const activeDailySpecialsQuery = defineQuery(`
   *[

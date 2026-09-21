@@ -4,6 +4,8 @@ import { getBookingSettings } from "../lib/booking-store";
 import {getRestaurantSchedule} from "../lib/schedule-store";
 import Link from "next/link";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
+import {redirect} from "next/navigation";
+import {getBookingExperienceSettings, isCampaignLive} from "@/sanity/lib/special-days";
 
 export const dynamic = "force-dynamic";
 const fallbackMetadata: Metadata = { title: "Book a Table", description: "Reserve a table at Malabar Coast in Holytown.", alternates: { canonical: "/book-a-table" } };
@@ -13,7 +15,10 @@ export function generateMetadata() {
 }
 
 export default async function BookATablePage() {
-  const [settings, schedule, page] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table")]);
+  const [settings, schedule, page, bookingExperience] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table"), getBookingExperienceSettings()]);
+  if (bookingExperience.bookingMode === "special" && bookingExperience.activeCampaign?.slug && isCampaignLive(bookingExperience.activeCampaign)) {
+    redirect(`/special-days/${bookingExperience.activeCampaign.slug}`);
+  }
   const details = getPageSection(page, "booking-details");
   return <main className="bookingPage">
     <section className="bookingIntro"><p>{page?.eyebrow || "Book your table · Holytown"}</p><h1>{page?.heroHeading || <>Come sit<br />by the coast.</>}</h1><span>{page?.heroText || `Choose a date, arrival time and party size. We check the restaurant's live ${settings.capacity}-seat capacity before confirming your table.`}<span className="bookingIntroLinks"><Link href={page?.heroPrimaryLink?.href || "/menu"}>{page?.heroPrimaryLink?.label || "See what's cooking"} <b aria-hidden="true">↗</b></Link><Link href={page?.heroSecondaryLink?.href || "/hall"}>{page?.heroSecondaryLink?.label || "Planning something bigger?"} <b aria-hidden="true">↗</b></Link></span></span></section>
