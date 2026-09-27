@@ -13,6 +13,7 @@ const fallbackNavigationDescriptions: Record<string, string> = {
   "/story": "From India's spice coast to Scotland",
   "/offers": "Today's specials, posters and offers",
   "/restaurant": "The room, the team and how to find us",
+  "/hall": "Celebrate, gather and enquire about the private event space",
   "/faq": "Helpful answers before you visit",
   "/checkout": "Review your basket and continue",
 };
@@ -154,8 +155,9 @@ export function SiteHeader({settings}: {settings: SiteSettings}) {
           <p>Everything, one tap away</p>
           <div className="menuQuickLinks" aria-label="Popular choices">
             {["/menu", "/book-a-table", "/hall"].map((href) => {
-              const link = settings.primaryNavigation.find((entry) => entry.href === href) || {href, label: href === "/menu" ? "Menu" : href === "/hall" ? "Private hall" : "Book a table"};
-              return <Link href={href} key={href} onClick={() => setMenuOpenedOnPath(null)}><small>{link.eyebrow || (href === "/menu" ? "Food & drink" : href === "/hall" ? "Private events" : "Reservations")}</small><strong>{link.label}</strong><span aria-hidden="true">{href === "/book-a-table" ? "→" : "↗"}</span></Link>;
+              const link = settings.primaryNavigation.find((entry) => entry.href === href) || {href, label: href === "/menu" ? "Menu" : href === "/hall" ? "Special events" : "Book a table"};
+              const label = href === "/hall" ? "Special events" : link.label;
+              return <Link href={href} key={href} onClick={() => setMenuOpenedOnPath(null)}><small>{link.eyebrow || (href === "/menu" ? "Food & drink" : href === "/hall" ? "Events & private dining" : "Reservations")}</small><strong>{label}</strong><span aria-hidden="true">{href === "/book-a-table" ? "→" : "↗"}</span></Link>;
             })}
           </div>
           <nav aria-label="Menu">

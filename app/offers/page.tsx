@@ -22,6 +22,8 @@ export default async function OffersPage() {
   return (
     <main className="offersPage">
       <header className="offersHero">
+        <Image className="offersHeroImage" src="/restaurant/dining-room.png" alt="The dining room at Malabar Coast" fill sizes="100vw" priority />
+        <div className="offersHeroShade" />
         <p>{page?.eyebrow || "Current offers · From the coast"}</p>
         <h1>{page?.heroHeading || "Offers & specials."}</h1>
         <span>{page?.heroText || "Seasonal plates, dining offers and moments worth gathering for. Every live offer and its terms are shown below."}</span>
@@ -48,7 +50,6 @@ export default async function OffersPage() {
               {promotion.validityLabel && <small>{promotion.validityLabel}</small>}
               <div>
                 {promotion.callToAction?.href && <Link href={promotion.callToAction.href} target={promotion.callToAction.openInNewTab ? "_blank" : undefined} rel={promotion.callToAction.openInNewTab ? "noreferrer" : undefined}>{promotion.callToAction.label} <span aria-hidden="true">↗</span></Link>}
-                <Link href="/menu">Explore the menu <span aria-hidden="true">→</span></Link>
               </div>
               {promotion.terms && <details><summary>Offer terms</summary><p>{promotion.terms}</p></details>}
             </div>

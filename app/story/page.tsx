@@ -17,7 +17,7 @@ const fallbackMetadata: Metadata = {
     url: "/story",
     title: "From Malabar to Scotland | The Malabar Coast Story",
     description: "A cinematic journey through pepper, monsoon ports and the living coastal cuisine carried to Scotland.",
-    images: ["/og/story.png"],
+    images: ["/story/restaurant-kitchen-service.jpg"],
   },
 };
 
@@ -32,7 +32,7 @@ const storySchema = {
       "@type": "Article",
       headline: "From Malabar to Scotland",
       description: "The food story connecting Calicut's spice coast with the Malabar Coast restaurant in Holytown.",
-      image: absoluteUrl("/story/calicut-spice-port.png"),
+      image: absoluteUrl("/story/restaurant-kitchen-service.jpg"),
       mainEntityOfPage: absoluteUrl("/story"),
       datePublished: "2026-07-13",
       dateModified: pageLastUpdated["/story"],
@@ -55,9 +55,9 @@ const chapters = [
     eyebrow: "The coast",
     title: "A gateway to the world.",
     copy: "For more than three thousand years, the ports of Malabar welcomed sailors, merchants and new ideas. Pepper left these wet shores and quietly changed kitchens across the world.",
-    image: "/story/calicut-spice-port.png",
-    alt: "A rain-washed historic spice port on the Malabar Coast with an uru vessel offshore",
-    label: "Calicut · Arabian Sea",
+    image: "/story/restaurant-spice-prep.jpg",
+    alt: "A restaurant cook crushing black pepper and cardamom in a stone mortar during preparation",
+    label: "Pepper · Prepared by hand",
     cursor: "ENTER CALICUT",
   },
   {
@@ -65,9 +65,9 @@ const chapters = [
     eyebrow: "The exchange",
     title: "Where cultures met.",
     copy: "Arabia, Rome, China and Europe arrived with the monsoon winds. What they carried home mattered; what they left behind became part of Malabar’s generous, layered table.",
-    image: "/story/pepper-balance.png",
-    alt: "Peppercorns being weighed by hand on an old brass balance",
-    label: "Black pepper · The black gold",
+    image: "/story/restaurant-service-pass.jpg",
+    alt: "A cook passing a bowl of coconut fish curry to the restaurant service team",
+    label: "From kitchen · To table",
     cursor: "VIEW ARCHIVE",
   },
   {
@@ -75,37 +75,37 @@ const chapters = [
     eyebrow: "The living landscape",
     title: "History, still alive.",
     copy: "From coconut-fringed sea to the rain-soaked Western Ghats, the landscape still writes the menu: pepper, cardamom, seafood, rice and the deep warmth of the coast.",
-    image: "/story/western-ghats.png",
-    alt: "Pepper vines growing through the misty Western Ghats after monsoon rain",
-    label: "Western Ghats · After the monsoon",
+    image: "/story/restaurant-shared-table.jpg",
+    alt: "Guests passing appam across a shared table of Kerala dishes",
+    label: "Holytown · Shared generously",
     cursor: "FOLLOW THE RAIN",
   },
 ] as const;
 
 const dishesFromTheStory = [
   {
-    name: "Konju Coconut Fry",
+    name: "Meen Moilee",
     link: "/menu#malabar-coast-signature",
-    image: "/menu/calicut-pepper-prawns.png",
-    alt: "A coastal prawn dish inspired by Calicut's spice coast",
-    connection: "Calicut · Pepper",
-    description: "Prawns tossed with toasted coconut, curry leaves and Malabar spices for a dry, savoury finish.",
+    image: "/food/Meen Moilee.jpeg",
+    alt: "Meen Moilee served at Malabar Coast",
+    connection: "Kochi · Coconut",
+    description: "Fish gently cooked in a mild coconut sauce with ginger and curry leaves.",
   },
   {
-    name: "Chicken Tikka",
-    link: "/menu#clay-oven",
-    image: "/menu/chicken-tikka.png",
-    alt: "Charred chicken tikka with red onion and grilled lemon",
-    connection: "Delhi · Tandoor fire",
-    description: "Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre.",
+    name: "Indian Garlic Chilli Chicken",
+    link: "/menu#chicken",
+    image: "/food/indian garlic chilli chicken tikka.jpeg",
+    alt: "Indian garlic chilli chicken served at Malabar Coast",
+    connection: "Mumbai · Garlic and chilli",
+    description: "Chicken cooked in a bold garlic and chilli sauce with aromatic spices.",
   },
   {
-    name: "Gulab Jamun",
-    link: "/menu#desserts",
-    image: "/menu/gulab-jamun.png",
-    alt: "Gulab jamun in cardamom and saffron syrup",
-    connection: "Lucknow · Cardamom",
-    description: "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup.",
+    name: "Aattirachi Kurumulak",
+    link: "/menu#malabar-coast-signature",
+    image: "/food/aatirachi kurumulak ittath.jpeg",
+    alt: "Aattirachi Kurumulak with black pepper and curry leaves served at Malabar Coast",
+    connection: "Kozhikode · Black pepper",
+    description: "Slow-cooked lamb layered with cracked black pepper, shallots and curry leaves.",
   },
 ] as const;
 
@@ -113,7 +113,7 @@ export default async function StoryPage() {
   const cmsPage = await getMarketingPage("story");
   const inspirationSection = getPageSection(cmsPage, "story-inspiration");
   const inspirationParagraphs = portableTextToPlainText(inspirationSection?.body).split(/\n\s*\n/).filter(Boolean);
-  const cmsChapters = [getPageSection(cmsPage, "story-pepper"), getPageSection(cmsPage, "story-monsoon")];
+  const cmsChapters = [getPageSection(cmsPage, "story-pepper"), getPageSection(cmsPage, "story-monsoon"), getPageSection(cmsPage, "story-table")];
   const renderedChapters = chapters.map((chapter, index) => {
     const cmsChapter = cmsChapters[index];
     return cmsChapter ? {
@@ -134,8 +134,8 @@ export default async function StoryPage() {
         <div className="storyFilmHeroMedia absolute inset-0">
           <Image
             className="storyFilmHeroImage object-cover"
-            src={cmsPage?.heroImage?.url || "/story/calicut-spice-port.png"}
-            alt={cmsPage?.heroImage?.alt || "A rain-washed historic spice port on the Malabar Coast"}
+            src={cmsPage?.heroImage?.url || "/story/restaurant-kitchen-service.jpg"}
+            alt={cmsPage?.heroImage?.alt || "A restaurant cook finishing a coconut fish curry during service"}
             fill
             sizes="100vw"
             priority
@@ -211,7 +211,7 @@ export default async function StoryPage() {
               key={chapter.number}
             >
               <div className="storyAtlasImage">
-                <Image src={chapter.image} alt={chapter.alt} fill sizes="(max-width: 900px) 100vw, 58vw" />
+                <Image src={chapter.image} alt={chapter.alt} fill sizes="(max-width: 1024px) 100vw, 58vw" />
                 <span className="storyAtlasShade" />
               </div>
               <figcaption><span>{chapter.label}</span><span>{chapter.number} / 03</span></figcaption>

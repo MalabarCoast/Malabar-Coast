@@ -366,7 +366,7 @@
 .calicutNext > a i { font-size: clamp(3rem,8vw,8rem); font-style: normal; }
 .calicutNext small { display: block; margin-top: 2rem; font-size: .53rem; letter-spacing: .2em; text-transform: uppercase; }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .storyTableIntro { grid-template-columns: 1fr; }
   .storyTableGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .storyTableDish:last-child { grid-column: 1 / -1; }
@@ -440,7 +440,7 @@
   .storyConnectBottom a { font-size: 1.75rem; }
   .storyTransition { flex-direction: column; }
   .calicutHeroMeta { top: 7rem; flex-direction: column; gap: .5rem; }
-  .calicutHero h1 { bottom: 10rem; left: 1rem; font-size: 31vw; line-height: .62; }
+  .calicutHero h1 { bottom: 10rem; left: 1rem; font-size: clamp(5rem,25vw,8rem); line-height: .68; overflow-wrap: normal; }
   .calicutTitleLine { overflow: visible; padding: .08em .08em .18em 0; }
   .calicutTitleOffset { margin-left: 10vw; }
   .calicutPlateWide > div, .calicutPlateTall > div { height: 62vh; min-height: 30rem; }
@@ -450,7 +450,7 @@
   .calicutNext > a { font-size: clamp(4rem,17vw,6.5rem); }
 }
 
-@media (max-width: 900px), (pointer: coarse) {
+@media (max-width: 1024px), (pointer: coarse) {
   .storyTableDish { min-height: 2.75rem; }
   .storyTableDish img { transition: none; }
   .storyFilmHeroImage,

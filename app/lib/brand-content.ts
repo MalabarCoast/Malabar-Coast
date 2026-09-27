@@ -7,7 +7,7 @@ export const malabarCoastIntroduction = [
 ] as const;
 
 export const ourInspirationContent = {
-  title: "🌴 Our Inspiration",
+  title: "Our Inspiration",
   subtitle: "The story behind…",
   paragraphs: [
     "From the historic ports of the Malabar Coast to the spice markets that once filled the air with the aroma of pepper, cardamom, and cinnamon, this coastline tells a story of trade, culture, and connection.",
@@ -20,7 +20,7 @@ export const ourInspirationContent = {
 } as const;
 
 export const foodOfMalabarContent = {
-  title: "🍛 The Food of Malabar",
+  title: "The Food of Malabar",
   subtitle: "A Fusion of Culture",
   paragraphs: [
     "The Malabar Coast has long been shaped by food, from ancient spice ports along the Arabian Sea to the hills of the Western Ghats where pepper, cardamom, and tea thrive.",
@@ -32,13 +32,13 @@ export const foodOfMalabarContent = {
 } as const;
 
 export const ourRestaurantsContent = {
-  title: "🌴 Our Restaurants",
+  title: "Our Restaurants",
   subtitle: "Let us take you to the Malabar Coast.",
   paragraphs: [
     "Warm, welcoming, and full of flavour, our restaurant captures the spirit of the Malabar Coast.",
     "Step inside and experience the rich aromas and vibrant tastes of Southern Indian and coastal cuisine, in an atmosphere inspired by centuries of hospitality, culture, and spice.",
     "Every detail reflects the essence of Malabar, where tradition meets modern dining, and where every guest is welcomed like home.",
   ],
-  locationTitle: "📍 Motherwell",
+  locationTitle: "Motherwell",
   address: "33 Main Street, Holytown, Motherwell, ML1 4TH",
 } as const;

@@ -29,10 +29,10 @@ const fallbackMetadata: Metadata = {
     description: "A flexible private room with tailored catering, its own bar and a raised stage, within Malabar Coast at 33 Main Street, Holytown.",
     images: [
       {
-        url: "/og/hall.jpeg",
-        width: 1600,
-        height: 1067,
-        alt: "The private hall at Malabar Coast with an open floor and built-in wooden bar",
+        url: "/festive1.jpeg",
+        width: 1280,
+        height: 720,
+        alt: "Guests gathered in the Malabar Coast private hall for a family celebration",
       },
     ],
   },
@@ -40,7 +40,7 @@ const fallbackMetadata: Metadata = {
     card: "summary_large_image",
     title: "Private Event Hall at Malabar Coast",
     description: "A flexible hall with a built-in bar and raised stage at Malabar Coast in Holytown.",
-    images: ["/og/hall.jpeg"],
+    images: ["/festive1.jpeg"],
   },
 };
 
@@ -75,6 +75,18 @@ const fallbackHallFaqs = [
   },
 ] as const;
 
+const fallbackEventGallery = [
+  {url: "/festive1.jpeg", alt: "Guests gathered in the Malabar Coast private hall for a family celebration", caption: "Celebration layout"},
+  {url: "/festive2.jpeg", alt: "The private hall dressed with balloons and tables for a celebration", caption: "Room dressed for the day"},
+  {url: "/festive3.jpeg", alt: "A celebration table and balloon backdrop beside the private hall stage", caption: "A stage made personal"},
+  {url: "/festive4.jpeg", alt: "Guests sharing a celebration moment beside the decorated stage", caption: "Moments together"},
+  {url: "/festive5.jpeg", alt: "The private hall arranged with theatre seating facing the stage", caption: "Theatre seating"},
+  {url: "/festive6.jpeg", alt: "Guests enjoying a celebration in the Malabar Coast private hall", caption: "A full room"},
+  {url: "/festive7.jpeg", alt: "A wide view of the private hall prepared with rows of seating", caption: "Flexible floor plan"},
+  {url: "/festive8.jpeg", alt: "The private hall set with tables and seating viewed from the bar", caption: "Table layout and bar"},
+  {url: "/festive9.jpeg", alt: "Guests gathered around tables during a private hall celebration", caption: "Made for gathering"},
+] as const;
+
 const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string; answer: string}>) => ({
   "@context": "https://schema.org",
   "@graph": [
@@ -85,7 +97,7 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
       url: absoluteUrl("/hall"),
       description:
         "A flexible private event hall with a built-in bar and raised stage inside Malabar Coast restaurant in Holytown, North Lanarkshire.",
-      image: [absoluteUrl("/Hall1.jpeg"), absoluteUrl("/Hall2.jpeg"), absoluteUrl("/Hall3.jpeg")],
+      image: fallbackEventGallery.map((image) => absoluteUrl(image.url)),
       address: { "@type": "PostalAddress", ...site.address },
       geo: { "@type": "GeoCoordinates", ...site.geo },
       isPartOf: { "@id": `${site.url}/#restaurant` },
@@ -142,14 +154,15 @@ export default async function HallPage() {
   const enquirySection = getPageSection(cmsPage, "hall-enquiry");
   const faqSection = getPageSection(cmsPage, "hall-faq");
   const closingSection = getPageSection(cmsPage, "hall-closing");
+  const eventGallery = gallerySection?.gallery && gallerySection.gallery.length >= 3 ? gallerySection.gallery : fallbackEventGallery;
   return (
     <main className="editorialPage hallPage">
       <JsonLd data={hallSchema} />
 
       <section className="hallHero" aria-labelledby="hall-title">
         <Image
-          src={cmsPage?.heroImage?.url || "/Hall1.jpeg"}
-          alt={cmsPage?.heroImage?.alt || "The private hall at Malabar Coast with an open floor and built-in wooden bar"}
+          src={cmsPage?.heroImage?.url || "/festive1.jpeg"}
+          alt={cmsPage?.heroImage?.alt || "Guests gathered in the Malabar Coast private hall for a family celebration"}
           fill
           sizes="100vw"
           priority
@@ -228,8 +241,8 @@ export default async function HallPage() {
       <section className="hallStagePortrait" aria-labelledby="hall-stage-title">
         <Reveal className="hallStageImage">
           <Image
-            src={stageSection?.image?.url || "/Hall2.jpeg"}
-            alt={stageSection?.image?.alt || "Wide view of the Malabar Coast event hall showing its open floor and raised stage"}
+            src={stageSection?.image?.url || "/festive5.jpeg"}
+            alt={stageSection?.image?.alt || "The Malabar Coast private hall arranged with theatre seating facing the stage"}
             fill
             sizes="(max-width: 860px) 100vw, 62vw"
           />
@@ -245,18 +258,22 @@ export default async function HallPage() {
 
       <section className="hallGallery" aria-labelledby="hall-gallery-title">
         <div className="hallGalleryHeading">
-          <Reveal className="chapterIndex">{gallerySection?.eyebrow || "The room · 03"}</Reveal>
-          <Reveal as="h2" id="hall-gallery-title" delay={70}>{gallerySection?.heading || "Set the scene."}</Reveal>
+          <Reveal className="chapterIndex">{gallerySection?.eyebrow || "Real gatherings · Real layouts"}</Reveal>
+          <Reveal as="h2" id="hall-gallery-title" delay={70}>{gallerySection?.heading || "Made for the moment."}</Reveal>
         </div>
-        <Reveal className="hallGalleryImage" delay={120}>
-          <Image
-            src={gallerySection?.image?.url || "/Hall3.jpeg"}
-            alt={gallerySection?.image?.alt || "The raised stage in the Malabar Coast hall with chairs arranged across the floor"}
-            fill
-            sizes="100vw"
-          />
-          <span>Flexible seating · Stage view</span>
-        </Reveal>
+        <div className="hallGalleryGrid">
+          {eventGallery.map((image, index) => (
+            <Reveal className="hallGalleryTile" delay={Math.min(index * 45, 225)} key={`${image.url}-${index}`}>
+              <Image
+                src={image.url}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 66vw"
+              />
+              <span>{image.caption || `Private hall view ${String(index + 1).padStart(2, "0")}`}</span>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
       <section className="hallPlanning" aria-labelledby="hall-planning-title">

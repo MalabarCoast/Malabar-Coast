@@ -35,7 +35,7 @@ export const specialDayCampaign = defineType({
     defineField({name: 'storyEyebrow', title: 'Story eyebrow', type: 'string', group: 'story', validation: (rule) => rule.max(60)}),
     defineField({name: 'storyHeading', title: 'Story heading', type: 'string', group: 'story', validation: (rule) => rule.required().max(100)}),
     defineField({name: 'storyItems', title: 'Interactive story stickers', type: 'array', group: 'story', validation: (rule) => rule.required().min(1).max(6), of: [defineArrayMember({type: 'object', fields: [
-      defineField({name: 'symbol', title: 'Symbol or emoji', type: 'string', validation: (rule) => rule.required().max(8)}),
+      defineField({name: 'symbol', title: 'Legacy decorative symbol', type: 'string', deprecated: {reason: 'Decorative emoji are no longer displayed on the public site.'}, readOnly: true, hidden: ({value}) => value === undefined, initialValue: undefined}),
       defineField({name: 'title', title: 'Sticker title', type: 'string', validation: (rule) => rule.required().max(35)}),
       defineField({name: 'copy', title: 'Sticker explanation', type: 'text', rows: 2, validation: (rule) => rule.required().max(180)}),
     ], preview: {select: {title: 'title', subtitle: 'copy'}}})]}),

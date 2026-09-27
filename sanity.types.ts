@@ -332,13 +332,7 @@ export type MenuPage = {
   alcoholNotice?: string;
   voyageStops?: Array<{
     dish?: MenuItemReference;
-    area?:
-      | "Delhi"
-      | "Amritsar"
-      | "Mumbai (Bombay)"
-      | "Kashmir"
-      | "Hyderabad"
-      | "Lucknow";
+    area?: "Kochi" | "Kozhikode" | "Mangaluru" | "Mumbai" | "Surat" | "Chennai";
     port?: string;
     region?: string;
     coordinates?: string;
@@ -484,6 +478,11 @@ export type ContentSection = {
   }>;
   image?: ImageWithAlt;
   secondaryImage?: ImageWithAlt;
+  gallery?: Array<
+    {
+      _key: string;
+    } & ImageWithAlt
+  >;
   links?: Array<
     {
       _key: string;
@@ -884,12 +883,12 @@ export type MenuContentQueryResult = {
           itemId: string | null;
           area:
             | string
-            | "Amritsar"
-            | "Delhi"
-            | "Hyderabad"
-            | "Kashmir"
-            | "Lucknow"
-            | "Mumbai (Bombay)"
+            | "Chennai"
+            | "Kochi"
+            | "Kozhikode"
+            | "Mangaluru"
+            | "Mumbai"
+            | "Surat"
             | null;
           region: string | null;
           coordinates: string | null;
@@ -1058,7 +1057,7 @@ export type SiteSettingsQueryResult =
 
 // Source: ../sanity/lib/queries.ts
 // Variable: marketingPageQuery
-// Query: *[_type == "marketingPage" && pageKey == $pageKey][0] {  pageKey,  title,  eyebrow,  heroHeading,  heroText,  heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},  heroPrimaryLink,  heroSecondaryLink,  sections[] {    _key,    _type,    internalName,    eyebrow,    heading,    body,    text,    image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},    secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},    links,    items[] {_key, title, text, shortLabel},    primaryLink,    secondaryLink,    shortLabel,    note,    theme  },  seo {    title,    description,    noIndex,    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}  }}
+// Query: *[_type == "marketingPage" && pageKey == $pageKey][0] {  pageKey,  title,  eyebrow,  heroHeading,  heroText,  heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},  heroPrimaryLink,  heroSecondaryLink,  sections[] {    _key,    _type,    internalName,    eyebrow,    heading,    body,    text,    image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},    secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},    gallery[] {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},    links,    items[] {_key, title, text, shortLabel},    primaryLink,    secondaryLink,    shortLabel,    note,    theme  },  seo {    title,    description,    noIndex,    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}  }}
 export type MarketingPageQueryResult = {
   pageKey:
     | "book-a-table"
@@ -1098,6 +1097,7 @@ export type MarketingPageQueryResult = {
           dimensions: SanityImageDimensions | null;
         } | null;
         secondaryImage: null;
+        gallery: null;
         links: null;
         items: null;
         primaryLink: Link | null;
@@ -1144,6 +1144,12 @@ export type MarketingPageQueryResult = {
           url: string | null;
           dimensions: SanityImageDimensions | null;
         } | null;
+        gallery: Array<{
+          alt: string | null;
+          caption: string | null;
+          url: string | null;
+          dimensions: SanityImageDimensions | null;
+        }> | null;
         links: Array<
           {
             _key: string;
@@ -1435,7 +1441,7 @@ declare module "@sanity/client" {
     '{\n  "categories": *[_type == "menuCategory" && published != false] | order(orderRank asc) {\n    "slug": slug.current,\n    title,\n    "note": coalesce(shortTitle, title),\n    "description": coalesce(description, ""),\n    orderRank\n  },\n  "items": *[_type == "menuItem" && published != false] | order(category->orderRank asc, displayOrder asc, name asc) {\n    "id": coalesce(sourceKey, _id),\n    "category": category->slug.current,\n    name,\n    "description": coalesce(description, ""),\n    subheading,\n    pricePence,\n    priceLabel,\n    hidePrice,\n    isAlcoholic,\n    isVegetarian,\n    isVegan,\n    dietaryReviewStatus,\n    "allergens": coalesce(allergens, []),\n    spiceLevel,\n    available,\n    onlineOrdering,\n    featured,\n    displayOrder,\n    image {\n      alt,\n      caption,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions\n    }\n  },\n  "page": *[_id == "menuPage"][0] {\n    eyebrow,\n    headingLineOne,\n    headingLineTwo,\n    introduction,\n    journeyLinkLabel,\n    manifestEyebrow,\n    manifestHeading,\n    manifestIntroduction,\n    dietaryNotice,\n    alcoholNotice,\n    voyageStops[] {\n      _key,\n      "itemId": coalesce(dish->sourceKey, dish->_id),\n      "area": coalesce(area, port),\n      region,\n      coordinates,\n      "year": yearLabel,\n      "course": courseLabel,\n      description,\n      image {\n        alt,\n        "url": asset->url,\n        "dimensions": asset->metadata.dimensions\n      }\n    },\n    seo {\n      title,\n      description,\n      noIndex,\n      image {alt, "url": asset->url}\n    }\n  }\n}': MenuContentQueryResult;
     '*[_type == "menuItem" && (sourceKey == $id || _id == $id)][0] {\n  "id": coalesce(sourceKey, _id),\n  "category": category->slug.current,\n  name,\n  pricePence,\n  available,\n  onlineOrdering,\n  isAlcoholic\n}': CheckoutMenuItemQueryResult;
     '*[_id == "siteSettings"][0] {\n  restaurantName,\n  legalName,\n  shortDescription,\n  description,\n  siteUrl,\n  phone,\n  email,\n  reservationEmail,\n  address,\n  coordinates,\n  mapUrl,\n  mapEmbedUrl,\n  socialLinks,\n  primaryNavigation,\n  footerNavigation,\n  announcement,\n  footerEyebrow,\n  footerHeading,\n  footerText,\n  footerCreditLabel,\n  footerCreditUrl,\n  copyrightText,\n  defaultSeo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  },\n  logo {alt, "url": asset->url},\n  lightLogo {alt, "url": asset->url},\n  favicon {alt, "url": asset->url}\n}': SiteSettingsQueryResult;
-    '*[_type == "marketingPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  heroHeading,\n  heroText,\n  heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n  heroPrimaryLink,\n  heroSecondaryLink,\n  sections[] {\n    _key,\n    _type,\n    internalName,\n    eyebrow,\n    heading,\n    body,\n    text,\n    image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    links,\n    items[] {_key, title, text, shortLabel},\n    primaryLink,\n    secondaryLink,\n    shortLabel,\n    note,\n    theme\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}\n  }\n}': MarketingPageQueryResult;
+    '*[_type == "marketingPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  heroHeading,\n  heroText,\n  heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n  heroPrimaryLink,\n  heroSecondaryLink,\n  sections[] {\n    _key,\n    _type,\n    internalName,\n    eyebrow,\n    heading,\n    body,\n    text,\n    image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    gallery[] {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},\n    links,\n    items[] {_key, title, text, shortLabel},\n    primaryLink,\n    secondaryLink,\n    shortLabel,\n    note,\n    theme\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}\n  }\n}': MarketingPageQueryResult;
     '*[_type == "legalPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  summary,\n  lastUpdated,\n  sections[] {\n    _key,\n    "id": sectionId.current,\n    title,\n    body[] {\n      ...,\n      children[] {...},\n      markDefs[] {...}\n    }\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  }\n}': LegalPageQueryResult;
     '*[_type == "faqItem" && published != false] | order(displayOrder asc) {\n  question,\n  answer,\n  category,\n  displayOrder\n}': FaqItemsQueryResult;
     '*[_type == "testimonial" && published != false] | order(displayOrder asc) {\n  quote,\n  name,\n  source,\n  rating,\n  displayOrder\n}': TestimonialsQueryResult;

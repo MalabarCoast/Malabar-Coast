@@ -52,3 +52,24 @@
 - Long editorial narratives can use two readable text columns on wide screens, but should return to one continuous column before tablet widths.
 - Treat venue address, coordinates and actions as one information group; a restrained panel gives them hierarchy without changing the content.
 - Size editorial grid columns for their longest unbroken display word, and stack before laptop widths force headings to paint into adjacent content.
+
+# CMS-led client feedback lessons
+
+- Treat drink-price suppression as a category-wide rule in both the CMS adapter and the storefront model so soft drinks, mixers and alcohol cannot drift apart.
+- Keep editorial fallbacks and published CMS content aligned; responsive verification can otherwise pass locally while production renders an older content shape.
+- For a place-led menu story, connect each port to a real supplied dish photograph and a specific culinary note instead of relying on decorative geography alone.
+- A mobile off-canvas menu should be inspected after its transition completes; intermediate animation frames can resemble a layout failure even when the settled panel is correct.
+
+# Event-media and compact-type lessons
+
+- Treat owner-supplied event video snippets as motion sources, not image assets: extract an intentional still for an image gallery and keep the original media separate from Sanity image fields.
+- A CMS gallery needs parity across schema, query, checked-in fallback, seed data and live content; updating only the public component leaves editors unable to maintain the same experience.
+- Large uppercase display words need explicit compact clamps and normal word wrapping. `overflow-wrap: anywhere` can prevent overflow while still producing visibly broken words.
+- Test touch targets in rendered pixels rather than assuming a rem value reaches 44px; a reduced root size can quietly shrink otherwise reasonable controls.
+
+# Intermediate-width and restaurant-photography lessons
+
+- Never anchor a CTA over content whose height can grow from responsive wrapping or CMS copy; keep it in grid flow and use grid placement for the intended alignment.
+- A breakpoint that works at 900px can still fail at a 916px tablet viewport. Derive transitions from the layout's real minimum column widths, not familiar device numbers.
+- Restaurant photography feels more credible when it shows service, preparation, worn working surfaces and mixed practical light instead of isolated, perfectly arranged plates.
+- Keep generated source outputs outside the public bundle and publish compressed, correctly cropped derivatives with descriptive filenames and alt text.

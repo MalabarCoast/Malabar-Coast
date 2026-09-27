@@ -2101,27 +2101,27 @@
                   "of": [
                     {
                       "type": "string",
-                      "value": "Delhi"
+                      "value": "Kochi"
                     },
                     {
                       "type": "string",
-                      "value": "Amritsar"
+                      "value": "Kozhikode"
                     },
                     {
                       "type": "string",
-                      "value": "Mumbai (Bombay)"
+                      "value": "Mangaluru"
                     },
                     {
                       "type": "string",
-                      "value": "Kashmir"
+                      "value": "Mumbai"
                     },
                     {
                       "type": "string",
-                      "value": "Hyderabad"
+                      "value": "Surat"
                     },
                     {
                       "type": "string",
-                      "value": "Lucknow"
+                      "value": "Chennai"
                     }
                   ]
                 },
@@ -3122,6 +3122,28 @@
           "value": {
             "type": "inline",
             "name": "imageWithAlt"
+          },
+          "optional": true
+        },
+        "gallery": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "imageWithAlt"
+              }
+            }
           },
           "optional": true
         },

@@ -18,6 +18,8 @@
     "sanity:sync-menu-page": "tsx scripts/update-menu-regions.ts",
     "sanity:sync-brand-content": "tsx scripts/sync-brand-content.ts",
     "sanity:sync-map": "tsx scripts/sync-map-settings.ts",
+    "sanity:sync-client-feedback": "tsx scripts/sync-client-feedback.ts --apply",
+    "sanity:sync-hall-events": "tsx scripts/sync-hall-events.ts --apply",
     "sanity:apply-special-days": "tsx scripts/apply-special-days-sanity.ts --apply",
     "sanity:apply-onam": "tsx scripts/apply-onam-campaign-sanity.ts --apply",
     "sanity:typegen": "npm --prefix studio run typegen"

@@ -80,7 +80,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
         <div className="prologueCoordinates" aria-hidden="true"><span>28.6139° N</span><i /><span>55.8207° N</span></div>
       </section>
 
-      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0, "--voyage-index": 0, "--voyage-offset": "0vw", "--voyage-height": `${100 + Math.max(voyageStops.length - 1, 0) * 72}vh`} as React.CSSProperties} aria-label="Six Indian food destinations">
+      {voyageStops.length > 0 && <section className="menuVoyage" id="voyage" ref={voyageRef} style={{"--voyage-progress": 0, "--voyage-index": 0, "--voyage-offset": "0vw", "--voyage-height": `${100 + Math.max(voyageStops.length - 1, 0) * 72}vh`} as React.CSSProperties} aria-label="Six Indian port-city food stories">
         <div className="voyageStage">
           <div className="voyageTrack">
             {voyageStops.map((stop, index) => {
@@ -93,7 +93,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                     <p className="portRegion">Region {String(index + 1).padStart(2, "0")} · {stop.region}</p>
                     <h2>{stop.area}</h2><div className="dishRule" /><p className="courseLabel">{stop.course}</p><h3>{dish.name}</h3>
                     <p className="dishDescription">{stop.description}</p>
-                    <div className="dishFooter"><strong>{formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact /></div>
+                    <div className="dishFooter"><strong>{dish.hidePrice ? dish.priceLabel : formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact /><small className="allergenMarker">{dish.allergens.length ? `Allergens: ${dish.allergens.join(", ")}` : "Allergens: ask our team"}</small></div>
                     {dish.onlineOrdering && <AddToOrder id={dish.id} />}
                   </div>
                 </article>
@@ -133,11 +133,11 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                         {dish.description && <span>{dish.description}</span>}
                         <div className="manifestDishMeta">
                           <DietaryMarker status={dish.dietaryStatus} compact />
-                          {dish.allergens.length > 0 && <small>Contains {dish.allergens.join(", ")}</small>}
+                          <small className="allergenMarker">{dish.allergens.length ? `Allergens: ${dish.allergens.join(", ")}` : "Allergens: ask our team"}</small>
                           {!dish.available && <small>Temporarily unavailable</small>}
                         </div>
                       </div>
-                      <div className="manifestOrder">{dish.hidePrice ? <a className="manifestAskTeam" href={`mailto:reservations@malabarcoast.co.uk?subject=${encodeURIComponent(`A quick question about ${dish.name}`)}`}>{dish.priceLabel || "Ask the coast crew"} <span aria-hidden="true">↗</span></a> : <b>{formatPrice(dish.pricePence, dish.priceLabel)}</b>}{dish.onlineOrdering && dish.available && <AddToOrder id={dish.id} compact />}</div>
+                      <div className="manifestOrder">{dish.hidePrice ? <a className="manifestAskTeam" href={`mailto:reservations@malabarcoast.co.uk?subject=${encodeURIComponent(`A quick question about ${dish.name}`)}`}>{dish.priceLabel || "Ask the coastal crew"} <span aria-hidden="true">↗</span></a> : <b>{formatPrice(dish.pricePence, dish.priceLabel)}</b>}{dish.onlineOrdering && dish.available && <AddToOrder id={dish.id} compact />}</div>
                     </li>
                   );
                 })}</ul>

@@ -139,9 +139,6 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="homeTestimonialRating" aria-label={record.ratingLabel}>
-                <span className="homeTestimonialStars" aria-hidden="true">
-                  <i>★</i><i>★</i><i>★</i><i>★</i><i>★</i>
-                </span>
                 <span className="homeTestimonialScore">
                   <strong>{record.rating}</strong><small>/ 5</small>
                 </span>
