@@ -163,23 +163,23 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
           <div className={styles.heroActions}>
             <a className={styles.primaryAction} href="#special-day-reservation">{campaign.primaryActionLabel} <span aria-hidden="true">↓</span></a>
             {campaign.enableSound && <button type="button" className={styles.soundAction} onClick={playJingle} disabled={jinglePlaying} aria-label="Play the campaign sound">
-              <span className={styles.bell} aria-hidden="true">♩</span>{jinglePlaying ? "Playing…" : campaign.soundActionLabel || "Play the jingle"}
+              {jinglePlaying ? "Playing…" : campaign.soundActionLabel || "Play the jingle"}
             </button>}
             {campaign.ambientEffect !== "none" && <button type="button" className={styles.snowAction} onClick={() => setEffectEnabled((value) => !value)} aria-pressed={effectEnabled}>
-              <span aria-hidden="true">{campaign.ambientEffect === "petals" ? "✿" : "❄"}</span> {effectLabel} {effectEnabled ? "on" : "off"}
+              {effectLabel} {effectEnabled ? "on" : "off"}
             </button>}
           </div>
         </div>
-        <div className={styles.scrollCue}><span>{campaign.scrollLabel || "Continue to booking"}</span><b aria-hidden="true">✦</b></div>
+        <div className={styles.scrollCue}><span>{campaign.scrollLabel || "Continue to booking"}</span></div>
       </div>
     </section>
 
     <section className={styles.festivalStrip} aria-label={`${campaign.title} story`}>
       <div className={styles.storyIntro}><p>{campaign.storyEyebrow}</p><h2>{campaign.storyHeading}</h2></div>
       <div className={styles.storyStickers} role="tablist" aria-label="Campaign details">
-        {campaign.storyItems.map((item, index) => <button key={item._key} type="button" role="tab" aria-selected={story === index} className={story === index ? styles.activeSticker : ""} onClick={() => setStory(index)}><span aria-hidden="true">{item.symbol}</span><b>{item.title}</b></button>)}
+        {campaign.storyItems.map((item, index) => <button key={item._key} type="button" role="tab" aria-selected={story === index} className={story === index ? styles.activeSticker : ""} onClick={() => setStory(index)}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><b>{item.title}</b></button>)}
       </div>
-      <p className={styles.storyCopy} role="tabpanel"><span>{campaign.storyItems[story]?.symbol}</span>{campaign.storyItems[story]?.copy}</p>
+      <p className={styles.storyCopy} role="tabpanel">{campaign.storyItems[story]?.copy}</p>
     </section>
 
     <section className={styles.bookingSection} id="special-day-reservation">
@@ -192,13 +192,12 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
           <div><dt>Up to {settings.maximumPartySize}</dt><dd>Guests online</dd></div>
           <div><dt>{Math.ceil(settings.minimumLeadMinutes / 60)} hrs</dt><dd>Minimum notice</dd></div>
         </dl>
-        {(campaign.promiseTitle || campaign.promiseText) && <div className={styles.promise}><span aria-hidden="true">✦</span><p><b>{campaign.promiseTitle}</b>{campaign.promiseText}</p></div>}
+        {(campaign.promiseTitle || campaign.promiseText) && <div className={styles.promise}><p><b>{campaign.promiseTitle}</b>{campaign.promiseText}</p></div>}
       </aside>
 
       <div className={styles.bookingCard}>
         <div className={styles.cardGarland} aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></div>
         {confirmation ? <div className={styles.confirmation} role="status">
-          <span className={styles.confirmationStar} aria-hidden="true">✦</span>
           <p>{campaign.confirmationEyebrow || "Your booking is on the calendar"}</p>
           <h2>{campaign.confirmationHeading}</h2>
           <div className={styles.confirmationTicket}>
@@ -243,17 +242,17 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
               </details>
             </fieldset>
 
-            <div className={styles.liveSummary} aria-live="polite"><span aria-hidden="true">✦</span><p><b>{selectedParty} seat{selectedParty === 1 ? "" : "s"}</b>{selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : "Choose a date and time above"}</p></div>
+            <div className={styles.liveSummary} aria-live="polite"><p><b>{selectedParty} seat{selectedParty === 1 ? "" : "s"}</b>{selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : "Choose a date and time above"}</p></div>
             <label className={styles.consent}><input type="checkbox" required/><span>I confirm these details are correct and understand the restaurant may contact me about this booking.</span></label>
             {message && <p className={styles.formMessage} role="alert">{message}</p>}
-            <button className={styles.submitButton} type="submit" disabled={submitting || !settings.bookingEnabled || closedDate || invalidTime}><span>{submitting ? "Checking the table…" : settings.bookingEnabled ? campaign.submitLabel : "Booking paused"}</span><b aria-hidden="true">✦</b></button>
+            <button className={styles.submitButton} type="submit" disabled={submitting || !settings.bookingEnabled || closedDate || invalidTime}><span>{submitting ? "Checking the table…" : settings.bookingEnabled ? campaign.submitLabel : "Booking paused"}</span></button>
           </form>
         </>}
       </div>
     </section>
 
     <section className={styles.closing}>
-      <span aria-hidden="true">❉</span><p>{campaign.closingEyebrow}</p><h2>{campaign.closingHeading}</h2>{campaign.closingLink && <Link href={campaign.closingLink.href} target={campaign.closingLink.openInNewTab ? "_blank" : undefined} rel={campaign.closingLink.openInNewTab ? "noreferrer" : undefined}>{campaign.closingLink.label} <span aria-hidden="true">↗</span></Link>}
+      <p>{campaign.closingEyebrow}</p><h2>{campaign.closingHeading}</h2>{campaign.closingLink && <Link href={campaign.closingLink.href} target={campaign.closingLink.openInNewTab ? "_blank" : undefined} rel={campaign.closingLink.openInNewTab ? "noreferrer" : undefined}>{campaign.closingLink.label} <span aria-hidden="true">↗</span></Link>}
     </section>
   </main>;
 }

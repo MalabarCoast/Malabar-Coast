@@ -132,6 +132,7 @@ export const marketingPageQuery = defineQuery(`*[_type == "marketingPage" && pag
     text,
     image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},
     secondaryImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},
+    gallery[] {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},
     links,
     items[] {_key, title, text, shortLabel},
     primaryLink,

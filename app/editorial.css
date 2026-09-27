@@ -319,10 +319,16 @@
 
 .hallGallery { padding: clamp(4rem,6vw,6.5rem) clamp(1.25rem,5vw,6rem); background: #d9ccb2; color: #10201c; }
 .hallGalleryHeading { display: flex; align-items: end; justify-content: space-between; gap: 3rem; margin-bottom: clamp(3rem,5vw,5rem); }
-.hallGalleryImage { position: relative; min-height: min(70vw,52rem); overflow: hidden; }
-.hallGalleryImage img { object-fit: cover; }
-.hallGalleryImage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,transparent 68%,rgba(3,9,8,.6)); }
-.hallGalleryImage > span { position: absolute; z-index: 2; right: 1.5rem; bottom: 1.5rem; color: var(--ed-ivory); font-size: .52rem; letter-spacing: .17em; text-transform: uppercase; }
+.hallGalleryGrid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: clamp(.75rem,1.4vw,1.35rem); }
+.hallGalleryTile { position: relative; grid-column: span 4; aspect-ratio: 4 / 3; overflow: hidden; background: #10201c; }
+.hallGalleryTile:nth-child(1),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(7) { grid-column: span 8; aspect-ratio: 16 / 10; }
+.hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(8) { aspect-ratio: 4 / 5; }
+.hallGalleryTile:nth-child(5),.hallGalleryTile:nth-child(6) { grid-column: span 6; aspect-ratio: 16 / 10; }
+.hallGalleryTile:nth-child(9) { grid-column: 4 / 10; aspect-ratio: 4 / 5; }
+.hallGalleryTile img { object-fit: cover; transition: transform .8s cubic-bezier(.2,.75,.2,1); }
+.hallGalleryTile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,transparent 58%,rgba(3,9,8,.68)); pointer-events: none; }
+.hallGalleryTile > span { position: absolute; z-index: 2; right: 1.1rem; bottom: 1rem; left: 1.1rem; color: var(--ed-ivory); font-size: .5rem; letter-spacing: .16em; text-align: right; text-transform: uppercase; }
+.hallGalleryTile:hover img { transform: scale(1.025); }
 .hallPlanning { padding: clamp(4rem,6vw,6.5rem) clamp(1.25rem,6vw,7rem); background: #c89b53; color: #071310; }
 .hallPlanningSteps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 3rem; }
 .hallPlanningSteps article { min-height: 10.5rem; padding: 1.4rem; border-top: 1px solid rgba(7,19,16,.35); border-bottom: 1px solid rgba(7,19,16,.35); }
@@ -365,7 +371,10 @@
   .hallGallery { padding: 4.5rem 1.25rem; }
   .hallGalleryHeading { display: block; }
   .hallGalleryHeading h2 { margin-top: 1.25rem; }
-  .hallGalleryImage { min-height: 62svh; }
+  .hallGalleryGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .hallGalleryTile,.hallGalleryTile:nth-child(n) { grid-column: span 1; aspect-ratio: 4 / 3; }
+  .hallGalleryTile:nth-child(1),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(6),.hallGalleryTile:nth-child(7),.hallGalleryTile:nth-child(9) { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+  .hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(8) { aspect-ratio: 4 / 5; }
   .hallFaq { display: block; padding: 4.5rem 1.25rem; }
   .hallFaq > div:first-child { position: static; margin-bottom: 3rem; }
   .hallClosing { padding: 4.5rem 1.25rem; }
@@ -378,17 +387,27 @@
   .hallHeroActions { flex-direction: column; align-items: stretch; }
   .hallHeroActions a { width: 100%; }
   .hallEnquiryLead { padding-block: 3.75rem; }
+  .hallEnquiryLead h2,
+  .hallIntroduction h2,
+  .hallOccasionsIntro h2,
+  .hallPlanning h2,
+  .hallStageCopy h2,
+  .hallGalleryHeading h2,
+  .hallFaq h2 { font-size: clamp(3rem,15vw,3.8rem); overflow-wrap: normal; }
   .hallEnquiryPanelHeader { display: grid; gap: .75rem; }
   .hallOccasionGrid { grid-template-columns: 1fr; }
   .hallDetails { padding: 0; }
   .hallDetails > div { padding: 1.5rem 1rem; }
   .hallDetails p { margin-top: 2rem; }
   .hallStageImage { min-height: 55svh; }
-  .hallGalleryImage { min-height: 53svh; }
+  .hallGalleryGrid { grid-template-columns: 1fr; gap: .8rem; }
+  .hallGalleryTile,.hallGalleryTile:nth-child(n) { grid-column: 1; aspect-ratio: 16 / 10; }
+  .hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(9) { aspect-ratio: 4 / 5; }
   .hallFaqList article { grid-template-columns: 2rem 1fr; gap: .75rem 1rem; }
-  .hallClosing h2 { font-size: 17vw; }
+  .hallClosing h2 { font-size: clamp(3rem,16vw,4.25rem); overflow-wrap: normal; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hallHero > img { animation: none; }
+  .hallGalleryTile img { transition: none; }
 }

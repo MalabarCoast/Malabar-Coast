@@ -83,3 +83,30 @@
 - Rebalanced the careers desktop grid so the Current opportunities heading remains inside its column beside the empty-state panel.
 - Added explicit empty-state heading and paragraph spacing and moved the single-column transition to small-laptop widths.
 - Preserved the existing content, colors and behavior.
+
+2026-09-27 - Client content, menu and events refresh complete
+
+- Added Facebook and TikTok links, a prominent Special events navigation route, a sharper story image set and a restaurant-led offers background.
+- Replaced the placeholder offer with three useful dining offers while keeping a single Explore the menu offer action.
+- Rebuilt the menu journey around six coastal ports, including Kerala, Kochi, Mumbai, Gujarat and Chennai, using the supplied food photography.
+- Added visible allergen guidance beside every dish and replaced every drink price with Ask the coastal crew, with drink ordering disabled.
+- Removed decorative emoji from public content and synchronised the corresponding published and draft Sanity documents.
+- Verified the public site at 320px, tablet and desktop sizes with no broken images or page-level horizontal overflow; all automated tests, TypeScript, ESLint, Studio build and Next.js production build pass.
+
+2026-09-28 - Responsive hall event gallery and final compact-layout pass complete
+
+- Added the supplied festive event photography to the hall hero, stage section and a nine-image editorial gallery, including a still derived from the supplied short `festive9.mp4` clip.
+- Added a reusable Sanity gallery field, responsive image query support, seed content and an idempotent hall-media synchronisation command.
+- Uploaded and verified all nine gallery images, the event-led hero and the seated stage image in the live Sanity hall document.
+- Refined the gallery for single-column phones, paired tablet compositions and a twelve-column desktop mosaic, with descriptive alt text and reduced-motion handling.
+- Corrected compact headline wrapping on the hall, offers, menu-port, Calicut story and administrator login surfaces, and enforced 44px shared header and careers touch targets.
+- Verified 94 automated tests, ESLint, TypeScript, Sanity schema extraction and type generation, the Studio production build and the Next.js production build.
+
+2026-09-28 - Intermediate-width overlap repair and authentic story photography complete
+
+- Removed the absolutely positioned homepage signature CTA and placed it in the grid flow so longer dish copy cannot overlap it.
+- Extended the tablet composition through 1024px for the homepage signatures and story layout, preventing the 916px manifesto columns from painting off-canvas.
+- Generated four documentary-style restaurant photographs for the story hero and chapters, then compressed them to 168–230KB production JPEGs.
+- Replaced the remaining stylised story-table renders with matching real dish photography from the restaurant asset library.
+- Uploaded and verified all four new story assets in the live Sanity document while keeping the checked-in fallback and seed content aligned.
+- Verified 95 automated tests, ESLint, TypeScript, changed-file whitespace and the Next.js production build without browser-based inspection.

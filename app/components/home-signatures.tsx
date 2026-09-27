@@ -59,7 +59,7 @@ export function HomeSignatures({items, specials, eyebrow, heading, introduction}
                   src={featured.image}
                   alt={featured.alt}
                   fill
-                  sizes={index === 0 ? "(max-width: 720px) 100vw, 50vw" : "(max-width: 720px) 100vw, 25vw"}
+                  sizes={index === 0 ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 720px) 100vw, (max-width: 1024px) 50vw, 25vw"}
                 />
                 <span>{String(index + 1).padStart(2, "0")}</span>
               </div>

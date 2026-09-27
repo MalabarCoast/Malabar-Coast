@@ -18,6 +18,7 @@ export type MarketingSection = {
   text?: string;
   image?: CmsImage;
   secondaryImage?: CmsImage;
+  gallery?: CmsImage[];
   links?: SiteLink[];
   items?: Array<{_key: string; title: string; text?: string; shortLabel?: string}>;
   primaryLink?: SiteLink;

@@ -49,6 +49,18 @@ type MenuDefinition = {
   items: Array<readonly [name: string, pricePence: number | null, options?: ItemOptions]>;
 };
 
+export const drinkCategorySlugs = new Set([
+  "soft-drinks",
+  "tea-coffee",
+  "draught-beer",
+  "bottled-beer-cider",
+  "spirits",
+  "wine",
+  "mixers",
+]);
+
+export const drinkPriceLabel = "Ask the coastal crew";
+
 const item = (name: string, pricePence: number, options: ItemOptions = {}) => [name, pricePence, options] as const;
 const vegetarian = (name: string, pricePence: number, options: ItemOptions = {}) => item(name, pricePence, {...options, vegetarian: true});
 const alcohol = (name: string, options: ItemOptions = {}) => [name, null, {...options, alcoholic: true, orderable: false}] as const;
@@ -398,6 +410,7 @@ export const menuItems: MenuItem[] = definitions.flatMap((category) =>
     const dietaryStatus: DietaryStatus = options.dietaryStatus ?? (options.vegan ? "vegan" : options.vegetarian ? "vegetarian" : "nonVegetarian");
     const idSuffix = slugify(`${options.subheading ? `${options.subheading}-` : ""}${name}`);
     const isAlcoholic = options.alcoholic ?? false;
+    const isDrink = drinkCategorySlugs.has(category.slug);
     return {
       id: `${category.slug}-${idSuffix}`,
       category: category.slug,
@@ -405,8 +418,8 @@ export const menuItems: MenuItem[] = definitions.flatMap((category) =>
       description: options.description ?? fallbackMenuDescription(category.slug, name, options.subheading),
       subheading: options.subheading,
       pricePence,
-      priceLabel: isAlcoholic ? "Ask the coast crew" : undefined,
-      hidePrice: isAlcoholic,
+      priceLabel: isDrink ? drinkPriceLabel : undefined,
+      hidePrice: isDrink,
       isAlcoholic,
       dietaryStatus: isAlcoholic ? "notApplicable" : dietaryStatus,
       dietaryReviewStatus: "needs-review",
@@ -414,7 +427,7 @@ export const menuItems: MenuItem[] = definitions.flatMap((category) =>
       allergens: [],
       spice: "None",
       available: true,
-      onlineOrdering: options.orderable ?? (!isAlcoholic && pricePence !== null),
+      onlineOrdering: isDrink ? false : options.orderable ?? (!isAlcoholic && pricePence !== null),
       featured: options.featured ?? false,
       displayOrder,
     };
@@ -425,7 +438,7 @@ export function getMenuItem(id: string) {
   return menuItems.find((menuItem) => menuItem.id === id);
 }
 
-export function formatPrice(pence: number | null, fallback = "Ask the coast crew") {
+export function formatPrice(pence: number | null, fallback = drinkPriceLabel) {
   if (pence === null) return fallback;
   return new Intl.NumberFormat("en-GB", {style: "currency", currency: "GBP"}).format(pence / 100);
 }

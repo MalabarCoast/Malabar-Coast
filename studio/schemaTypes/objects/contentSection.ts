@@ -11,6 +11,13 @@ export const contentSection = defineType({
     defineField({name: 'body', title: 'Body', type: 'array', of: [defineArrayMember({type: 'block'})]}),
     defineField({name: 'image', title: 'Main image', type: 'imageWithAlt'}),
     defineField({name: 'secondaryImage', title: 'Secondary image', type: 'imageWithAlt'}),
+    defineField({
+      name: 'gallery',
+      title: 'Image gallery',
+      type: 'array',
+      of: [defineArrayMember({type: 'imageWithAlt'})],
+      validation: (rule) => rule.max(12),
+    }),
     defineField({name: 'links', title: 'Links', type: 'array', of: [defineArrayMember({type: 'link'})]}),
     defineField({name: 'items', title: 'Supporting items', type: 'array', of: [defineArrayMember({type: 'object', fields: [
       defineField({name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required()}),

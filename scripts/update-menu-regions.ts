@@ -20,12 +20,12 @@ const client = createClient({projectId, dataset, token, apiVersion: '2025-02-19'
 const publicDirectory = join(process.cwd(), 'public')
 
 const definitions = [
-  {key: 'delhi', sourceKey: 'clay-oven-chicken-tikka', area: 'Delhi', region: 'North India', coordinates: '28.6139° N · 77.2090° E', yearLabel: 'Capital tandoor', courseLabel: 'Chicken tikka', imageFile: 'menu/chicken-tikka.png', alt: 'Charred chicken tikka inspired by Delhi’s tandoor kitchens', description: 'Tender yoghurt-spiced chicken, charred in the tandoor for smoky edges and a juicy centre.'},
-  {key: 'amritsar', sourceKey: 'clay-oven-tandoori-chicken', area: 'Amritsar', region: 'Punjab', coordinates: '31.6340° N · 74.8723° E', yearLabel: 'Punjab fire', courseLabel: 'Tandoori chicken', imageFile: 'menu/tandoori-chicken.png', alt: 'Bone-in tandoori chicken inspired by Amritsar', description: 'Bone-in chicken marinated with yoghurt and warm spices, then roasted over fierce tandoor heat.'},
-  {key: 'mumbai', sourceKey: 'clay-oven-chicken-shashlik', area: 'Mumbai (Bombay)', region: 'Western India', coordinates: '19.0760° N · 72.8777° E', yearLabel: 'City grill', courseLabel: 'Chicken shashlik', imageFile: 'menu/chicken-shashlik.png', alt: 'Chicken shashlik with peppers and onion inspired by Mumbai', description: 'Tandoor-grilled chicken, peppers and onion layered on skewers with a bright, smoky finish.'},
-  {key: 'kashmir', sourceKey: 'clay-oven-lamb-tikka', area: 'Kashmir', region: 'Himalayan north', coordinates: '34.0837° N · 74.7973° E', yearLabel: 'Mountain spice', courseLabel: 'Lamb tikka', imageFile: 'menu/lamb-tikka.png', alt: 'Aromatic lamb tikka inspired by Kashmir', description: 'Boneless lamb steeped in aromatic spices and cooked in the tandoor until tender and lightly charred.'},
-  {key: 'hyderabad', sourceKey: 'biriyani-chicken', area: 'Hyderabad', region: 'Deccan', coordinates: '17.3850° N · 78.4867° E', yearLabel: 'Dum kitchen', courseLabel: 'Chicken biriyani', imageFile: 'menu/chicken-biriyani.png', alt: 'Fragrant chicken biriyani inspired by Hyderabad', description: 'Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style.'},
-  {key: 'lucknow', sourceKey: 'desserts-gulab-jamun', area: 'Lucknow', region: 'Awadh', coordinates: '26.8467° N · 80.9462° E', yearLabel: 'Festive finish', courseLabel: 'Gulab jamun', imageFile: 'menu/gulab-jamun.png', alt: 'Gulab jamun in cardamom and saffron syrup', description: 'Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup.'},
+  {key: 'kochi', sourceKey: 'malabar-coast-signature-meen-moilee', area: 'Kochi', region: 'Kerala', coordinates: '9.9312° N · 76.2673° E', yearLabel: 'Arabian Sea harbour', courseLabel: 'Meen Moilee', imageFile: 'food/Meen Moilee.jpeg', alt: 'Meen Moilee served at Malabar Coast', description: 'A gentle fish and coconut curry that keeps Kerala’s coastal cooking at the heart of the journey.'},
+  {key: 'kozhikode', sourceKey: 'malabar-coast-signature-aattirachi-kurumulak', area: 'Kozhikode', region: 'Kerala', coordinates: '11.2588° N · 75.7804° E', yearLabel: 'Historic spice port', courseLabel: 'Aattirachi Kurumulak', imageFile: 'food/aatirachi kurumulak ittath.jpeg', alt: 'Aattirachi Kurumulak served at Malabar Coast', description: 'Pepper-led lamb recalls the spice trade that made Kozhikode one of the coast’s great meeting places.'},
+  {key: 'mangaluru', sourceKey: 'malabar-coast-signature-masala-grilled-fish', area: 'Mangaluru', region: 'Karnataka coast', coordinates: '12.9141° N · 74.8560° E', yearLabel: 'Western coast', courseLabel: 'Masala Grilled Fish', imageFile: 'food/Masala grill fish.jpeg', alt: 'Masala grilled fish served at Malabar Coast', description: 'Masala-coated grilled fish carries the bright heat and sea-facing character of India’s western coast.'},
+  {key: 'mumbai', sourceKey: 'chicken-indian-garlic-chilli-chicken', area: 'Mumbai', region: 'Maharashtra', coordinates: '19.0760° N · 72.8777° E', yearLabel: 'Gateway harbour', courseLabel: 'Indian Garlic Chilli Chicken', imageFile: 'food/indian garlic chilli chicken tikka.jpeg', alt: 'Indian garlic chilli chicken served at Malabar Coast', description: 'A bold garlic and chilli dish for a city whose tables bring regional flavours together.'},
+  {key: 'surat', sourceKey: 'breads-peshwari-naan', area: 'Surat', region: 'Gujarat', coordinates: '21.1702° N · 72.8311° E', yearLabel: 'Gulf of Khambhat', courseLabel: 'Peshwari Naan', imageFile: 'food/Peshwari naan.jpeg', alt: 'Peshwari naan served at Malabar Coast', description: 'A fragrant, fruit-and-nut-filled naan marks Gujarat on the west-coast route with a sweet counterpoint.'},
+  {key: 'chennai', sourceKey: 'chicken-butter-chicken', area: 'Chennai', region: 'Tamil Nadu', coordinates: '13.0827° N · 80.2707° E', yearLabel: 'Coromandel coast', courseLabel: 'Butter Chicken', imageFile: 'food/Butter chicken.jpeg', alt: 'Butter chicken served at Malabar Coast', description: 'A rich restaurant favourite closes the route on the Coromandel Coast before the story reaches Scotland.'},
 ] as const
 
 const additionalDescriptions = [
@@ -34,16 +34,16 @@ const additionalDescriptions = [
 ] as const
 
 const baseUpdate = {
-  eyebrow: 'A taste of India · Coast to mountains',
-  headingLineOne: 'Six places.',
+  eyebrow: 'India’s port kitchens · Coast to coast',
+  headingLineOne: 'Six ports.',
   headingLineTwo: 'One table.',
-  introduction: 'Travel from Delhi and Amritsar’s tandoor fire to Mumbai’s grills, Kashmir’s aromatic lamb, Hyderabad’s biriyani and Lucknow’s festive sweets.',
-  journeyLinkLabel: 'Explore India',
+  introduction: 'Follow the sea route from Kerala’s Kochi and Kozhikode to Mangaluru, Mumbai, Surat and Chennai, paired with real dishes served at Malabar Coast.',
+  journeyLinkLabel: 'Explore the port cities',
   manifestEyebrow: 'The full menu',
   manifestHeading: 'What we carry to the table.',
   manifestIntroduction: 'The current Malabar Coast menu, prepared for sharing and available to order online where shown.',
   dietaryNotice: 'Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.',
-  alcoholNotice: 'Alcoholic-drink prices are not published online. Please ask the restaurant team for the current bar price list. Alcohol is not available through online ordering.',
+  alcoholNotice: 'Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.',
   'seo.title': 'Indian Cuisine & Bar Menu in Holytown',
   'seo.description': 'Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast.',
 }
@@ -64,12 +64,13 @@ async function uploadImage(relativePath: string) {
 
 async function main() {
   const sourceKeys = [...definitions.map((definition) => definition.sourceKey), ...additionalDescriptions.map((definition) => definition.sourceKey)]
-  const [pages, dishes, homePageId, siteSettingsId] = await Promise.all([
+  const [pages, dishes, drinks, homePageId, siteSettingsId] = await Promise.all([
     client.fetch<Array<{_id: string; voyageStops?: Array<{_key?: string}>}>>(`*[_id in ["menuPage", "drafts.menuPage"]]{_id,voyageStops[]{_key}}`),
     client.fetch<Array<{_id: string; sourceKey: string; image?: {_type: 'image'; asset?: {_type: 'reference'; _ref: string}; alt?: string}}>>(
       `*[_type == "menuItem" && sourceKey in $sourceKeys]{_id,sourceKey,image}`,
       {sourceKeys},
     ),
+    client.fetch<Array<{_id: string}>>(`*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"]]{_id}`),
     client.fetch<string | null>(`*[_type == "marketingPage" && pageKey == "home"][0]._id`),
     client.fetch<string | null>(`*[_type == "siteSettings"][0]._id`),
   ])
@@ -118,15 +119,16 @@ async function main() {
     transaction = transaction.patch(dishByKey.get(definition.sourceKey)!, {set: {
       description: definition.description,
       ...(uploadedAssetId ? {image: {_type: 'image', asset: {_type: 'reference', _ref: uploadedAssetId}, alt: definition.alt}} : {}),
-      featured: definition.sourceKey === 'clay-oven-chicken-tikka' || definition.sourceKey === 'desserts-gulab-jamun',
+      featured: index < 3,
     }})
   }
   for (const definition of additionalDescriptions) transaction = transaction.patch(dishByKey.get(definition.sourceKey)!, {set: {description: definition.description}})
+  for (const drink of drinks) transaction = transaction.patch(drink._id, {set: {priceLabel: 'Ask the coastal crew', hidePrice: true, onlineOrdering: false}})
   if (homePageId) transaction = transaction.patch(homePageId, {set: {
     eyebrow: 'Indian Cuisine & Bar · Holytown',
     heroText: 'Tandoor fire, fragrant biriyani, rich curries and Malabar coastal flavours, served with a full bar in the heart of Holytown.',
     'sections[_key=="home-menu"].eyebrow': 'From coast and tandoor',
-    'sections[_key=="home-menu"].body': block('From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.'),
+    'sections[_key=="home-menu"].body': block('From Kerala’s coastal curries to dishes carried through India’s port cities, our table follows the spice route to Scotland.'),
   }})
   if (siteSettingsId) transaction = transaction.patch(siteSettingsId, {set: {
     shortDescription: 'Indian Cuisine & Bar, from tandoor fire to the Malabar coast.',
@@ -142,7 +144,14 @@ async function main() {
   const expectedAreas = definitions.map((definition) => definition.area)
   if (!verified.every((document) => JSON.stringify(document.areas) === JSON.stringify(expectedAreas))) throw new Error('Post-migration verification found an unexpected Indian destination list.')
   if (!verified.every((document) => document.headingLineOne === baseUpdate.headingLineOne && document.headingLineTwo === baseUpdate.headingLineTwo && document.journeyLinkLabel === baseUpdate.journeyLinkLabel)) throw new Error('Post-migration verification found stale menu-page copy.')
-  console.log(JSON.stringify({mode: 'applied-and-verified', documents: verified, headings: [baseUpdate.headingLineOne, baseUpdate.headingLineTwo]}, null, 2))
+  const drinkVerification = await client.fetch<{total: number; visiblePrices: number; orderable: number; labelMismatch: number}>(`{
+    "total": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"]]),
+    "visiblePrices": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"] && hidePrice != true]),
+    "orderable": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"] && onlineOrdering == true]),
+    "labelMismatch": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"] && priceLabel != "Ask the coastal crew"])
+  }`)
+  if (drinkVerification.visiblePrices || drinkVerification.orderable || drinkVerification.labelMismatch) throw new Error('Post-migration verification found a drink price or ordering setting still exposed.')
+  console.log(JSON.stringify({mode: 'applied-and-verified', documents: verified, headings: [baseUpdate.headingLineOne, baseUpdate.headingLineTwo], drinks: drinkVerification}, null, 2))
 }
 
 main().catch((error) => {

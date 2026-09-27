@@ -231,6 +231,8 @@
 .dietaryMarker.isCompact { font-size: .54rem; }
 .dishFooter .dietaryMarker { color: var(--menu-ivory); }
 .dishFooter .dietaryMarker i { background: rgba(7,19,16,.35); }
+.allergenMarker { display: inline-flex; min-height: 1.75rem; align-items: center; margin-left: auto; padding: .35rem .55rem; border: 1px solid currentColor; border-radius: 999px; color: inherit; font-size: .49rem; font-weight: 700; letter-spacing: .08em; line-height: 1.25; text-align: right; text-transform: uppercase; }
+.manifestDishMeta .allergenMarker { margin-left: 0; color: rgba(16,32,28,.68); }
 .manifestCard li b { font-family: "Bodoni 72", Didot, serif; font-size: 1rem; font-weight: 400; }
 .manifestOrder { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; flex: 0 0 8rem; }
 .manifestAskTeam { display: inline-flex; min-height: 2.75rem; align-items: center; gap: .4rem; padding: 0 .65rem; border: 1px solid rgba(16,32,28,.4); color: #805621; font-size: .54rem; font-weight: 800; letter-spacing: .07em; text-align: center; text-transform: uppercase; }
@@ -306,12 +308,14 @@
   .portContent h3 { font-size: clamp(1.65rem,3.2vw,2.2rem); }
   .dishDescription { margin-top: .85rem; font-size: .86rem; }
   .dishFooter { flex-wrap: wrap; margin-top: 1rem; }
+  .dishFooter .allergenMarker { width: 100%; margin-left: 0; justify-content: flex-start; text-align: left; }
   .portContent .addToOrder { margin-top: 1rem; }
   .menuFooter { min-height: 52svh; }
 }
 
 @media (max-width: 600px) {
   .menuPrologue { min-height: 46rem; }
+  .portContent h2 { font-size: clamp(3rem,15vw,4.25rem); overflow-wrap: normal; }
   .portPanel { min-height: auto; padding-bottom: 4rem; }
   .portImage { height: 42svh; min-height: 19rem; }
   .manifest { padding-top: 5rem; }

@@ -30,7 +30,7 @@ test("content management keeps secrets server-side and writes in Studio", async 
   assert.match(client, /perspective: "published"/);
 });
 
-test("the menu journey stays limited to six Indian food destinations", async () => {
+test("the menu journey stays limited to six Indian port-city food stories", async () => {
   const [schema, seed, migration] = await Promise.all([
     readFile(new URL("../studio/schemaTypes/documents/menuPage.ts", import.meta.url), "utf8"),
     readFile(new URL("../scripts/seed-sanity.ts", import.meta.url), "utf8"),
@@ -38,18 +38,18 @@ test("the menu journey stays limited to six Indian food destinations", async () 
   ]);
   const seedJourney = seed.slice(seed.indexOf("const voyageSeeds"), seed.indexOf("await client.createOrReplace({", seed.indexOf("const voyageSeeds")));
 
-  for (const area of ["Delhi", "Amritsar", "Mumbai", "Kashmir", "Hyderabad", "Lucknow"]) {
+  for (const area of ["Kochi", "Kozhikode", "Mangaluru", "Mumbai", "Surat", "Chennai"]) {
     assert.match(schema, new RegExp(area));
     assert.match(seedJourney, new RegExp(area));
     assert.match(migration, new RegExp(area));
   }
-  for (const oldStop of ["Kannur", "Kozhikode", "Palakkad", "Kochi", "Kottayam", "Alappuzha"]) {
+  for (const oldStop of ["Delhi", "Amritsar", "Kashmir", "Hyderabad", "Lucknow", "Palakkad", "Kottayam", "Alappuzha"]) {
     assert.doesNotMatch(seedJourney, new RegExp(oldStop));
     assert.doesNotMatch(migration, new RegExp(oldStop));
   }
   assert.match(schema, /length\(6\)/);
-  assert.match(schema, /rejectLegacyKeralaCopy/);
-  assert.match(schema, /Replace every old Kerala-only stop/);
+  assert.match(schema, /rejectLegacyRouteCopy/);
+  assert.match(schema, /Six Indian port-city food stories/);
   assert.match(seed, /Indian Cuisine & Bar Menu in Holytown/);
   assert.match(migration, /Indian Cuisine & Bar Menu in Holytown/);
   assert.doesNotMatch(seedJourney, /One Kerala|Explore Kerala|Six Kerala food regions/);

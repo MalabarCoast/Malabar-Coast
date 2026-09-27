@@ -462,7 +462,7 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
   .adminRecordWide { grid-column: auto; }
   .adminWorkspace { padding: 1rem; }
   .adminPageHeader h1 { font-size: clamp(2.6rem,11vw,3.6rem); }
-  .adminLoginCard h1 { font-size: clamp(2.6rem,11vw,3.3rem); overflow-wrap: anywhere; }
+  .adminLoginCard h1 { font-size: clamp(2.2rem,10vw,3.3rem); overflow-wrap: normal; }
   .adminHeaderActions,.adminHeaderActions .adminButton { width: 100%; }
   .adminHeaderActions .adminButton { flex: 1; }
   .adminMetrics { grid-template-columns: 1fr; }
