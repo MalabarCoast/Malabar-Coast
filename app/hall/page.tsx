@@ -51,15 +51,15 @@ export function generateMetadata() {
 const fallbackHallFaqs = [
   {
     id: "hall-what-is-it",
-    question: "What is the private hall at Malabar Coast?",
+    question: "What is The Kerala Suite at Malabar Coast?",
     answer:
-      "The private hall is a flexible event space within Malabar Coast restaurant at 33 Main Street, Holytown. The room has an open floor, a built-in wooden bar and a raised stage, creating a practical setting for private celebrations and community gatherings.",
+      "The Kerala Suite is a flexible private event space within Malabar Coast restaurant at 33 Main Street, Holytown. It has an open floor, a built-in wooden bar and a raised stage for private celebrations and community gatherings.",
   },
   {
     id: "hall-facilities",
-    question: "What facilities are visible in the hall?",
+    question: "What facilities are included in The Kerala Suite?",
     answer:
-      "The Malabar Coast hall includes a dedicated built-in bar, a raised stage, ceiling lighting and a flexible open floor. Seating and event layouts can be arranged around the room, while final capacity and package details will be published after they are confirmed.",
+      "The Kerala Suite includes a dedicated built-in bar, a raised stage, ceiling lighting and a flexible open floor. The team confirms the suitable seating layout, capacity and package details for each event enquiry.",
   },
   {
     id: "hall-occasions",
@@ -69,9 +69,9 @@ const fallbackHallFaqs = [
   },
   {
     id: "hall-booking",
-    question: "How can guests enquire about the hall?",
+    question: "How can guests enquire about The Kerala Suite?",
     answer:
-      "Send the hall enquiry form with your preferred date, approximate guest count and the basics of your occasion. This starts a request rather than confirming the space. The restaurant team will review it and contact you to discuss availability, timing, layout, catering and pricing.",
+      "Send The Kerala Suite enquiry form with your preferred date and time, approximate guest count, occasion and contact details. This starts an enquiry rather than confirming the space. The restaurant team will contact you to discuss availability, layout, catering and pricing.",
   },
 ] as const;
 
@@ -143,7 +143,7 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
 
 export default async function HallPage() {
   const [cmsPage, allFaqs] = await Promise.all([getMarketingPage("hall"), getFaqItems()]);
-  const cmsHallFaqs = allFaqs.filter((item) => /hall|private/i.test(`${item.category || ""} ${item.question}`));
+  const cmsHallFaqs = allFaqs.filter((item) => /hall|private|kerala suite/i.test(`${item.category || ""} ${item.question}`));
   const hallFaqs = cmsHallFaqs.length >= 3 ? cmsHallFaqs : fallbackHallFaqs;
   const hallSchema = createHallSchema(hallFaqs);
   const introductionSection = getPageSection(cmsPage, "hall-intro");

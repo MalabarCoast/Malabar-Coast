@@ -114,6 +114,20 @@
 .serviceNotes > div:last-child { border-right: 1px solid rgba(16,32,28,.18); }
 .serviceNotes span { color: #8a5d24; font-size: .5rem; letter-spacing: .18em; text-transform: uppercase; }
 .serviceNotes strong { font-family: "Iowan Old Style",Georgia,serif; font-size: 1.05rem; font-weight: 400; }
+.restaurantGallery { padding: clamp(5rem,7vw,8rem) var(--ed-page-gutter); background: #d9ccb2; color: #10201c; }
+.restaurantGalleryHeading { display: grid; grid-template-columns: .7fr 1.25fr .8fr; gap: clamp(2rem,4vw,5rem); align-items: end; margin-bottom: clamp(3rem,5vw,5rem); }
+.restaurantGalleryHeading h2 { margin: 0; font-family: "Bodoni 72",Didot,serif; font-size: clamp(3.8rem,6vw,6.8rem); font-weight: 400; line-height: .84; letter-spacing: -.05em; text-transform: uppercase; }
+.restaurantGalleryHeading > p { max-width: 30rem; margin: 0; color: rgba(16,32,28,.7); font-family: "Iowan Old Style",Georgia,serif; font-size: clamp(.95rem,1.1vw,1.1rem); line-height: 1.65; }
+.restaurantGalleryGrid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: clamp(.75rem,1.4vw,1.35rem); }
+.restaurantGalleryTile { isolation: isolate; position: relative; grid-column: span 4; aspect-ratio: 4 / 3; margin: 0; overflow: hidden; background: #10201c; }
+.restaurantGalleryTile:nth-child(1),.restaurantGalleryTile:nth-child(6) { grid-column: span 8; aspect-ratio: 16 / 10; }
+.restaurantGalleryTile:nth-child(2),.restaurantGalleryTile:nth-child(5),.restaurantGalleryTile:nth-child(9) { aspect-ratio: 4 / 5; }
+.restaurantGalleryTile:nth-child(3),.restaurantGalleryTile:nth-child(4),.restaurantGalleryTile:nth-child(7),.restaurantGalleryTile:nth-child(8) { grid-column: span 6; aspect-ratio: 16 / 10; }
+.restaurantGalleryTile:nth-child(10) { grid-column: 3 / 11; aspect-ratio: 16 / 9; }
+.restaurantGalleryTile img { object-fit: cover; transition: transform .8s cubic-bezier(.2,.75,.2,1); }
+.restaurantGalleryTile::after { content: ""; position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg,transparent 58%,rgba(3,9,8,.7)); pointer-events: none; }
+.restaurantGalleryTile figcaption { position: absolute; z-index: 2; right: 1rem; bottom: 1rem; left: 1rem; color: var(--ed-ivory); font-size: .5rem; letter-spacing: .16em; text-align: right; text-transform: uppercase; }
+.restaurantGalleryTile:hover img { transform: scale(1.025); }
 .restaurantHallTeaser { position: relative; min-height: 78vh; overflow: hidden; }
 .restaurantHallTeaser > img { object-fit: cover; object-position: center; }
 .restaurantHallShade { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(3,10,8,.83),rgba(3,10,8,.2) 68%),linear-gradient(180deg,transparent 58%,rgba(3,10,8,.55)); }
@@ -211,6 +225,13 @@
   .editorialCtas a,.bridgeLinks a { justify-content: space-between; }
   .roomPortrait { display: flex; flex-direction: column; min-height: auto; }
   .restaurantHallTeaser { min-height: 68svh; }
+  .restaurantGallery { padding: 5rem 1.25rem; }
+  .restaurantGalleryHeading { display: block; }
+  .restaurantGalleryHeading h2 { margin: 1.25rem 0 1.5rem; }
+  .restaurantGalleryGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .restaurantGalleryTile,.restaurantGalleryTile:nth-child(n) { grid-column: span 1; aspect-ratio: 4 / 3; }
+  .restaurantGalleryTile:nth-child(1),.restaurantGalleryTile:nth-child(4),.restaurantGalleryTile:nth-child(6),.restaurantGalleryTile:nth-child(7),.restaurantGalleryTile:nth-child(10) { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+  .restaurantGalleryTile:nth-child(2),.restaurantGalleryTile:nth-child(5),.restaurantGalleryTile:nth-child(9) { aspect-ratio: 4 / 5; }
   .restaurantHallCopy { left: 1.25rem; width: calc(100% - 2.5rem); }
   .restaurantHallCopy h2 { font-size: 16vw; }
   .roomPortraitImage { min-height: 70svh; }
@@ -245,6 +266,11 @@
 
 @media (max-width: 600px) {
   .restaurantWelcome,.restaurantStoryBridge { padding-block: 5rem; }
+  .restaurantGallery { padding-block: 4.5rem; }
+  .restaurantGalleryHeading h2 { font-size: clamp(3rem,15vw,4rem); overflow-wrap: normal; }
+  .restaurantGalleryGrid { grid-template-columns: 1fr; gap: .8rem; }
+  .restaurantGalleryTile,.restaurantGalleryTile:nth-child(n) { grid-column: 1; aspect-ratio: 16 / 10; }
+  .restaurantGalleryTile:nth-child(2),.restaurantGalleryTile:nth-child(5),.restaurantGalleryTile:nth-child(9) { aspect-ratio: 4 / 5; }
   .roomPortraitImage { min-height: 56svh; }
   .roomPortraitText { padding-block: 4.5rem; }
   .kitchenSignatures { padding-block: 5rem; }
@@ -261,6 +287,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .storyHero > img,.restaurantHero > img { animation: none; }
+  .restaurantGalleryTile img { transition: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 

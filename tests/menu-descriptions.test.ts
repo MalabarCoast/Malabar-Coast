@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {readFile} from "node:fs/promises";
 import test from "node:test";
-import {menuItems} from "../app/lib/menu";
+import {formatAllergenSummary, menuItems} from "../app/lib/menu";
 
 test("every catalogue item has one concise public description", () => {
   assert.ok(menuItems.length > 0);
@@ -10,6 +10,23 @@ test("every catalogue item has one concise public description", () => {
     assert.ok(item.description.length <= 180, `${item.id} description is longer than 180 characters`);
     assert.doesNotMatch(item.description, /[\r\n]/, `${item.id} description must stay on one line`);
   }
+});
+
+test("the current menu catalogue has unique stable identifiers and source-backed allergen markers", () => {
+  assert.equal(menuItems.length, 195);
+  assert.equal(new Set(menuItems.map((item) => item.id)).size, menuItems.length);
+  assert.equal(menuItems.find((item) => item.id === "chicken-dragon-chicken")?.name, "Dragon Chicken Tikka");
+  assert.equal(menuItems.filter((item) => item.allergenReviewStatus === "confirmed").length, 63);
+  assert.deepEqual(menuItems.find((item) => item.id === "starters-chicken-65")?.allergens, ["milk", "cereals containing gluten"]);
+  assert.deepEqual(menuItems.find((item) => item.id === "chicken-butter-chicken")?.allergens, ["milk", "nuts"]);
+  assert.deepEqual(menuItems.find((item) => item.id === "breads-peshwari-naan")?.allergens, ["nuts", "cereals containing gluten"]);
+  assert.deepEqual(menuItems.find((item) => item.id === "desserts-malabar-coast-special-dessert")?.allergens, ["milk", "nuts", "cereals containing gluten"]);
+
+  const unmarkedItem = menuItems.find((item) => item.id === "starters-vegetable-pakora");
+  assert.equal(unmarkedItem?.allergenReviewStatus, "needs-review");
+  assert.deepEqual(unmarkedItem?.allergens, []);
+  assert.equal(unmarkedItem && formatAllergenSummary(unmarkedItem), "");
+  assert.equal(formatAllergenSummary(menuItems.find((item) => item.id === "desserts-malabar-coast-special-dessert")!), "D · N · G");
 });
 
 test("menu descriptions remain editable, required and visible to content editors", async () => {

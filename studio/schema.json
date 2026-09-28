@@ -2403,7 +2403,49 @@
         },
         "optional": true
       },
+      "allergenReviewStatus": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "needs-review"
+            },
+            {
+              "type": "string",
+              "value": "confirmed"
+            },
+            {
+              "type": "string",
+              "value": "confirmed-none"
+            }
+          ]
+        },
+        "optional": true
+      },
       "allergenNotes": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "allergenSource": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "allergenReviewedBy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "allergenReviewedAt": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

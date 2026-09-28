@@ -73,3 +73,11 @@
 - A breakpoint that works at 900px can still fail at a 916px tablet viewport. Derive transitions from the layout's real minimum column widths, not familiar device numbers.
 - Restaurant photography feels more credible when it shows service, preparation, worn working surfaces and mixed practical light instead of isolated, perfectly arranged plates.
 - Keep generated source outputs outside the public bundle and publish compressed, correctly cropped derivatives with descriptive filenames and alt text.
+
+# Allergen governance and final-handover lessons
+
+- A menu PDF with names and prices is not an allergen source. Keep unknown declarations visibly unconfirmed and require recipe, ingredient-label and cross-contact evidence before publishing a claim.
+- Separate “not yet reviewed” from “confirmed none”; an empty allergen array cannot safely communicate both states.
+- Preserve confirmed declarations during broad catalogue synchronisation, and require an evidence source, named approver and approval date so later recipe changes can be audited.
+- Owner-supplied venue photography needs the same parity as other managed content: checked-in fallback, responsive layout, accessible descriptions, CMS assets and a reproducible synchronisation command.
+- Final responsive evidence should include a smallest supported width after the last CSS change; a long email or URL can be the only remaining source of document-level overflow.

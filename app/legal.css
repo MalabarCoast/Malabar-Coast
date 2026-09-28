@@ -53,7 +53,7 @@
 .legalSectionBody p { margin: 0 0 1.25rem; }
 .legalSectionBody p:last-child { margin-bottom: 0; }
 .legalSectionBody strong { color: #10201c; font-weight: 650; }
-.legalSectionBody a { color: #704515; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+.legalSectionBody a { color: #704515; overflow-wrap: anywhere; word-break: break-word; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
 .legalSectionBody ul { margin: 1.25rem 0; padding: 0; list-style: none; }
 .legalSectionBody li { position: relative; padding: .85rem 0 .85rem 1.5rem; border-top: 1px solid rgba(16, 32, 28, .16); }
 .legalSectionBody li:last-child { border-bottom: 1px solid rgba(16, 32, 28, .16); }

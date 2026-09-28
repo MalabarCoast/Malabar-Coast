@@ -35,6 +35,10 @@ In development only, orders fall back to `.data/orders.json` when Supabase is no
 | `pnpm start` | Start the production server |
 | `pnpm lint` | Run ESLint |
 | `pnpm test` | Run database, authentication, payment and security contract tests |
+| `pnpm handover:allergen-register` | Recreate the 195-item allergen working register from the checked-in catalogue |
+| `pnpm sanity:sync-menu-catalogue` | Preview the menu/CMS catalogue synchronisation; add `-- --apply` only after review |
+| `pnpm sanity:sync-faqs` | Preview the maintained FAQ synchronisation; add `-- --apply` only after review |
+| `pnpm sanity:sync-restaurant-gallery` | Preview the restaurant gallery synchronisation; add `-- --apply` only after review |
 
 ## Project structure
 
@@ -60,6 +64,9 @@ Run the current `supabase/schema.sql` before deploying the matching application 
 
 ## Documentation
 
+- [docs/CLIENT_PRODUCT_DELIVERY_REPORT.md](./docs/CLIENT_PRODUCT_DELIVERY_REPORT.md) — single master product, operations, allergen and production-acceptance handover
+- [docs/Malabar_Coast_Complete_Product_Delivery_Report.docx](./docs/Malabar_Coast_Complete_Product_Delivery_Report.docx) — client-ready Word edition of the same master handover
+- [docs/MENU_ALLERGEN_REGISTER.csv](./docs/MENU_ALLERGEN_REGISTER.csv) — item-by-item working register for restaurant confirmation
 - [PAYMENTS.md](./PAYMENTS.md) — orders and Stripe integration notes
 - [SUPABASE.md](./SUPABASE.md) — database schema, administrator roles, provisioning and deployment verification
 - [SECURITY.md](./SECURITY.md) — admin access, private order routes, headers and launch checklist

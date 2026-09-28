@@ -50,7 +50,38 @@ export const menuItem = defineType({
     }),
     defineField({name: 'dietaryNotes', title: 'Dietary notes', type: 'text', rows: 2}),
     defineField({name: 'allergens', title: 'Confirmed allergens', type: 'array', of: [defineArrayMember({type: 'string'})], options: {list: allergenOptions}}),
+    defineField({
+      name: 'allergenReviewStatus',
+      title: 'Allergen declaration status',
+      type: 'string',
+      options: {list: [
+        {title: 'Needs restaurant confirmation', value: 'needs-review'},
+        {title: 'Confirmed allergens listed', value: 'confirmed'},
+        {title: 'Confirmed: no regulated allergens declared', value: 'confirmed-none'},
+      ], layout: 'radio'},
+      initialValue: 'needs-review',
+      validation: (rule) => rule.required(),
+    }),
     defineField({name: 'allergenNotes', title: 'Allergen and cross-contamination notes', type: 'text', rows: 2}),
+    defineField({
+      name: 'allergenSource',
+      title: 'Allergen evidence source',
+      type: 'string',
+      description: 'For example: signed recipe matrix v3, approved by the head chef.',
+      hidden: ({parent}) => parent?.allergenReviewStatus === 'needs-review',
+    }),
+    defineField({
+      name: 'allergenReviewedBy',
+      title: 'Allergen declaration approved by',
+      type: 'string',
+      hidden: ({parent}) => parent?.allergenReviewStatus === 'needs-review',
+    }),
+    defineField({
+      name: 'allergenReviewedAt',
+      title: 'Allergen declaration approved at',
+      type: 'datetime',
+      hidden: ({parent}) => parent?.allergenReviewStatus === 'needs-review',
+    }),
     defineField({name: 'spiceLevel', title: 'Spice level', type: 'string', options: {list: ['none', 'gentle', 'warm', 'medium', 'hot', 'aromatic']}}),
     defineField({name: 'available', title: 'Available', type: 'boolean', initialValue: true}),
     defineField({name: 'onlineOrdering', title: 'Allow online ordering', type: 'boolean', initialValue: true}),
@@ -61,6 +92,9 @@ export const menuItem = defineType({
     if (item?.onlineOrdering && (item.pricePence === undefined || item.pricePence === null)) return 'Online-orderable items need a price.'
     if (item?.isVegan && !item?.isVegetarian) return 'A vegan item must also be marked vegetarian.'
     if (item?.isAlcoholic && item?.onlineOrdering) return 'Alcoholic items are not available for online ordering.'
+    if (item?.allergenReviewStatus === 'confirmed' && (!Array.isArray(item.allergens) || item.allergens.length === 0)) return 'List at least one allergen, or choose “Confirmed: no regulated allergens declared”.'
+    if (item?.allergenReviewStatus === 'confirmed-none' && Array.isArray(item.allergens) && item.allergens.length > 0) return 'Remove listed allergens or choose “Confirmed allergens listed”.'
+    if (item?.allergenReviewStatus !== 'needs-review' && (!item?.allergenSource || !item?.allergenReviewedBy || !item?.allergenReviewedAt)) return 'Confirmed allergen declarations need an evidence source, approver and approval date.'
     return true
   }),
   orderings: [{title: 'Menu order', name: 'menuOrder', by: [{field: 'category.orderRank', direction: 'asc'}, {field: 'displayOrder', direction: 'asc'}]}],

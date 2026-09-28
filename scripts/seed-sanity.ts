@@ -58,7 +58,7 @@ const imageFiles = {
   foodGrillFish: "food/Masala grill fish.jpeg",
   foodGarlicChicken: "food/indian garlic chilli chicken tikka.jpeg",
   foodPeshwari: "food/Peshwari naan.jpeg",
-  foodButterChicken: "food/Butter chicken.jpeg",
+  foodChennaiDosa: "food/Chennai masala dosa.jpeg",
   foodButterChickenCombo: "food/Garlic naan butter chicken combo.jpeg",
   christmasHero: "christmas/christmas-booking-hero.png",
 } as const;
@@ -99,6 +99,30 @@ async function upsertByField(type: string, field: string, value: string, documen
   }
   const created = await client.create({_type: type, ...document});
   return created._id;
+}
+
+const faqLegacyQuestions: Record<string, readonly string[]> = {
+  "licensed-alcohol": ["Does the Malabar Coast serve alcohol?"],
+  "private-hall": ["Does Malabar Coast have a private event hall?"],
+  "hall-facilities": ["Which facilities are included in the private hall?"],
+  "hall-enquiries": ["How can I book the Malabar Coast hall?"],
+};
+
+async function upsertFaq(faq: (typeof faqItems)[number], displayOrder: number) {
+  const questions = [faq.question, ...(faqLegacyQuestions[faq.id] || [])];
+  const existingId = await client.fetch<string | null>(`*[_type == "faqItem" && question in $questions][0]._id`, {questions});
+  const document = {
+    question: faq.question,
+    answer: faq.answer,
+    category: ["private-hall", "hall-facilities", "hall-enquiries"].includes(faq.id) ? "The Kerala Suite" : "Restaurant",
+    displayOrder,
+    published: true,
+  };
+  if (existingId) {
+    await client.patch(existingId).set(document).commit();
+    return existingId;
+  }
+  return (await client.create({_type: "faqItem", ...document}))._id;
 }
 
 const pageSeeds = () => [
@@ -302,8 +326,6 @@ async function seed() {
       isVegan: menuItem.dietaryStatus === "vegan",
       dietaryReviewStatus: "needs-review",
       dietaryNotes: menuItem.dietaryStatus === "notApplicable" ? "Dietary label not applicable." : "Classification inferred from the supplied menu name; the restaurant must confirm the current recipe.",
-      allergens: [],
-      allergenNotes: "The supplied menu did not include a confirmed allergen matrix. Restaurant confirmation is required before publishing allergens.",
       spiceLevel: "none",
       available: menuItem.available,
       onlineOrdering: menuItem.onlineOrdering,
@@ -321,7 +343,7 @@ async function seed() {
     ["malabar-coast-signature-masala-grilled-fish", "Mangaluru", "Karnataka coast", "12.9141° N · 74.8560° E", "Western coast", "Masala Grilled Fish", "foodGrillFish", "Masala grilled fish served at Malabar Coast", "Masala-coated grilled fish carries the bright heat and sea-facing character of India's western coast."],
     ["chicken-indian-garlic-chilli-chicken", "Mumbai", "Maharashtra", "19.0760° N · 72.8777° E", "Gateway harbour", "Indian Garlic Chilli Chicken", "foodGarlicChicken", "Indian garlic chilli chicken served at Malabar Coast", "A bold garlic and chilli dish for a city whose tables bring regional flavours together."],
     ["breads-peshwari-naan", "Surat", "Gujarat", "21.1702° N · 72.8311° E", "Gulf of Khambhat", "Peshwari Naan", "foodPeshwari", "Peshwari naan served at Malabar Coast", "A fragrant, fruit-and-nut-filled naan marks Gujarat on the west-coast route with a sweet counterpoint."],
-    ["chicken-butter-chicken", "Chennai", "Tamil Nadu", "13.0827° N · 80.2707° E", "Coromandel coast", "Butter Chicken", "foodButterChicken", "Butter chicken served at Malabar Coast", "A rich restaurant favourite closes the route on the Coromandel Coast before the story reaches Scotland."],
+    ["dosa-masala-dosa", "Chennai", "Tamil Nadu", "13.0827° N · 80.2707° E", "Coromandel coast", "Dosa", "foodChennaiDosa", "Chennai-style masala dosa served with sambar and chutneys", "A crisp masala dosa brings Tamil Nadu’s griddle tradition to the final stop on the Coromandel Coast."],
   ] as const;
   await client.createOrReplace({
     _id: "menuPage",
@@ -334,7 +356,7 @@ async function seed() {
     manifestEyebrow: "The full menu",
     manifestHeading: "What we carry to the table.",
     manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
-    dietaryNotice: "Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.",
+    dietaryNotice: "D means dairy, N means nuts and G means gluten. Only the restaurant-supplied markers are shown. Please tell the team about all allergies before ordering because recipes can change and cross-contact may occur.",
     alcoholNotice: "Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.",
     voyageStops: voyageSeeds.map(([itemId, area, region, coordinates, yearLabel, courseLabel, imageKey, alt, description], index) => ({
       _type: "object", _key: `voyage-${index + 1}`, dish: {_type: "reference", _ref: itemIds.get(itemId)!}, area, region, coordinates, yearLabel, courseLabel, image: image(imageKey, alt), description,
@@ -391,7 +413,7 @@ async function seed() {
 
   const marketingPages = pageSeeds();
   for (const page of marketingPages) await upsertByField("marketingPage", "pageKey", page.pageKey, page);
-  for (const [index, faq] of faqItems.entries()) await upsertByField("faqItem", "question", faq.question, {question: faq.question, answer: faq.answer, category: ["private-hall", "hall-facilities", "hall-enquiries"].includes(faq.id) ? "Private hall" : "Restaurant", displayOrder: index, published: true});
+  for (const [index, faq] of faqItems.entries()) await upsertFaq(faq, index);
 
   const testimonials = [
     {name: "Just Eat guests", source: "Independent delivery platform", rating: 4.75, quote: "Eight early diners placed Malabar Coast at 4.75 out of 5, a warm first word from Holytown."},

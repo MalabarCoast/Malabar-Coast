@@ -247,6 +247,8 @@
 .dietaryKey .dietaryMarker { color: #10201c; }
 .dietaryKey b { display: grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border: 1px solid rgba(16,32,28,.45); border-radius: 50%; font-size: .48rem; }
 .dietaryKey p { margin: 0 0 0 auto; text-align: right; text-transform: none; }
+.allergenKey { padding-top: 2rem; }
+.allergenKey + .dietaryKey { padding-top: 1.25rem; }
 
 .menuFooter { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 3rem; min-height: 42vh; padding: clamp(4rem, 6vw, 6rem) clamp(1.25rem, 6vw, 7rem) 2.5rem; background: #071310; }
 .menuFooter p { margin: 0 0 1rem; color: var(--menu-brass); font-size: .58rem; letter-spacing: .22em; text-transform: uppercase; }

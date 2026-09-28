@@ -46,7 +46,7 @@ export const pageLastUpdated = {
   "/careers": "2026-09-17",
   "/story": "2026-09-17",
   "/story/calicut": "2026-08-16",
-  "/faq": "2026-09-17",
+  "/faq": "2026-09-29",
   "/payments": "2026-08-15",
   "/returns": "2026-08-15",
   "/cookie": "2026-08-16",

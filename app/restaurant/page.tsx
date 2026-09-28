@@ -22,9 +22,22 @@ const fallbackMetadata: Metadata = {
     url: "/restaurant",
     title: "Malabar Coast Restaurant in Holytown, Scotland",
     description: "A warm neighbourhood dining room for tandoor dishes, curries, biriyani and Malabar coastal cooking at 33 Main Street, Holytown.",
-    images: ["/restaurant/dining-room.png"],
+    images: ["/Store/6.jpeg"],
   },
 };
+
+const fallbackRestaurantGallery = [
+  {url: "/Store/1.jpeg", alt: "The timber bar at Malabar Coast with pendant lights and a fully stocked back bar", caption: "The bar · Detail"},
+  {url: "/Store/2.jpeg", alt: "A wide view of the timber bar and draught taps at Malabar Coast", caption: "The bar · Welcome"},
+  {url: "/Store/3.jpeg", alt: "Dining tables and bench seating beside the timber screen at Malabar Coast", caption: "The dining room · Intimate tables"},
+  {url: "/Store/4.jpeg", alt: "A wide view across Malabar Coast dining booths and freestanding tables", caption: "The dining room · Room to gather"},
+  {url: "/Store/5.jpeg", alt: "The Malabar Coast bar viewed across a long timber sharing table", caption: "The room · From the long table"},
+  {url: "/Store/6.jpeg", alt: "The Malabar Coast dining room with warm timber booths, tables and pendant lighting", caption: "The dining room · Warm light"},
+  {url: "/Store/7.jpeg", alt: "A communal timber table beside the bar inside Malabar Coast", caption: "The room · Made for sharing"},
+  {url: "/Store/8.jpeg", alt: "Booth seating and dining tables beneath warm wall lights at Malabar Coast", caption: "The dining room · Booths"},
+  {url: "/Store/9.jpeg", alt: "Rows of dining tables and a long banquette inside Malabar Coast", caption: "The dining room · Across the floor"},
+  {url: "/Store/10.jpeg", alt: "A broad view of Malabar Coast dining tables, booths and timber wall panelling", caption: "The dining room · Set for service"},
+] as const;
 
 export const dynamic = "force-dynamic";
 
@@ -73,12 +86,14 @@ export default async function RestaurantPage() {
   const foodParagraphs = portableTextToPlainText(foodSection?.body).split(/\n\s*\n/).filter(Boolean);
   const roomSection = getPageSection(cmsPage, "restaurant-room");
   const hallSection = getPageSection(cmsPage, "restaurant-hall");
+  const gallerySection = getPageSection(cmsPage, "restaurant-gallery");
+  const restaurantGallery = gallerySection?.gallery && gallerySection.gallery.length >= 4 ? gallerySection.gallery : fallbackRestaurantGallery;
   return (
     <main className="editorialPage restaurantPage">
       <JsonLd data={breadcrumbSchema} />
       <section className="restaurantHero" aria-labelledby="restaurant-title">
         <Image
-          src={cmsPage?.heroImage?.url || "/restaurant/dining-room.png"}
+          src={cmsPage?.heroImage?.url || "/Store/6.jpeg"}
           alt={cmsPage?.heroImage?.alt || "The warmly lit Malabar Coast dining room with teak, cane and brass details"}
           fill
           sizes="100vw"
@@ -117,6 +132,22 @@ export default async function RestaurantPage() {
       </section>
       <OpeningHours schedule={schedule}/>
 
+      <section className="restaurantGallery" aria-labelledby="restaurant-gallery-title">
+        <div className="restaurantGalleryHeading">
+          <Reveal className="chapterIndex">{gallerySection?.eyebrow || "Inside Malabar Coast · Holytown"}</Reveal>
+          <Reveal as="h2" id="restaurant-gallery-title" delay={70}>{gallerySection?.heading || "Come into the room."}</Reveal>
+          <Reveal as="p" delay={120}>{gallerySection?.text || "Warm timber, generous tables and a full bar set the scene for an easy lunch, dinner with friends or a longer evening together."}</Reveal>
+        </div>
+        <div className="restaurantGalleryGrid">
+          {restaurantGallery.map((image, index) => (
+            <Reveal as="figure" className="restaurantGalleryTile" delay={Math.min(index * 40, 200)} key={`${image.url}-${index}`}>
+              <Image src={image.url} alt={image.alt} fill sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 60vw" />
+              <figcaption>{image.caption || `Restaurant view ${String(index + 1).padStart(2, "0")}`}</figcaption>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       <section className="restaurantHallTeaser" aria-labelledby="restaurant-hall-title">
         <Image
           src={hallSection?.image?.url || "/Hall3.jpeg"}
@@ -138,7 +169,7 @@ export default async function RestaurantPage() {
       <section className="roomPortrait">
         <Reveal className="roomPortraitImage">
           <Image
-            src={roomSection?.image?.url || "/restaurant/table-for-two.png"}
+            src={roomSection?.image?.url || "/Store/9.jpeg"}
             alt={roomSection?.image?.alt || "An intimate table for two with brass cups, warm linen and handcrafted plates"}
             fill
             sizes="(max-width: 820px) 100vw, 62vw"

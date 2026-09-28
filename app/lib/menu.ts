@@ -23,6 +23,8 @@ export type MenuItem = {
   dietaryReviewStatus: "confirmed" | "needs-review";
   dietary: string[];
   allergens: string[];
+  allergenReviewStatus: "confirmed" | "confirmed-none" | "needs-review";
+  allergenNotes?: string;
   spice: "Gentle" | "Warm" | "Medium" | "Hot" | "Aromatic" | "None";
   available: boolean;
   onlineOrdering: boolean;
@@ -39,6 +41,7 @@ type ItemOptions = {
   orderable?: boolean;
   description?: string;
   featured?: boolean;
+  sourceKey?: string;
 };
 
 type MenuDefinition = {
@@ -72,6 +75,15 @@ const definitions: MenuDefinition[] = [
       vegetarian("Vegetable Pakora", 495), vegetarian("Gobi Pakora", 495), vegetarian("Mushroom Pakora", 495),
       item("Chicken Pakora", 695), item("Fish Pakora", 750), item("Chicken 65", 695), item("Chicken Chaat", 650),
       vegetarian("Potato Skins", 450), item("Mixed Pakora", 795, {dietaryStatus: "unconfirmed"}),
+      vegetarian("Garlic Mushroom", 595), vegetarian("Malai Mushroom", 650),
+    ],
+  },
+  {
+    slug: "indian-snacks", title: "Indian Snacks", note: "Kerala tea-shop favourites", description: "Freshly fried South Indian snacks.",
+    items: [
+      vegetarian("Pazham Pori (2 pieces)", 495), vegetarian("Uzhunnu Vada (2 pieces)", 495),
+      vegetarian("Sugiyan (2 pieces)", 495), vegetarian("Parippu Vada (2 pieces)", 495),
+      vegetarian("Ulli Vada (2 pieces)", 495), vegetarian("Bonda (2 pieces)", 495),
     ],
   },
   {
@@ -83,21 +95,26 @@ const definitions: MenuDefinition[] = [
       item("Tandoori Mixed Grill", 1795),
       vegetarian("Paneer Tikka", 1095),
       item("Chicken Shashlik", 1295, {description: "Tandoor-grilled chicken, peppers and onion layered on skewers with a bright, smoky finish."}),
-      item("Tandoori Jinga", 1495), item("Masala Chicken Tikka", 1395), item("Masala Lamb", 1495),
+      item("Tandoori Jinga", 1495),
     ],
+  },
+  {
+    slug: "tikka-meals", title: "Main Courses - Tikka Meals", note: "From the tandoor", description: "Tikka served as a complete main course.",
+    items: [item("Chicken Tikka Meal", 1495), item("Lamb Tikka Meal", 1695)],
   },
   {
     slug: "chicken", title: "Chicken", note: "Chicken curries", description: "Classic and contemporary chicken dishes.",
     items: [
       item("Traditional Chicken Curry", 1295), item("Chicken Tikka Masala", 1295), item("Butter Chicken", 1295), item("Chicken Chasni", 1295),
       item("Mughlai Korma", 1295), item("Chicken Bhuna", 1395), item("Chicken Jalfrezi", 1350), item("Chicken Dopiaza", 1350),
-      item("Chicken Kadai", 1495), item("Indian Garlic Chilli Chicken", 1350), item("Dragon Chicken", 1395), item("Malaidar Chicken", 1295),
+      item("Chicken Kadai", 1495), item("Indian Garlic Chilli Chicken", 1350),
+      item("Dragon Chicken Tikka", 1395, {sourceKey: "chicken-dragon-chicken"}), item("Malaidar Chicken", 1295),
     ],
   },
   {
     slug: "beef", title: "Beef", note: "Beef curries", description: "Slow-cooked beef dishes.",
     items: [
-      item("Traditional Beef Curry", 1395), item("Beef Chasni", 1395), item("Beef Bhuna", 1495), item("Beef Jalfrezi", 1495),
+      item("Traditional Beef Curry", 1395), item("Beef Bhuna", 1495),
       item("Beef Kadai", 1495), item("Indian Garlic Chilli Beef", 1395), item("Malaidar Beef", 1395),
     ],
   },
@@ -105,14 +122,21 @@ const definitions: MenuDefinition[] = [
     slug: "lamb", title: "Lamb", note: "Lamb curries", description: "Rich lamb dishes with Malabar spice.",
     items: [
       item("Traditional Lamb Curry", 1395), item("Lamb Chasni", 1395), item("Lamb Bhuna", 1495), item("Lamb Jalfrezi", 1495),
-      item("Indian Garlic Chilli Lamb", 1495), item("Malaidar Lamb", 1495),
+      item("Indian Garlic Chilli Lamb", 1495), item("Malaidar Lamb", 1495), item("Lamb Tikka Masala", 1595), item("Lamb Mughlai Kuruma", 1495),
+    ],
+  },
+  {
+    slug: "king-prawn-curries", title: "King Prawn Curries", note: "From the coast", description: "King prawns in classic curry styles.",
+    items: [
+      item("King Prawn Traditional Curry", 1795), item("King Prawn Chasni", 1795),
+      item("Indian Garlic King Prawn", 1895), item("King Prawn Masala", 1895), item("King Prawn Jalfrezi", 1895),
     ],
   },
   {
     slug: "vegetarian", title: "Vegetarian", note: "Garden & grove", description: "Vegetarian curries and paneer dishes.",
     items: [
       vegetarian("Dal Tadka", 895), vegetarian("Vegetable Mughlai Korma", 995), vegetarian("Paneer Butter Masala", 1050),
-      vegetarian("Vegetable Chasni", 995), vegetarian("Aloo Gobi", 895), vegetarian("Cherupayar Curry", 995),
+      vegetarian("Vegetable Chasni", 995), vegetarian("Aloo Gobi", 895),
       vegetarian("Kadai Paneer", 1095), vegetarian("Indian Garlic Chilli Vegetables", 1095),
     ],
   },
@@ -123,11 +147,13 @@ const definitions: MenuDefinition[] = [
       item("Beef Roast", 1395), item("Beef Thenga Kothu", 1395), item("Kizhi Porotta", 1495), item("Masala Grilled Fish", 1495, {featured: true}),
       item("Meen Manga Curry", 1495), item("Meen Moilee", 1495), item("Konju Coconut Fry", 1495, {featured: true, description: "Prawns tossed with toasted coconut, curry leaves and Malabar spices for a dry, savoury finish."}),
       item("Prawn Moilee", 1595, {featured: true}), item("Fish Pollichathu", 1595),
+      vegetarian("Mushroom Varattiyath", 1095), vegetarian("Mixed Veg Stew", 1095), item("Kanava Ularthiyath", 1695),
+      item("Neymeen Masala", 1995), item("Neymeen Pollichathu", 2095), item("Kozhi Palu Pizhinjath", 1395),
     ],
   },
   {
     slug: "biriyani", title: "Biriyani", note: "The dum pot", description: "Fragrant rice dishes.",
-    items: [item("Chicken", 1295, {description: "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."}), item("Beef", 1395), item("Lamb", 1495), item("Fish", 1495)],
+    items: [item("Chicken", 1295, {description: "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."}), item("Beef", 1395), item("Lamb", 1495), item("Fish", 1495), item("King Prawn", 1895)],
   },
   {
     slug: "dosa", title: "Dosa", note: "From the griddle", description: "Crisp South Indian dosas.",
@@ -155,7 +181,7 @@ const definitions: MenuDefinition[] = [
   },
   {
     slug: "desserts", title: "Desserts", note: "Something sweet", description: "Traditional sweets and ice cream.",
-    items: [vegetarian("Gulab Jamun", 495, {featured: true, description: "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup."}), vegetarian("Palada Payasam", 495), vegetarian("Malabar Coast Special Dessert", 595), vegetarian("Ice Cream", 350)],
+    items: [vegetarian("Gulab Jamun", 495, {featured: true, description: "Soft golden milk dumplings soaked in fragrant cardamom and saffron syrup."}), vegetarian("Palada Payasam", 495), vegetarian("Malabar Coast Special Dessert", 595), vegetarian("Ice Cream", 350), vegetarian("Calicut Halwa", 495), vegetarian("Agra Petha", 450)],
   },
   {
     slug: "soft-drinks", title: "Soft Drinks", note: "Cold drinks", description: "Soft drinks, soda and juice.",
@@ -231,13 +257,32 @@ const menuDescriptionByCategory: Record<string, Record<string, string>> = {
     "Chicken Chaat": "Spiced chicken finished with onion and bright, tangy chaat seasoning.",
     "Potato Skins": "Crisp potato skins served as a simple, comforting starter.",
     "Mixed Pakora": "A varied selection of freshly fried pakora for sharing.",
+    "Garlic Mushroom": "Mushrooms cooked with garlic and gentle spices for a savoury starter.",
+    "Malai Mushroom": "Mushrooms in a mild, creamy malai marinade with aromatic spices.",
+  },
+  "indian-snacks": {
+    "Pazham Pori (2 pieces)": "Two Kerala-style ripe banana fritters in a light golden coating.",
+    "Uzhunnu Vada (2 pieces)": "Two crisp savoury lentil doughnuts with a soft, seasoned centre.",
+    "Sugiyan (2 pieces)": "Two traditional sweet fritters filled with mung bean, coconut and jaggery.",
+    "Parippu Vada (2 pieces)": "Two crisp chana dal fritters with onion, chilli and curry leaves.",
+    "Ulli Vada (2 pieces)": "Two crisp onion fritters seasoned with aromatic spices.",
+    "Bonda (2 pieces)": "Two golden South Indian potato fritters with a softly spiced centre.",
   },
   "clay-oven": {
     "Tandoori Mixed Grill": "A generous selection of tandoor-cooked meats with smoky, charred edges.",
     "Paneer Tikka": "Paneer marinated with yoghurt and spices, then charred in the tandoor.",
     "Tandoori Jinga": "Spiced king prawns cooked in the tandoor until smoky and succulent.",
-    "Masala Chicken Tikka": "Charred chicken tikka finished with a rich, warmly spiced masala.",
-    "Masala Lamb": "Tender lamb cooked with aromatic masala spices and a smoky finish.",
+  },
+  "tikka-meals": {
+    "Chicken Tikka Meal": "Tandoor-charred chicken tikka served as a complete main course.",
+    "Lamb Tikka Meal": "Tandoor-charred lamb tikka served as a complete main course.",
+  },
+  "king-prawn-curries": {
+    "King Prawn Traditional Curry": "King prawns simmered in a comforting onion, tomato and house-spice curry.",
+    "King Prawn Chasni": "King prawns cooked in a creamy sauce balanced with sweet and tangy notes.",
+    "Indian Garlic King Prawn": "King prawns cooked in a bold garlic and chilli sauce with aromatic spices.",
+    "King Prawn Masala": "King prawns folded through a rich, warmly spiced masala sauce.",
+    "King Prawn Jalfrezi": "King prawns stir-cooked with peppers, onion, tomato and lively spices.",
   },
   vegetarian: {
     "Dal Tadka": "Slow-cooked lentils finished with a fragrant tempering of spices.",
@@ -245,7 +290,6 @@ const menuDescriptionByCategory: Record<string, Record<string, string>> = {
     "Paneer Butter Masala": "Paneer simmered in a smooth, buttery tomato and spice sauce.",
     "Vegetable Chasni": "Mixed vegetables in a creamy sauce balanced with sweet and tangy notes.",
     "Aloo Gobi": "Potato and cauliflower cooked with tomato, herbs and warming spices.",
-    "Cherupayar Curry": "Green gram simmered with coconut and gently aromatic Kerala spices.",
     "Kadai Paneer": "Paneer cooked with peppers, tomato and freshly crushed kadai spices.",
     "Indian Garlic Chilli Vegetables": "Mixed vegetables tossed through a bold garlic and chilli sauce.",
   },
@@ -260,6 +304,12 @@ const menuDescriptionByCategory: Record<string, Record<string, string>> = {
     "Meen Moilee": "Fish gently cooked in a mild coconut sauce with ginger and curry leaves.",
     "Prawn Moilee": "Prawns gently simmered in a golden coconut sauce with ginger and curry leaves.",
     "Fish Pollichathu": "Spiced fish cooked in the Kerala pollichathu style for a fragrant, full-flavoured plate.",
+    "Mushroom Varattiyath": "Mushrooms dry-roasted with onion, curry leaves, coconut and Kerala spices.",
+    "Mixed Veg Stew": "Mixed vegetables gently simmered with coconut milk and mild Kerala spices.",
+    "Kanava Ularthiyath": "Squid dry-roasted with onion, curry leaves and bold Kerala spices.",
+    "Neymeen Masala": "Kingfish cooked with a robust masala of onion, tomato and aromatic spices.",
+    "Neymeen Pollichathu": "Kingfish cooked in the Kerala pollichathu style for a fragrant, full-flavoured plate.",
+    "Kozhi Palu Pizhinjath": "Chicken simmered in a coconut-milk gravy with ginger, curry leaves and Kerala spices.",
   },
   dosa: {
     "Thattu Dosa": "Soft, compact Kerala-style dosas served warm from the griddle.",
@@ -309,6 +359,8 @@ const menuDescriptionByCategory: Record<string, Record<string, string>> = {
     "Palada Payasam": "A traditional Kerala milk pudding with soft rice ada and gentle sweetness.",
     "Malabar Coast Special Dessert": "The restaurant's rotating house dessert; ask the team for today's preparation.",
     "Ice Cream": "A cool, creamy scoop for a simple finish to the meal.",
+    "Calicut Halwa": "A glossy, gently spiced Calicut-style halwa with a soft, chewy finish.",
+    "Agra Petha": "A translucent North Indian sweet with a delicate syrupy finish.",
   },
   "soft-drinks": {
     "Cola": "Classic cola served chilled.",
@@ -353,16 +405,16 @@ const menuDescriptionByCategory: Record<string, Record<string, string>> = {
 
 const curryStyleDescriptions: Array<[RegExp, (protein: string) => string]> = [
   [/^Traditional /, (protein) => `${protein} simmered in a comforting onion, tomato and house-spice curry.`],
-  [/Tikka Masala$/, () => "Tandoor-cooked chicken tikka folded through a smooth, warmly spiced tomato sauce."],
+  [/Tikka Masala$/, (protein) => `Tandoor-cooked ${protein.toLowerCase()} tikka folded through a smooth, warmly spiced tomato sauce.`],
   [/^Butter Chicken$/, () => "Tender chicken simmered in a buttery tomato sauce with a mellow, creamy finish."],
   [/Chasni$/, (protein) => `${protein} cooked in a creamy sauce balanced with sweet and tangy notes.`],
-  [/Mughlai Korma$/, () => "Tender chicken in a mild, creamy Mughlai-style sauce with aromatic spices."],
+  [/Mughlai (Korma|Kuruma)$/, (protein) => `${protein} in a mild, creamy Mughlai-style sauce with aromatic spices.`],
   [/Bhuna$/, (protein) => `${protein} cooked in a reduced onion and tomato masala for a rich, concentrated flavour.`],
   [/Jalfrezi$/, (protein) => `${protein} stir-cooked with peppers, onion, tomato and lively spices.`],
   [/Dopiaza$/, (protein) => `${protein} cooked with onions added in two stages for sweetness and texture.`],
   [/Kadai$/, (protein) => `${protein} cooked with peppers, tomato and freshly crushed kadai spices.`],
   [/Indian Garlic Chilli/, (protein) => `${protein} cooked in a bold garlic and chilli sauce with aromatic spices.`],
-  [/Dragon Chicken$/, () => "Crisp chicken tossed through a bold, sweet, tangy and chilli-led sauce."],
+  [/Dragon Chicken Tikka$/, () => "Chicken tikka tossed through a bold, sweet, tangy and chilli-led sauce."],
   [/Malaidar/, (protein) => `${protein} finished in a smooth, creamy sauce with gentle aromatic spices.`],
 ];
 
@@ -392,7 +444,7 @@ function slugify(value: string) {
   return value.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI"];
+const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV"];
 
 export const menuCategories: MenuCategory[] = definitions.map((category, index) => ({
   slug: category.slug,
@@ -405,14 +457,88 @@ export const menuCategories: MenuCategory[] = definitions.map((category, index) 
 
 export const categoryDetails = Object.fromEntries(menuCategories.map((category) => [category.slug, category])) as Record<string, MenuCategory>;
 
+export const menuAllergenEvidence = {
+  source: "Owner-supplied Malabar Coast menu PDF, pages 2–9 (D/N/G legend)",
+  reviewedBy: "Malabar Coast restaurant",
+  reviewedAt: "2026-09-28T20:01:05+05:30",
+} as const;
+
+const menuAllergenDeclarations: Record<string, readonly string[]> = {
+  "starters-chicken-65": ["milk", "cereals containing gluten"],
+  "starters-chicken-chaat": ["milk"],
+  "clay-oven-tandoori-chicken": ["milk"],
+  "clay-oven-chicken-tikka": ["milk"],
+  "clay-oven-lamb-tikka": ["milk"],
+  "clay-oven-tandoori-mixed-grill": ["milk"],
+  "clay-oven-paneer-tikka": ["milk"],
+  "clay-oven-chicken-shashlik": ["milk"],
+  "clay-oven-tandoori-jinga": ["milk"],
+  "chicken-chicken-chasni": ["milk"],
+  "lamb-lamb-chasni": ["milk"],
+  "chicken-mughlai-korma": ["milk"],
+  "chicken-malaidar-chicken": ["milk"],
+  "chicken-indian-garlic-chilli-chicken": ["milk"],
+  "lamb-indian-garlic-chilli-lamb": ["milk"],
+  "chicken-traditional-chicken-curry": ["milk"],
+  "lamb-traditional-lamb-curry": ["milk"],
+  "chicken-butter-chicken": ["milk", "nuts"],
+  "vegetarian-dal-tadka": ["milk"],
+  "vegetarian-vegetable-mughlai-korma": ["milk"],
+  "vegetarian-paneer-butter-masala": ["milk"],
+  "vegetarian-vegetable-chasni": ["milk"],
+  "vegetarian-aloo-gobi": ["milk"],
+  "rice-mushroom-pilau": ["milk"],
+  "rice-ghee-rice": ["milk"],
+  "biriyani-chicken": ["milk", "nuts"],
+  "biriyani-lamb": ["milk", "nuts"],
+  "biriyani-beef": ["milk", "nuts"],
+  "biriyani-fish": ["milk", "nuts"],
+  "dosa-ghee-roast": ["milk"],
+  "dosa-chicken-tikka-dosa": ["milk"],
+  "breads-plain-naan": ["cereals containing gluten"],
+  "breads-butter-naan": ["cereals containing gluten"],
+  "breads-garlic-naan": ["cereals containing gluten"],
+  "breads-peshwari-naan": ["nuts", "cereals containing gluten"],
+  "breads-tandoori-roti": ["cereals containing gluten"],
+  "breads-kerala-porotta-2": ["cereals containing gluten"],
+  "breads-appam-3": ["milk"],
+  "breads-chapathi-2": ["cereals containing gluten"],
+  "sundries-raita": ["milk"],
+  "sundries-pakora-sauce": ["milk"],
+  "kids-menu-chicken-chasni": ["milk", "cereals containing gluten"],
+  "kids-menu-chicken-korma": ["milk", "cereals containing gluten"],
+  "kids-menu-chicken-nuggets-and-chips": ["cereals containing gluten"],
+  "kids-menu-fish-and-chips": ["cereals containing gluten"],
+  "kids-menu-fish-fingers-and-chips": ["cereals containing gluten"],
+  "malabar-coast-signature-chicken-pollichathu": ["milk"],
+  "malabar-coast-signature-kozhi-varutharacha": ["milk"],
+  "malabar-coast-signature-aattirachi-kurumulak": ["milk"],
+  "malabar-coast-signature-masala-grilled-fish": ["milk"],
+  "malabar-coast-signature-beef-thenga-kothu": ["milk"],
+  "malabar-coast-signature-beef-roast": ["milk"],
+  "malabar-coast-signature-kizhi-porotta": ["milk", "cereals containing gluten"],
+  "malabar-coast-signature-meen-manga-curry": ["milk"],
+  "malabar-coast-signature-konju-coconut-fry": ["milk"],
+  "malabar-coast-signature-meen-moilee": ["milk"],
+  "malabar-coast-signature-prawn-moilee": ["milk"],
+  "desserts-gulab-jamun": ["milk", "cereals containing gluten"],
+  "desserts-palada-payasam": ["milk"],
+  "desserts-malabar-coast-special-dessert": ["milk", "nuts", "cereals containing gluten"],
+  "tea-coffee-tea": ["milk"],
+  "tea-coffee-coffee": ["milk"],
+  "tea-coffee-masala-chai": ["milk"],
+};
+
 export const menuItems: MenuItem[] = definitions.flatMap((category) =>
   category.items.map(([name, pricePence, options = {}], displayOrder) => {
     const dietaryStatus: DietaryStatus = options.dietaryStatus ?? (options.vegan ? "vegan" : options.vegetarian ? "vegetarian" : "nonVegetarian");
     const idSuffix = slugify(`${options.subheading ? `${options.subheading}-` : ""}${name}`);
     const isAlcoholic = options.alcoholic ?? false;
     const isDrink = drinkCategorySlugs.has(category.slug);
+    const id = options.sourceKey || `${category.slug}-${idSuffix}`;
+    const allergens = [...(menuAllergenDeclarations[id] || [])];
     return {
-      id: `${category.slug}-${idSuffix}`,
+      id,
       category: category.slug,
       name,
       description: options.description ?? fallbackMenuDescription(category.slug, name, options.subheading),
@@ -424,7 +550,9 @@ export const menuItems: MenuItem[] = definitions.flatMap((category) =>
       dietaryStatus: isAlcoholic ? "notApplicable" : dietaryStatus,
       dietaryReviewStatus: "needs-review",
       dietary: dietaryStatus === "vegan" ? ["VG"] : dietaryStatus === "vegetarian" ? ["V"] : [],
-      allergens: [],
+      allergens,
+      allergenReviewStatus: allergens.length ? "confirmed" : "needs-review",
+      allergenNotes: allergens.length ? "Declared by the restaurant in the supplied menu: D = dairy, N = nuts, G = gluten." : undefined,
       spice: "None",
       available: true,
       onlineOrdering: isDrink ? false : options.orderable ?? (!isAlcoholic && pricePence !== null),
@@ -441,4 +569,14 @@ export function getMenuItem(id: string) {
 export function formatPrice(pence: number | null, fallback = drinkPriceLabel) {
   if (pence === null) return fallback;
   return new Intl.NumberFormat("en-GB", {style: "currency", currency: "GBP"}).format(pence / 100);
+}
+
+export function formatAllergenSummary(item: Pick<MenuItem, "allergens" | "allergenReviewStatus">) {
+  if (item.allergenReviewStatus !== "confirmed") return "";
+  const allergens = new Set(item.allergens);
+  return [
+    allergens.has("milk") ? "D" : "",
+    allergens.has("nuts") ? "N" : "",
+    allergens.has("cereals containing gluten") ? "G" : "",
+  ].filter(Boolean).join(" · ");
 }

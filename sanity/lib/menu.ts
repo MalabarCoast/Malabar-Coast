@@ -40,7 +40,7 @@ const fallbackMenuPage: MenuPageContent = {
   manifestEyebrow: "The full menu",
   manifestHeading: "What we carry to the table.",
   manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
-  dietaryNotice: "Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.",
+  dietaryNotice: "D means dairy, N means nuts and G means gluten. Only the restaurant-supplied markers are shown. Please tell the team about all allergies before ordering because recipes can change and cross-contact may occur.",
   alcoholNotice: "Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.",
   seo: {
     title: "Indian Cuisine & Bar Menu in Holytown",
@@ -52,7 +52,7 @@ const fallbackMenuPage: MenuPageContent = {
     {itemId: "malabar-coast-signature-masala-grilled-fish", area: "Mangaluru", region: "Karnataka coast", coordinates: "12.9141° N · 74.8560° E", year: "Western coast", course: "Masala Grilled Fish", image: {url: "/food/Masala grill fish.jpeg", alt: "Masala grilled fish served at Malabar Coast"}, description: "Masala-coated grilled fish carries the bright heat and sea-facing character of India's western coast."},
     {itemId: "chicken-indian-garlic-chilli-chicken", area: "Mumbai", region: "Maharashtra", coordinates: "19.0760° N · 72.8777° E", year: "Gateway harbour", course: "Indian Garlic Chilli Chicken", image: {url: "/food/indian garlic chilli chicken tikka.jpeg", alt: "Indian garlic chilli chicken served at Malabar Coast"}, description: "A bold garlic and chilli dish for a city whose tables bring regional flavours together."},
     {itemId: "breads-peshwari-naan", area: "Surat", region: "Gujarat", coordinates: "21.1702° N · 72.8311° E", year: "Gulf of Khambhat", course: "Peshwari Naan", image: {url: "/food/Peshwari naan.jpeg", alt: "Peshwari naan served at Malabar Coast"}, description: "A fragrant, fruit-and-nut-filled naan marks Gujarat on the west-coast route with a sweet counterpoint."},
-    {itemId: "chicken-butter-chicken", area: "Chennai", region: "Tamil Nadu", coordinates: "13.0827° N · 80.2707° E", year: "Coromandel coast", course: "Butter Chicken", image: {url: "/food/Butter chicken.jpeg", alt: "Butter chicken served at Malabar Coast"}, description: "A rich restaurant favourite closes the route on the Coromandel Coast before the story reaches Scotland."},
+    {itemId: "dosa-masala-dosa", area: "Chennai", region: "Tamil Nadu", coordinates: "13.0827° N · 80.2707° E", year: "Coromandel coast", course: "Dosa", image: {url: "/food/Chennai masala dosa.jpeg", alt: "Chennai-style masala dosa served with sambar and chutneys"}, description: "A crisp masala dosa brings Tamil Nadu’s griddle tradition to the final stop on the Coromandel Coast."},
   ],
 };
 
@@ -77,6 +77,10 @@ function normaliseItem(raw: RawMenuItem): MenuItem | null {
         ? "vegetarian"
         : raw.dietaryStatus ?? fallback?.dietaryStatus ?? "nonVegetarian";
   const pricePence = isAlcoholic ? null : typeof raw.pricePence === "number" ? raw.pricePence : raw.pricePence === null ? null : fallback?.pricePence ?? null;
+  const allergens = Array.isArray(raw.allergens) ? raw.allergens : fallback?.allergens ?? [];
+  const allergenReviewStatus = raw.allergenReviewStatus
+    ?? (raw.dietaryReviewStatus === "confirmed" && allergens.length ? "confirmed" : fallback?.allergenReviewStatus)
+    ?? "needs-review";
   return {
     id: raw.id,
     category: raw.category,
@@ -90,7 +94,9 @@ function normaliseItem(raw: RawMenuItem): MenuItem | null {
     dietaryStatus,
     dietaryReviewStatus: raw.dietaryReviewStatus ?? fallback?.dietaryReviewStatus ?? "needs-review",
     dietary: dietaryStatus === "vegan" ? ["VG"] : dietaryStatus === "vegetarian" ? ["V"] : [],
-    allergens: Array.isArray(raw.allergens) ? raw.allergens : fallback?.allergens ?? [],
+    allergens,
+    allergenReviewStatus,
+    allergenNotes: raw.allergenNotes ?? fallback?.allergenNotes,
     spice: ((raw.spiceLevel || raw.spice || fallback?.spice || "None").replace(/^./, (character) => character.toUpperCase())) as MenuItem["spice"],
     available: raw.available ?? fallback?.available ?? true,
     onlineOrdering: !isDrink && !isAlcoholic && pricePence !== null && (raw.onlineOrdering ?? fallback?.onlineOrdering ?? true),

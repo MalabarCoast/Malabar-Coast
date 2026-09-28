@@ -2,8 +2,9 @@
 
 ## Complete Product Delivery, Operations and Handover Report
 
-**Document version:** 1.0  
-**Prepared:** 19 September 2026  
+**Document version:** 2.0 — final consolidated handover
+
+**Prepared:** 29 September 2026
 **Production website:** https://www.malabarcoast.co.uk  
 **Administration:** https://www.malabarcoast.co.uk/admin/login  
 **Content Studio:** https://malabar-coast.sanity.studio/  
@@ -16,24 +17,41 @@
 
 This is the operational handover for the complete Malabar Coast digital product. It records what has been delivered, every customer-facing and administration page, the purpose of each major component, the CMS content model, commands, integrations, environment settings, verification evidence, free-tier constraints, operating procedures and the actions required for final production acceptance.
 
-The report is intentionally evidence-led. “Verified” means the relevant source, local build, automated test, live route or provider was actually checked on 19 September 2026. Items that require the client’s future administrator credentials, a controlled live payment, a real email delivery or access to the Vercel project are explicitly marked as pending operational acceptance.
+The report is intentionally evidence-led. “Verified” means the relevant source, local build, automated test, rendered route or provider was actually checked on 28–29 September 2026. Items that require the client’s future administrator credentials, a controlled live payment, a real email delivery, restaurant allergen evidence or access to the Vercel project are explicitly marked as pending operational acceptance.
 
 ### Delivery position at a glance
 
 | Area | Position | Evidence / note |
 |---|---|---|
-| Public website | Delivered and live | All listed public pages were opened on the live domain; no broken images were detected in the route review. |
-| Responsive presentation | Verified locally | Public pages were reviewed at 1280 px desktop and 390 × 844 mobile widths with no horizontal overflow detected. |
+| Public website | Release candidate complete; final deployment verification pending | The public domain exists and the latest release candidate passed local production-mode review. The final menu, FAQ, gallery, Chennai Dosa and documentation changes must be deployed and smoke-tested on the canonical domain before client acceptance. |
+| Responsive presentation | Verified locally | Twenty-one public and entry routes were reviewed at 320 × 800 and 390 × 844 phone, 768 × 1024 tablet and 1440 × 900 desktop sizes with no broken images. A long privacy-page email was found at phone width and corrected with safe wrapping before the final recheck. |
 | Administration application | Delivered and protected | Every protected administration URL redirected unauthenticated visitors to `/admin/login`. Credentialed role-by-role review remains pending because credentials are intentionally not included. |
-| CMS and live content | Connected and readable | A live read-only Sanity audit returned 21 categories, 175 menu items, 21 FAQs, 8 marketing pages, 4 legal pages, 1 promotion and 1 daily special. |
+| CMS and live content | Updated and readable | The owner-supplied menu, 63 source-backed D/N/G declarations, 21 FAQs, Chennai Dosa journey entry and ten restaurant images are synchronised. A live read-only Sanity audit returned 24 categories, 201 menu documents (195 current catalogue items), 8 marketing pages, 4 legal pages, 3 promotions and 1 daily special. |
 | Database and administrator contract | Connected | Supabase health checks reported all required operational tables and one active administrator. |
 | Payments | Provider account connected | Stripe reported a live GB/GBP account with charges and payouts enabled. A canonical-domain webhook check remains a handover action; the current enabled endpoint is on the Vercel deployment URL. |
 | Transactional email | Provider connected | Brevo connection check passed. Actual inbox placement was not tested because that would send a real external email. |
-| Code quality | Passed | Lint passed, 78 automated tests passed, the website production build passed and the Content Studio production build passed. |
+| Code quality | Passed | ESLint, TypeScript and 104 automated tests passed. The website and standalone Content Studio production builds passed; the updated Studio was deployed. The current working-tree delivery changes still require the normal commit, review and website deployment process. |
 
 ### Important production acceptance statement
 
-The implementation and page-review scope is complete, but no responsible delivery report should claim that live commerce is “100% production accepted” without a controlled end-to-end transaction. Before announcing the service as fully operational, complete the short acceptance sequence in section 15: verify the production-domain environment, submit one real booking and hall enquiry, perform one controlled Stripe order, confirm signed webhook processing, confirm both customer and owner emails, test a refund/dispute rehearsal where appropriate, and validate each administrator role with real accounts.
+The implementation and page-review scope is complete, but no responsible delivery report should claim that live commerce and allergen information are “100% production accepted” without controlled operational evidence. Before announcing the service as fully operational, complete the short acceptance sequence in section 15: approve the item-level allergen register, deploy the final release to the canonical domain, verify its production environment and Stripe webhook, submit one real booking and Kerala Suite enquiry, perform one controlled Stripe order, confirm signed webhook processing, confirm both customer and owner emails, test a refund/dispute rehearsal where appropriate, and validate each administrator role with real accounts.
+
+### Final consolidation record — 29 September 2026
+
+- Updated the owner menu and published its D/N/G meanings: **D = dairy/milk**, **N = nuts**, **G = cereals containing gluten**.
+- Removed the repeated per-dish wording “Allergens: confirmation required · ask our team”; unmarked dishes now show no allergen line and remain unconfirmed internally.
+- Added all ten owner-supplied restaurant photographs to the CMS restaurant presentation.
+- Corrected the FAQ content for Kerala cuisine, The Kerala Suite, licensed alcohol service, signature dishes, vegan guidance and gluten guidance.
+- Changed the Chennai menu-journey stop to Dosa/Masala Dosa and added a photorealistic generated Chennai dosa image.
+- Consolidated the separate allergen handover into section 6.16 so this report is the single narrative delivery document.
+
+### Handover pack
+
+- **Master client document:** `Malabar_Coast_Complete_Product_Delivery_Report.docx`
+- **Editable master source:** `CLIENT_PRODUCT_DELIVERY_REPORT.md`
+- **Supporting operational evidence:** `MENU_ALLERGEN_REGISTER.csv` and `Malabar_Coast_Full_Menu_Updated.pdf`
+
+The Word file and Markdown file are two formats of the same master report. The CSV and source PDF remain separate because they are operational evidence/registers, not competing handover documents.
 
 ---
 
@@ -41,12 +59,12 @@ The implementation and page-review scope is complete, but no responsible deliver
 
 The product is a single, integrated restaurant platform made up of:
 
-- A branded public website for discovery, story, menu, offers, bookings, private-hall enquiries and careers.
+- A branded public website for discovery, story, menu, offers, bookings, The Kerala Suite enquiries and careers.
 - A CMS-driven menu and editorial system using Sanity.
 - Online collection and delivery ordering with server-side pricing and Stripe Checkout.
 - Customer order-status access protected by a signed access mechanism.
 - Table reservations with schedule, capacity, lead-time and advance-booking rules.
-- Private-hall enquiry capture and staff follow-up workflow.
+- The Kerala Suite enquiry capture and staff follow-up workflow.
 - Career vacancy publishing and application handoff.
 - A role-protected administration application for orders, kitchen fulfilment, reservations, calendar, enquiries, reports, content, careers and system readiness.
 - Supabase-backed operational data, authentication, audit records and realtime notifications.
@@ -70,12 +88,12 @@ The canonical website origin is **https://www.malabarcoast.co.uk**. The non-`www
 | Offers | https://www.malabarcoast.co.uk/offers | Publishes active promotions and daily specials from the CMS, including poster, summary, validity information, code/terms where supplied and related calls to action. | View offer, browse menu, book or order. |
 | Book a table | https://www.malabarcoast.co.uk/book-a-table | Guest reservation journey connected to the restaurant schedule and capacity rules. Captures full name, phone, email, date, arrival time, number of guests, occasion, dietary requirements, accessibility needs, notes and consent. | Check availability and submit reservation. |
 | Restaurant | https://www.malabarcoast.co.uk/restaurant | Restaurant overview covering the food, room, welcome, locations/visit information, opening calendar, imagery and links to booking and menu. | View menu, book, get directions. |
-| Private hall | https://www.malabarcoast.co.uk/hall | Dedicated event-space presentation with features, stage/bar context, gallery, occasions, planning information, FAQs and a structured enquiry form. Fields include name, email, phone, preferred/alternative date, preferred time, guest estimate, occasion, contact preference, event description and consent. | Submit an enquiry, contact the restaurant. |
+| The Kerala Suite | https://www.malabarcoast.co.uk/hall | Dedicated private-event presentation for The Kerala Suite, with stage/bar context, gallery, occasions, planning information, FAQs and a structured enquiry form. Fields include name, email, phone, preferred/alternative date, preferred time, guest estimate, occasion, contact preference, event description and consent. | Submit an enquiry, contact the restaurant. |
 | Careers | https://www.malabarcoast.co.uk/careers | Lists currently published vacancies only. Each card exposes the role, team, location, employment type, summary and route to the detailed vacancy. | Open a vacancy. |
 | Career detail | `https://www.malabarcoast.co.uk/careers/[slug]` | Dynamic page for a published vacancy. Includes overview, responsibilities, skills, benefits, employment/salary metadata, closing date and application email. Also supplies JobPosting and breadcrumb structured data. | Apply by email. |
 | Our story | https://www.malabarcoast.co.uk/story | Editorial brand story with chapters, imagery, menu references and calls to action. | Continue to Calicut story, menu or booking. |
 | Calicut story | https://www.malabarcoast.co.uk/story/calicut | Extended heritage/archive narrative covering Calicut, pepper, exchange and the continuing journey. | Continue exploring the restaurant/menu. |
-| FAQs | https://www.malabarcoast.co.uk/faq | CMS-managed answers covering restaurant visits, bookings, ordering, dietary/allergen guidance, opening times, private hall and payment topics. | Navigate to the relevant service page. |
+| FAQs | https://www.malabarcoast.co.uk/faq | CMS-managed answers covering the India-wide cuisine, licensed bar, signature dishes, vegan and gluten guidance, restaurant visits, ordering, opening times and The Kerala Suite. | Navigate to the relevant service page. |
 
 ### 3.2 Commerce and customer-status pages
 
@@ -122,7 +140,7 @@ These routes support the pages above. They are not ordinary navigation pages and
 | `/api/payment-config` | GET | Supplies safe public payment-availability configuration; no secret key is returned. |
 | `/api/reservations` | GET/POST as implemented | Supplies availability and accepts validated guest reservations. |
 | `/api/schedule` | GET | Supplies the published restaurant opening calendar. |
-| `/api/hall-enquiries` | POST | Validates and stores a private-hall enquiry. |
+| `/api/hall-enquiries` | POST | Validates and stores a Kerala Suite event enquiry. |
 | `/api/health/live` | GET | Lightweight process liveness endpoint. |
 | `/api/health/ready` | GET | Dependency/configuration readiness endpoint. Detailed output is restricted to an authorised health token or authenticated administrator. |
 
@@ -170,9 +188,9 @@ Login uses **Supabase Auth email and password**, not a hard-coded website userna
 | Read reservations | Yes | Yes | Yes | No | Yes |
 | Create/edit reservations and settings | Yes | Yes | Yes | No | No |
 | Delete reservations | Yes | Yes | No | No | No |
-| Read hall enquiries | Yes | Yes | Yes | No | Yes |
-| Edit hall enquiries | Yes | Yes | Yes | No | No |
-| Delete hall enquiries | Yes | Yes | No | No | No |
+| Read Kerala Suite enquiries | Yes | Yes | Yes | No | Yes |
+| Edit Kerala Suite enquiries | Yes | Yes | Yes | No | No |
+| Delete Kerala Suite enquiries | Yes | Yes | No | No | No |
 | View reports | Yes | Yes | Yes | No | No |
 | Open/write CMS content | Yes | Yes | No | No | No |
 | Manage careers | Yes | Yes | No | No | No |
@@ -325,11 +343,11 @@ Every protected URL below was checked while signed out and correctly redirected 
 - Save action: validates time ordering and persists the calendar change.
 - External-channel reminder: staff must separately update third-party listings/channels that are not controlled by this product.
 
-### 5.8 Hall enquiries
+### 5.8 The Kerala Suite enquiries
 
 **URL:** https://www.malabarcoast.co.uk/admin/hall-enquiries
 
-**Purpose:** Convert private-event interest into a managed follow-up pipeline.
+**Purpose:** Convert enquiries for events in The Kerala Suite into a managed follow-up pipeline.
 
 **Components:**
 
@@ -439,22 +457,24 @@ Public project/dataset identifiers are expected to be visible; write tokens are 
 
 ### 6.2 Current verified content inventory
 
-The live read-only audit on 19 September 2026 returned:
+The live read-only audit on 29 September 2026 returned:
 
 | Content type | Count / state |
 |---|---:|
-| Menu categories | 21 |
-| Menu items | 175 |
+| Menu categories | 24 |
+| Menu documents | 201 total; 195 current catalogue items, 5 deliberately retired source items and 1 disabled historical test item |
 | FAQs | 21 |
 | Marketing pages | 8 |
 | Legal pages | 4 |
-| Promotions | 1 |
+| Promotions | 3 |
 | Daily specials | 1 |
 | Menu journey regions | 6 |
 | Site settings | Navigation, footer and default SEO present |
 | Menu page | SEO present |
 
 The eight CMS marketing page keys are `home`, `restaurant`, `hall`, `story`, `story-calicut`, `book-a-table`, `offers` and `faq`. The legal page keys are `privacy`, `cookie`, `returns` and `payments`.
+
+The final content review also confirmed that all six menu-journey regions are present, the Chennai stop uses Dosa/Masala Dosa with its new image, the restaurant page uses the ten supplied photographs, and the 21 published FAQs include the client-requested Kerala Suite, cuisine, alcohol, signature-dish, vegan and gluten answers.
 
 ### 6.3 Editorial workflow
 
@@ -524,14 +544,17 @@ The eight CMS marketing page keys are `home`, `restaurant`, `hall`, `story`, `st
 | Dietary review status | Confirmed or needs review | Separates verified claims from editorial assumptions. |
 | Dietary notes | Qualification | Explains shared-fryer, recipe or confirmation caveats. |
 | Allergens | Selection from the 14 UK-regulated allergen groups | Structured guest guidance; it does not replace staff confirmation or legally appropriate allergen controls. |
+| Allergen declaration status | Needs confirmation, confirmed allergens listed, or confirmed no regulated allergens | Prevents an unreviewed blank list from being presented as “none”. |
 | Allergen notes | Free-text qualification | Cross-contact and recipe-change context. |
+| Allergen evidence source | Recipe, ingredient-label or approved matrix reference | Required for a confirmed declaration so the decision remains auditable. |
+| Allergen approver / approval date | Named responsible person and completion timestamp | Required for a confirmed declaration and future change control. |
 | Spice level | Relative heat indicator | Helps guests choose; keep the scale consistent. |
 | Available | Current service availability | Temporarily removes sold-out/unavailable ordering without deleting the dish. |
 | Online ordering | Checkout eligibility | Only items with a valid price and appropriate classification should be enabled. Alcoholic items are not enabled for online ordering. |
 | Featured | Editorial prominence | Allows selected dishes to appear in featured surfaces. |
 | Display order | Numeric item order | Controls placement inside the category. |
 
-Validation enforces key business rules: an orderable dish needs a price; vegan implies vegetarian; and alcoholic items cannot be marked for online ordering.
+Validation enforces key business rules: an orderable dish needs a price; vegan implies vegetarian; alcoholic items cannot be marked for online ordering; confirmed allergen declarations require evidence, an approver and an approval date; and a confirmed allergen list cannot be empty unless the editor deliberately chooses the confirmed-none status.
 
 ### 6.7 Menu page fields
 
@@ -633,14 +656,90 @@ Validation enforces key business rules: an orderable dish needs a price; vegan i
 | Content section | Internal name, eyebrow, heading, rich body, main/secondary images, links, repeatable title/text items, short label, note and theme. It models content, not arbitrary presentation code. |
 | Call to action | Eyebrow, heading, text, primary link, secondary link and image. Preserve one clear primary action. |
 
-### 6.15 CMS housekeeping identified during audit
+### 6.15 CMS housekeeping and final menu synchronisation
 
-The read-only audit found six records that deserve an editor review:
+The September 2026 synchronisation resolved the six earlier housekeeping records. “Gautham Krishna” is unpublished, unavailable and excluded from online ordering. Mango Chutney, Mixed Pickle, Pakora Sauce, Poppadom and Spiced Onion now have an explicit published state.
 
-- One unpublished test-like item named “Gautham Krishna” remains flagged as available/online-orderable with a £0.30 price. It is not published, but should be retired or corrected to keep the dataset clean.
-- Mango Chutney, Mixed Pickle, Pakora Sauce, Poppadom and Spiced Onion use a legacy unset/null `published` value. They should be explicitly set to `published: true` if they are intended to remain live, or `false` if they should be hidden.
+The owner-supplied PDF was reconciled into 24 categories and 195 current catalogue items. Five removed source items were retired without deletion, preserving history. The ten supplied restaurant photographs were uploaded to Sanity and connected to the restaurant hero, room image and responsive gallery. The hosted Studio was redeployed with the expanded allergen governance fields.
 
-These are content-governance observations, not evidence of a broken public page. Correcting them removes ambiguity for future editors and audits.
+The revised PDF contains item-level D/N/G markers, defined by the restaurant as dairy, nuts and gluten. The synchronisation applies those source markers to 63 matching current catalogue items, records the PDF evidence in the CMS and shows compact D/N/G codes with a visible legend on the public menu. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly; absence of a marker must not be interpreted as allergen-free. Complete the remaining regulated-allergen and cross-contact review in `MENU_ALLERGEN_REGISTER.csv` under the process in section 6.16.
+
+### 6.16 Menu allergen evidence, workflow and sign-off
+
+#### Current position
+
+The owner-supplied `Malabar_Coast_Full_Menu_Updated.pdf` uses item-level **D**, **N** and **G** markers. Those printed markers have been mapped to the matching catalogue records and implemented as compact public codes with a visible legend: **D = Dairy**, **N = Nuts**, **G = Gluten**.
+
+Only markers explicitly printed in the supplied menu are treated as source-confirmed. The mapping covers 63 of the 195 current catalogue items. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly. A missing marker does not mean allergen-free, and the D/N/G system does not cover all 14 regulated allergen groups or kitchen cross-contact. The general guest notice remains in place, asking customers to tell the team about allergies before ordering because recipes can change and cross-contact may occur.
+
+#### Evidence and working files
+
+| File / record | Purpose |
+|---|---|
+| `Malabar_Coast_Full_Menu_Updated.pdf` | Owner-supplied item, price and D/N/G source. |
+| `MENU_ALLERGEN_REGISTER.csv` | One row for each of the 195 current items, with the 63 source-backed declarations and evidence fields pre-populated. |
+| Content Studio menu-item records | Publishing source for public website allergen information. |
+
+The CSV is the restaurant’s working and sign-off register. `pnpm handover:allergen-register` recreates it from the checked-in catalogue and replaces the working copy, so preserve every signed/approved version separately before regenerating it.
+
+#### Regulated allergen coverage
+
+The register provides columns for celery, cereals containing gluten, crustaceans, eggs, fish, lupin, milk, molluscs, mustard, nuts, peanuts, sesame, soya and sulphites. Source code D populates milk, N populates nuts and G populates cereals containing gluten.
+
+#### Source-confirmed D/N/G items by category
+
+| Category | Count | Source-confirmed items |
+|---|---:|---|
+| Biriyani | 4 | Chicken; Beef; Lamb; Fish |
+| Breads | 8 | Plain Naan; Butter Naan; Garlic Naan; Peshwari Naan; Tandoori Roti; Kerala Porotta (2); Appam (3); Chapathi (2) |
+| Chicken | 6 | Traditional Chicken Curry; Butter Chicken; Chicken Chasni; Mughlai Korma; Indian Garlic Chilli Chicken; Malaidar Chicken |
+| Clay Oven | 7 | Tandoori Chicken; Chicken Tikka; Lamb Tikka; Tandoori Mixed Grill; Paneer Tikka; Chicken Shashlik; Tandoori Jinga |
+| Desserts | 3 | Gulab Jamun; Palada Payasam; Malabar Coast Special Dessert |
+| Dosa | 2 | Ghee Roast; Chicken Tikka Dosa |
+| Kids Menu | 5 | Chicken Chasni; Chicken Korma; Chicken Nuggets & Chips; Fish Fingers & Chips; Fish & Chips |
+| Lamb | 3 | Traditional Lamb Curry; Lamb Chasni; Indian Garlic Chilli Lamb |
+| Malabar Coast Signature | 11 | Chicken Pollichathu; Kozhi Varutharacha; Aattirachi Kurumulak; Beef Roast; Beef Thenga Kothu; Kizhi Porotta; Masala Grilled Fish; Meen Manga Curry; Meen Moilee; Konju Coconut Fry; Prawn Moilee |
+| Rice | 2 | Ghee Rice; Mushroom Pilau |
+| Starters | 2 | Chicken 65; Chicken Chaat |
+| Sundries | 2 | Raita; Pakora Sauce |
+| Tea & Coffee | 3 | Tea; Coffee; Masala Chai |
+| Vegetarian | 5 | Dal Tadka; Vegetable Mughlai Korma; Paneer Butter Masala; Vegetable Chasni; Aloo Gobi |
+| **Total** | **63** | Owner-menu D/N/G evidence mapped |
+
+#### Required completion workflow
+
+1. Nominate the restaurant person responsible for allergen information.
+2. Review every dish against its current recipe, packaged ingredient labels and actual preparation method, including the 63 source-marked items.
+3. Confirm D/N/G and add any other regulated allergens supported by evidence. Record shared-fryer, shared-equipment and other cross-contact risks separately; absence from ingredients is not proof that cross-contact cannot occur.
+4. Record the evidence source, approver and approval date for every completed row.
+5. In Content Studio, open the matching item and choose either **Confirmed allergens listed** or **Confirmed: no regulated allergens declared**. Enter the same evidence source, approver, approval date and cross-contact note.
+6. Preview the public menu on phone and desktop, then publish.
+7. Keep the signed register with restaurant operating records and repeat the review whenever a recipe, supplier, product label or kitchen process changes.
+
+Do not bulk-mark blank allergen columns as “none”. A blank cell means it has not yet been confirmed.
+
+#### CMS safeguards
+
+The Studio rejects a confirmed item when no allergen is selected unless the editor deliberately chooses **Confirmed: no regulated allergens declared**. It also requires an evidence source, named approver and approval date for any confirmed status. Catalogue synchronisation reapplies the owner-supplied D/N/G markers to matching records and preserves an existing restaurant-confirmed declaration on unmarked items.
+
+#### Final allergen acceptance
+
+- [x] Source D/N/G markers mapped to the 63 matching current items.
+- [x] Public menu legend and compact item codes implemented.
+- [ ] All 195 current items reviewed against recipes and ingredient labels for all regulated allergens.
+- [ ] Cross-contact and shared-equipment risks recorded.
+- [ ] Evidence source present for every confirmed row.
+- [ ] Responsible approver and approval date present for every confirmed row.
+- [ ] CMS declarations match the signed register.
+- [ ] Front-of-house and kitchen staff know how to respond to allergen enquiries.
+- [ ] Printed, online and third-party menus use the same current information.
+- [ ] Change-control owner and next review date recorded.
+
+| Responsibility | Name | Approval reference | Date |
+|---|---|---|---|
+| Restaurant allergen owner | __________________ | __________________ | __________ |
+| Head chef / recipe owner | __________________ | __________________ | __________ |
+| Client product owner | __________________ | __________________ | __________ |
 
 ---
 
@@ -789,11 +888,15 @@ Run commands from the repository root unless a command explicitly targets `studi
 | Command | Scope | What it does | Important operating note |
 |---|---|---|---|
 | `npm run sanity:seed` | Sanity dataset | Idempotently creates/updates the baseline content set. | Requires an authorised token. Review target project/dataset before running; do not treat seeding as a routine editorial action. |
+| `npm run sanity:sync-menu-catalogue` | Menu catalogue | Dry-runs the checked-in menu against Sanity; add `-- --apply` only after reviewing the proposed changes. | Preserves confirmed allergen declarations, retires removed source items without deleting them, and marks new items as needing confirmation. |
 | `npm run sanity:sync-menu-descriptions` | Menu content | Synchronises maintained menu descriptions into CMS records. | Preview the diff/content result and back up/export when making broad content changes. |
-| `npm run sanity:sync-menu-page` | Menu-page singleton | Synchronises the designed menu-page content/structure. | Use after intentional source/content updates. |
+| `npm run sanity:sync-faqs` | FAQ content | Synchronises the maintained client-approved FAQ answers. | Dry-runs by default; add `-- --apply` only after reviewing the target project/dataset and proposed changes. |
+| `npm run sanity:sync-menu-page` | Menu-page singleton | Synchronises the designed menu-page content/structure, six journey stops and their image references. | Use after intentional source/content updates; confirm the Chennai Dosa image and every journey stop in preview. |
 | `npm run sanity:sync-brand-content` | Brand/editorial content | Synchronises brand content to the CMS model. | Verify marketing/legal copy before publication. |
 | `npm run sanity:sync-map` | Site settings | Synchronises map/location configuration. | Confirm exact coordinates/embed URL first. |
+| `npm run sanity:sync-restaurant-gallery` | Restaurant page | Dry-runs the ten checked-in restaurant images; add `-- --apply` to upload and connect them. | Review image rights, alt text and crops before publication. |
 | `npm run sanity:typegen` | Website types | Regenerates Sanity query/schema TypeScript types. | Run after schema/query changes; commit the generated type changes. |
+| `npm run handover:allergen-register` | Handover records | Recreates the 195-row allergen working register from the checked-in catalogue. | Preserve a signed copy first: regeneration replaces the working CSV and does not replace restaurant review. |
 | `npm --prefix studio run build` | Studio | Builds the standalone Studio. | Same intent as `npm run build:studio`. |
 | `npm --prefix studio run deploy` | Hosted Studio | Publishes the Studio application. | External state change; run only with approved Sanity access and after a successful Studio build. |
 | `npm --prefix studio run typegen` | Studio types | Generates Studio-side schema/query types where configured. | Run after schema edits. |
@@ -884,31 +987,33 @@ Operational security still depends on client controls: individual accounts, MFA 
 
 ---
 
-## 13. Verification performed on 19 September 2026
+## 13. Verification performed on 28–29 September 2026
 
 ### 13.1 Automated verification
 
 | Check | Result |
 |---|---|
 | ESLint | Passed |
-| Automated tests | 78 passed, 0 failed |
+| TypeScript | Passed with no emitted files |
+| Automated tests | 104 passed, 0 failed |
 | Main Next.js production build | Passed |
 | Standalone Sanity Studio production build | Passed; a non-blocking Tailwind content warning was emitted by the Studio build context and should be reviewed during the next Studio tooling update. |
+| Hosted Sanity Studio deployment | Passed at https://malabar-coast.sanity.studio/ |
 
-The tests cover authentication/roles, reservations, hall enquiries, CMS behaviour, payment lifecycle, database contracts, email, schedule logic, responsive/security behaviours and Stripe environment controls.
+The tests cover authentication/roles, reservations, Kerala Suite enquiries, CMS behaviour, payment lifecycle, database contracts, email, schedule logic, responsive/security behaviours and Stripe environment controls.
 
 ### 13.2 Page review
 
-The following public routes were opened in the live production site: `/`, `/menu`, `/offers`, `/book-a-table`, `/restaurant`, `/hall`, `/careers`, `/story`, `/story/calicut`, `/faq`, `/payments`, `/returns`, `/cookie`, `/privacy`, `/checkout`, `/checkout/success`, `/checkout/cancelled`, `/checkout/expired`, `/checkout/failure` and `/admin/login`.
+The following public and entry routes were opened in a local production-mode build: `/`, `/menu`, `/offers`, `/book-a-table`, `/restaurant`, `/hall`, `/careers`, `/story`, `/story/calicut`, `/faq`, `/special-days`, `/payments`, `/returns`, `/cookie`, `/privacy`, `/checkout`, `/checkout/success`, `/checkout/cancelled`, `/checkout/expired`, `/checkout/failure` and `/admin/login`. `/special-days` correctly redirects to `/book-a-table`.
 
-In the local responsive review, the same surfaces were checked at desktop and 390 px mobile widths. The review found no horizontal overflow and no broken images. The checkout empty state resolved correctly after client hydration.
+The surfaces were checked at 320 × 800 and 390 × 844 phone, 768 × 1024 tablet and 1440 × 900 desktop sizes. No broken images were found. The first phone pass identified a long privacy-page contact link extending 33 pixels beyond the viewport; the legal-link wrapping rule was corrected, covered by an automated regression test, and the final 320-pixel route sweep reported zero horizontal overflow. The restaurant gallery and full menu were also inspected visually on desktop and phone, including the 195-item catalogue. The final menu implementation shows source-backed D/N/G codes only on marked dishes, with a compact legend and no per-dish confirmation prompt on unmarked items.
 
 Protected-route checks covered `/admin`, `/admin/orders`, `/admin/kitchen`, `/admin/reservations`, `/admin/schedule`, `/admin/hall-enquiries`, `/admin/reports`, `/admin/content`, `/admin/careers` and `/admin/settings`; all redirected a signed-out visitor to `/admin/login`.
 
 ### 13.3 Provider/readiness audit
 
 - Sanity read access: passed; current counts recorded in section 6.
-- Supabase database contract: passed for orders, reservations, admin audit/profile, hall enquiries, payment events, email log, schedule and careers tables.
+- Supabase database contract: passed for orders, reservations, admin audit/profile, Kerala Suite enquiry records, payment events, email log, schedule and careers tables.
 - Admin-auth health: passed; one active administrator reported.
 - Brevo provider connection: passed.
 - Stripe provider connection: passed; live account, charges enabled, payouts enabled, country GB, currency GBP.
@@ -921,7 +1026,7 @@ The following were deliberately not performed without the client’s credentials
 
 - Successful login for every real administrator role.
 - Creation/edit/deletion through every live admin form.
-- A real customer booking and hall-enquiry submission with received emails.
+- A real customer booking and Kerala Suite enquiry submission with received emails.
 - A live Stripe charge, customer return, signed webhook receipt and order-status email.
 - Live refund, partial refund and dispute/reversal drills.
 - Inbox/spam placement across customer mail providers.
@@ -930,27 +1035,39 @@ The following were deliberately not performed without the client’s credentials
 - Formal accessibility conformance or independent penetration testing.
 - Legal approval of privacy, cookie, payments and returns wording.
 
+### 13.5 Final release, verification and rollback procedure
+
+1. Confirm no `.env` file, provider secret, customer data or private export is staged for source control.
+2. Commit the approved release changes and complete the repository’s normal review/merge process.
+3. Confirm the production deployment variables, especially `NEXT_PUBLIC_SITE_URL=https://www.malabarcoast.co.uk`, against the secured provider records.
+4. Deploy the approved website revision to Vercel production and record its commit/deployment identifier.
+5. Synchronise Stripe’s live webhook to `https://www.malabarcoast.co.uk/api/webhooks/stripe`, store the matching live secret securely and verify the complete required event set.
+6. Check `/api/health/live` and review `/api/health/ready` through authorised monitoring; do not expose diagnostic secrets in screenshots or tickets.
+7. Smoke-test the public pages on desktop and phone, then complete the controlled booking, Kerala Suite enquiry, order, webhook and email checks in section 15.
+8. Record the acceptance evidence, approvers and date in this report or in the client’s secure operational register.
+
+If the release fails, redeploy the previous known-good website revision. If payment state is uncertain, pause online ordering rather than guessing or manually marking orders paid. Restore CMS content through Sanity document history where available, and recover operational data only through the approved Supabase backup/restore procedure. Never delete payment, order or audit records to make systems appear reconciled.
+
 ---
 
 ## 14. Outstanding actions and priorities
 
 ### Priority 0 — before commercial go-live/sign-off
 
-1. Put the commercial production site on Vercel Pro or another business-eligible plan; do not rely on Hobby for this commercial product.
-2. In the production deployment, set `NEXT_PUBLIC_SITE_URL=https://www.malabarcoast.co.uk` and set the Stripe webhook URL to `https://www.malabarcoast.co.uk/api/webhooks/stripe` unless an intentionally documented alternative is approved.
-3. Create/synchronise the canonical-domain Stripe webhook, confirm it is enabled with every required event, update the matching webhook secret, redeploy and verify readiness.
-4. Complete the controlled live acceptance order and email checks in section 15.
-5. Confirm client ownership/billing/recovery access for Vercel, Supabase, Sanity, Stripe, Brevo, domain/DNS and source repository.
-6. Decide whether Supabase Free risk is acceptable. The recommendation is Supabase Pro for production data continuity.
-7. Fill the administrator handover placeholders through a secure credential exchange and validate each assigned role.
+1. Complete and sign the 195-item allergen register from recipes, ingredient labels and kitchen cross-contact controls; then publish matching declarations in the CMS.
+2. Put the commercial production site on Vercel Pro or another business-eligible plan; do not rely on Hobby for this commercial product.
+3. In the production deployment, set `NEXT_PUBLIC_SITE_URL=https://www.malabarcoast.co.uk` and set the Stripe webhook URL to `https://www.malabarcoast.co.uk/api/webhooks/stripe` unless an intentionally documented alternative is approved.
+4. Create/synchronise the canonical-domain Stripe webhook, confirm it is enabled with every required event, update the matching webhook secret, redeploy and verify readiness.
+5. Complete the controlled live acceptance order and email checks in section 15.
+6. Confirm client ownership/billing/recovery access for Vercel, Supabase, Sanity, Stripe, Brevo, domain/DNS and source repository.
+7. Decide whether Supabase Free risk is acceptable. The recommendation is Supabase Pro for production data continuity.
+8. Fill the administrator handover placeholders through a secure credential exchange and validate each assigned role.
 
 ### Priority 1 — content/data hygiene
 
-1. Retire or correct the unpublished test-like “Gautham Krishna” menu record.
-2. Explicitly publish or unpublish the five legacy side-item records whose `published` field is unset.
-3. Confirm all dietary/allergen claims with the restaurant’s responsible person; do not treat CMS flags as a substitute for the legally required allergen process.
-4. Confirm private-hall capacity, package pricing and claims before publishing any currently withheld figures.
-5. Obtain client/legal approval for policy pages and record the approval date.
+1. Confirm all dietary claims with the restaurant’s responsible person; do not treat CMS flags as a substitute for the restaurant’s operating controls.
+2. Confirm The Kerala Suite capacity, package pricing and claims before publishing any currently withheld figures.
+3. Obtain client/legal approval for policy pages and record the approval date.
 
 ### Priority 2 — operational maturity
 
@@ -963,6 +1080,21 @@ The following were deliberately not performed without the client’s credentials
 ---
 
 ## 15. Final production acceptance checklist
+
+### Service ownership record
+
+Complete this table through the client’s secure handover process; do not put passwords, recovery codes or secret keys in this document.
+
+| Service / responsibility | Named owner | Billing owner | Recovery contact | Next access review |
+|---|---|---|---|---|
+| Domain and DNS | __________________ | __________________ | __________________ | __________ |
+| Vercel hosting/deployment | __________________ | __________________ | __________________ | __________ |
+| Supabase database/auth | __________________ | __________________ | __________________ | __________ |
+| Sanity CMS/Studio | __________________ | __________________ | __________________ | __________ |
+| Stripe payments | __________________ | __________________ | __________________ | __________ |
+| Brevo transactional email | __________________ | __________________ | __________________ | __________ |
+| Source repository | __________________ | N/A | __________________ | __________ |
+| Restaurant allergen process | __________________ | N/A | __________________ | __________ |
 
 ### Ownership and access
 
@@ -983,10 +1115,10 @@ The following were deliberately not performed without the client’s credentials
 
 ### Guest journeys
 
-- [ ] Home, menu, offer, story, restaurant, hall, FAQ, careers and legal pages rechecked after final deployment.
+- [ ] Home, menu, offer, story, restaurant, The Kerala Suite, FAQ, careers and legal pages rechecked after final deployment.
 - [ ] Mobile check completed on at least one iPhone-sized and one Android-sized real device.
 - [ ] Booking submitted, stored, shown in admin and emails received.
-- [ ] Hall enquiry submitted, stored, shown in admin and emails received.
+- [ ] Kerala Suite enquiry submitted, stored, shown in admin and emails received.
 - [ ] Career role published/closed and public page behaviour confirmed.
 
 ### Payments and fulfilment
@@ -1002,7 +1134,9 @@ The following were deliberately not performed without the client’s credentials
 
 ### Content and compliance
 
-- [ ] Six CMS housekeeping records resolved.
+- [x] Six identified CMS housekeeping records resolved.
+- [ ] All 195 current menu items have a signed allergen declaration backed by recipe/label evidence and cross-contact review.
+- [ ] CMS allergen statuses, evidence source, approver and approval date match the signed register.
 - [ ] Prices, opening hours, address, contact details and offer dates signed off by client.
 - [ ] Dietary/allergen process reviewed by the restaurant.
 - [ ] Privacy/cookie/payments/returns content approved by qualified client advisers.
@@ -1023,7 +1157,7 @@ The following were deliberately not performed without the client’s credentials
 
 ### Daily
 
-- Review new paid orders, reservations, hall enquiries and failed email deliveries.
+- Review new paid orders, reservations, Kerala Suite enquiries and failed email deliveries.
 - Check offers/specials and menu availability.
 - Resolve any paid order outside the current opening calendar.
 - Check Stripe/Supabase/Vercel incident notifications.
@@ -1057,7 +1191,7 @@ The following were deliberately not performed without the client’s credentials
 
 Malabar Coast has been delivered as a complete restaurant product rather than a brochure site: guest discovery, CMS publishing, reservations, event enquiries, ordering, hosted payment, customer status, kitchen fulfilment, reporting, careers and controlled administration all form one coherent operating system.
 
-The code and page surfaces passed the documented quality checks. The remaining actions are primarily production ownership and operational acceptance: commercial hosting, canonical-domain configuration, a controlled live transaction/email test, provider backup/limit decisions, credentials, and the six transparent CMS housekeeping items. Completing the checklist in section 15 converts the technically delivered product into a formally accepted live service with named accountability.
+The code, CMS synchronisation and responsive page surfaces passed the documented quality checks. The menu, prices, D/N/G declarations, corrected FAQs, Chennai Dosa presentation and restaurant photography are in place; the Studio is deployed; and the earlier CMS housekeeping is resolved. The remaining actions are production ownership and operational acceptance: deploy the final website revision, complete the restaurant-signed allergen register, confirm commercial hosting and canonical-domain configuration, run a controlled live transaction/email test, decide provider backup/limit arrangements and perform credentialed role checks. Completing the checklist in section 15 converts the technically delivered release candidate into a formally accepted live service with named accountability.
 
 ---
 
@@ -1076,8 +1210,8 @@ The code and page surfaces passed the documented quality checks. The remaining a
 | `/api/admin/reservations` | Creates/lists administrator-managed reservations. |
 | `/api/admin/reservations/[id]` | Updates/deletes a reservation and related email actions. |
 | `/api/admin/reservations/settings` | Updates booking-capacity and timing rules. |
-| `/api/admin/hall-enquiries` | Creates/lists administrator-managed hall enquiries. |
-| `/api/admin/hall-enquiries/[id]` | Updates/deletes an enquiry and related email actions. |
+| `/api/admin/hall-enquiries` | Creates/lists administrator-managed Kerala Suite enquiries. |
+| `/api/admin/hall-enquiries/[id]` | Updates/deletes a Kerala Suite enquiry and related email actions. |
 | `/api/admin/schedule` | Validates/previews/saves operating-calendar changes. |
 | `/api/admin/careers` | Creates/lists career opportunities. |
 | `/api/admin/careers/[id]` | Updates/closes/deletes a career opportunity. |
@@ -1091,6 +1225,19 @@ The code and page surfaces passed the documented quality checks. The remaining a
 ## Appendix B — Source snapshot
 
 - Audited local branch: `codex/restaurant-calendar-careers`
-- Audited local commit: `ac5ac4f` (`Career and Email`)
-- Report additions are documentation only; this snapshot label does not claim that the same commit is the currently deployed Vercel revision. Confirm the deployment commit in Vercel during acceptance.
+- Audited local HEAD on 29 September 2026: `eecc5d7`
+- Source repository: `https://github.com/MalabarCoast/Malabar-Coast.git`
+- The final handover changes were present in the working tree when this report was generated and were not represented by a newer commit or confirmed Vercel deployment. Record the approved release commit and production deployment identifier during section 15 acceptance.
+
+## Appendix C — Content and image provenance register
+
+| Asset/content group | Origin and treatment | Acceptance action |
+|---|---|---|
+| `Malabar_Coast_Full_Menu_Updated.pdf` | Supplied by the client; used as the source for catalogue, prices and D/N/G markers. | Restaurant confirms accuracy and authority to publish. |
+| `public/Store/1.jpeg` to `10.jpeg` | Supplied by the client; uploaded to Sanity and used for restaurant hero, room and gallery presentation. | Client records ownership/licence, subject permissions where applicable, approved crops and alt text. |
+| `public/food/Chennai masala dosa.jpeg` | Photorealistic Chennai-style masala dosa image generated for this project with OpenAI’s built-in image-generation service on 29 September 2026; production JPEG, 1536 × 1024, without embedded text, logo or watermark. | Client approves visual accuracy and publication use. Do not present it as documentary photography of a dish actually served unless the restaurant confirms that representation. |
+| Existing food, venue, campaign and story media | Pre-existing project/client assets or project-created editorial assets already in the repository/CMS. | Client completes the rights, consent, accuracy and retention review before final acceptance. |
+| FAQ, menu descriptions and marketing copy | Client instructions combined with maintained project copy and CMS synchronisation. | Client/restaurant approves operational claims; qualified advisers approve legal wording. |
+
+For every future asset, record who supplied or created it, its licence/consent basis, the approval date, meaningful alt text and any restrictions. Replace an asset in the CMS rather than silently reusing it for a materially different claim.
 
