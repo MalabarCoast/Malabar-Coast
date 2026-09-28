@@ -15,13 +15,19 @@ export const faqItems = [
     id: "what-cuisine",
     question: "What type of cuisine does Malabar Coast serve?",
     answer:
-      "Malabar Coast serves Indian cuisine from tandoor-charred North Indian favourites to curries, biriyani, vegetarian plates and Kerala coastal specialities, alongside a full bar.",
+      "Malabar Coast serves Indian cuisine from across the country, including tandoori favourites, tikka dishes, chasni, korma, biriyani, vegetarian plates and Kerala coastal specialities. The menu is not limited to Kerala dishes.",
+  },
+  {
+    id: "licensed-alcohol",
+    question: "Does Malabar Coast serve alcohol?",
+    answer:
+      "Yes. Malabar Coast is a licensed restaurant and bar and serves alcoholic drinks. Please ask the team for the current bar selection and prices; alcoholic drinks are not available through online ordering.",
   },
   {
     id: "signature-dishes",
     question: "Which dishes are signatures at Malabar Coast?",
     answer:
-      "The Malabar Coast Signature section includes chicken pollichathu, kozhi varutharacha, aattirachi kurumulak, beef roast, kizhi porotta, meen moilee, konju coconut fry, prawn moilee and fish pollichathu. Current food prices are shown on the menu.",
+      "Guest favourites include Chicken Tikka, Peshwari Naan, Chicken Chasni and Mughlai Korma, alongside Malabar Coast signatures such as Chicken Pollichathu, Meen Moilee, Beef Roast and Aattirachi Kurumulak. Current food prices are shown on the menu.",
   },
   {
     id: "vegetarian-options",
@@ -33,19 +39,19 @@ export const faqItems = [
     id: "vegan-options",
     question: "Which dishes are suitable for vegans?",
     answer:
-      "The supplied menu does not include an official vegan or allergen legend. Some dishes may be vegan by recipe, but ingredients such as ghee, dairy, egg and shared-fryer exposure must be confirmed by the restaurant before a vegan label is published. Please ask the team before ordering.",
+      "Vegan options are available. Depending on the current recipe and preparation, choices may include vegetable, gobi or mushroom pakora, Masala Dosa, Thattu Dosa, plain basmati rice, coconut rice and idiyappam. Please tell the team that you are vegan before ordering so they can confirm ingredients and shared-fryer preparation and make suitable adjustments where possible.",
   },
   {
     id: "gluten-free-options",
     question: "Are gluten-free choices marked on the menu?",
     answer:
-      "Not yet. The supplied menu does not include confirmed gluten-free labels. Guests who avoid gluten should speak to the restaurant before ordering so ingredients and cross-contact risks can be checked against the current kitchen recipe.",
+      "The menu uses G to mark dishes that contain gluten, and many other dishes are prepared without gluten-containing ingredients. The absence of G is not a cross-contact guarantee, so please tell the team about a gluten allergy or coeliac requirement before ordering and they will confirm the safest suitable choices from the current recipes.",
   },
   {
     id: "food-allergies",
     question: "How does Malabar Coast display food allergens?",
     answer:
-      "Guests must state allergies before ordering so the restaurant can check the current recipe and cross-contact risk. Dish-by-dish allergen details are confirmed directly rather than inferred online.",
+      "The menu uses D for dairy, N for nuts and G for gluten on dishes marked by the restaurant. Guests must still state every allergy before ordering so the team can check the current recipe, other regulated allergens and cross-contact risk.",
   },
   {
     id: "catering-services",
@@ -103,20 +109,20 @@ export const faqItems = [
   },
   {
     id: "private-hall",
-    question: "Does Malabar Coast have a private event hall?",
+    question: "Does Malabar Coast have a private event suite?",
     answer:
-      "Yes. Malabar Coast has a flexible private hall within the restaurant at 33 Main Street, Holytown. Current photographs show an open floor, a built-in wooden bar and a raised stage for private celebrations, family gatherings and community occasions.",
+      "Yes. The private event space is called The Kerala Suite. It is inside Malabar Coast at 33 Main Street, Holytown, with a flexible open floor, built-in wooden bar and raised stage for celebrations, family gatherings and community occasions.",
   },
   {
     id: "hall-facilities",
-    question: "Which facilities are included in the private hall?",
+    question: "Which facilities are included in The Kerala Suite?",
     answer:
-      "The private hall includes a dedicated built-in bar, raised stage, ceiling lighting and flexible open floor. Final guest capacity, seating layouts, catering packages, availability and prices have not yet been published, so the site does not infer those details.",
+      "The Kerala Suite includes a dedicated built-in bar, raised stage, ceiling lighting and a flexible open floor. The team confirms the suitable seating layout, catering, availability, capacity and price for each event enquiry.",
   },
   {
     id: "hall-enquiries",
-    question: "How can I book the Malabar Coast hall?",
+    question: "How can I book The Kerala Suite at Malabar Coast?",
     answer:
-      "Hall enquiry and booking details are still being finalised. The hall page currently provides verified room photographs, visible facilities and the restaurant address. An official contact method, event packages, capacity and pricing will be added after the restaurant confirms them.",
+      "Open The Kerala Suite page and send the event enquiry form with your preferred date and time, approximate guest count, occasion and contact details. This starts an enquiry rather than an automatic booking; the Malabar Coast team will contact you to confirm availability, layout, catering and pricing.",
   },
 ] as const;

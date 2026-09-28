@@ -22,6 +22,8 @@ export const menuContentQuery = defineQuery(`{
     isVegan,
     dietaryReviewStatus,
     "allergens": coalesce(allergens, []),
+    "allergenReviewStatus": coalesce(allergenReviewStatus, "needs-review"),
+    allergenNotes,
     spiceLevel,
     available,
     onlineOrdering,

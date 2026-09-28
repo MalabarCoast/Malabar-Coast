@@ -8,7 +8,7 @@ import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableText
 const fallbackMetadata: Metadata = {
   title: "Restaurant FAQs",
   description:
-    "Answers about Malabar Coast in Holytown, including cuisine, location, private hall, ordering, delivery, dietary choices, allergens and spice levels.",
+    "Answers about Malabar Coast in Holytown, including cuisine, the licensed bar, The Kerala Suite, ordering, delivery, vegan choices, allergens and spice levels.",
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "website",
@@ -61,7 +61,7 @@ export default async function FaqPage() {
         <h1 aria-label={page?.heroHeading || "Before you come ashore."}><span>{page?.heroHeading || "Before you"}</span>{!page?.heroHeading && <span>come ashore.</span>}</h1>
         <div>
           <p>
-            {page?.heroText || "Direct answers about the food, private hall, dietary choices, location and ordering at Malabar Coast in Holytown."}
+            {page?.heroText || "Direct answers about the food, licensed bar, The Kerala Suite, dietary choices, location and ordering at Malabar Coast in Holytown."}
           </p>
           <time dateTime={pageLastUpdated["/faq"]}>Last reviewed {formatPublicDate(pageLastUpdated["/faq"])}</time>
         </div>
@@ -88,7 +88,7 @@ export default async function FaqPage() {
         {portableTextToPlainText(closing?.body) && <span>{portableTextToPlainText(closing?.body)}</span>}
         <div>
           <Link href="/menu">Explore the menu <span aria-hidden="true">↗</span></Link>
-          <Link href="/hall">Explore the private hall <span aria-hidden="true">↗</span></Link>
+          <Link href="/hall">Explore The Kerala Suite <span aria-hidden="true">↗</span></Link>
           <Link href="/book-a-table">Book your table <span aria-hidden="true">→</span></Link>
         </div>
       </footer>

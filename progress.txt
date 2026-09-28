@@ -89,7 +89,7 @@
 - Added Facebook and TikTok links, a prominent Special events navigation route, a sharper story image set and a restaurant-led offers background.
 - Replaced the placeholder offer with three useful dining offers while keeping a single Explore the menu offer action.
 - Rebuilt the menu journey around six coastal ports, including Kerala, Kochi, Mumbai, Gujarat and Chennai, using the supplied food photography.
-- Added visible allergen guidance beside every dish and replaced every drink price with Ask the coastal crew, with drink ordering disabled.
+- Added allergen display support and replaced every drink price with Ask the coastal crew, with drink ordering disabled. The later D/N/G update limits item-level markers to dishes explicitly marked in the restaurant-supplied menu.
 - Removed decorative emoji from public content and synchronised the corresponding published and draft Sanity documents.
 - Verified the public site at 320px, tablet and desktop sizes with no broken images or page-level horizontal overflow; all automated tests, TypeScript, ESLint, Studio build and Next.js production build pass.
 
@@ -110,3 +110,25 @@
 - Replaced the remaining stylised story-table renders with matching real dish photography from the restaurant asset library.
 - Uploaded and verified all four new story assets in the live Sanity document while keeping the checked-in fallback and seed content aligned.
 - Verified 95 automated tests, ESLint, TypeScript, changed-file whitespace and the Next.js production build without browser-based inspection.
+
+2026-09-28 - Final menu, allergen governance, restaurant gallery and handover complete
+
+- Reconciled the owner-supplied menu PDF into 24 categories and 195 current catalogue items, with stable identifiers, prices and concise descriptions kept aligned between the checked-in fallback and live Sanity dataset.
+- Added auditable allergen declaration states, evidence source, approver and approval date fields; mapped the owner-supplied D/N/G markers to 63 current dishes and kept unmarked dishes in internal review without showing a public warning line.
+- Added a 195-row allergen working register and restaurant sign-off guide, pre-populated with the source-backed dairy, nuts and gluten declarations without inferring any additional allergens from dish names.
+- Published all ten supplied restaurant photographs to the restaurant hero, room story and responsive gallery, with accessible descriptions and single-column phone, paired tablet and mosaic desktop layouts.
+- Resolved the six earlier CMS housekeeping records, regenerated Sanity types and deployed the updated hosted Studio.
+- Corrected long legal-link wrapping and verified 21 public/entry routes at 320px, 390px, tablet and desktop widths with no broken images or page-level horizontal overflow.
+- Verified 100 automated tests, ESLint, TypeScript, the Studio build, the Next.js production build, the live CMS inventory and the read-only provider readiness audit; controlled live commerce and restaurant allergen approval remain explicit acceptance actions.
+
+2026-09-29 - FAQ corrections published
+
+- Renamed the private event space to The Kerala Suite in the booking and facilities FAQs and replaced the unfinished booking answer with the live enquiry-form process.
+- Corrected the cuisine, licensed alcohol, signature-dish, vegan, gluten and allergen answers in both the checked-in fallback and live Sanity CMS.
+- Verified 103 automated tests, ESLint, TypeScript, changed-file whitespace and the Next.js production build after the FAQ update.
+
+2026-09-29 - Chennai journey image updated
+
+- Replaced the Chennai journey dish with Masala Dosa and added a production-optimised photorealistic Chennai dosa image with sambar and chutneys.
+- Kept the checked-in fallback, repeatable seed and live CMS migration aligned around the existing `dosa-masala-dosa` catalogue record.
+- Uploaded and verified the new image in both published and draft CMS menu pages, then passed 104 automated tests, ESLint and TypeScript.

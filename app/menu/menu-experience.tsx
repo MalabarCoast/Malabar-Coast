@@ -4,13 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {MenuCategory, MenuItem} from "../lib/menu";
-import {formatPrice} from "../lib/menu";
+import {formatAllergenSummary, formatPrice} from "../lib/menu";
 import type {MenuPageContent} from "@/sanity/lib/menu";
 import {AddToOrder} from "../components/add-to-order";
 import {DietaryMarker} from "../components/dietary-marker";
 
 function ShipMark() {
   return <svg viewBox="0 0 88 42" aria-hidden="true"><path d="M7 31h70l-8 7H17L7 31Z" /><path d="M42 4v27M44 7c13 3 22 10 25 20H44V7ZM39 12c-9 3-15 8-19 15h19V12Z" /><path d="M2 40c8-4 14 4 22 0 8-4 14 4 22 0 8-4 14 4 22 0 7-3 12 1 18 1" /></svg>;
+}
+
+function AllergenMarker({dish}: {dish: MenuItem}) {
+  const markers = formatAllergenSummary(dish);
+  if (!markers) return null;
+  const labels = dish.allergens.map((allergen) => allergen === "milk" ? "dairy" : allergen === "cereals containing gluten" ? "gluten" : allergen).join(", ");
+  return <small className="allergenMarker" aria-label={`Contains ${labels}`}>{markers}</small>;
 }
 
 export function MenuExperience({categories, items, page}: {categories: MenuCategory[]; items: MenuItem[]; page: MenuPageContent}) {
@@ -93,7 +100,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                     <p className="portRegion">Region {String(index + 1).padStart(2, "0")} · {stop.region}</p>
                     <h2>{stop.area}</h2><div className="dishRule" /><p className="courseLabel">{stop.course}</p><h3>{dish.name}</h3>
                     <p className="dishDescription">{stop.description}</p>
-                    <div className="dishFooter"><strong>{dish.hidePrice ? dish.priceLabel : formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact /><small className="allergenMarker">{dish.allergens.length ? `Allergens: ${dish.allergens.join(", ")}` : "Allergens: ask our team"}</small></div>
+                    <div className="dishFooter"><strong>{dish.hidePrice ? dish.priceLabel : formatPrice(dish.pricePence, dish.priceLabel)}</strong><DietaryMarker status={dish.dietaryStatus} compact /><AllergenMarker dish={dish} /></div>
                     {dish.onlineOrdering && <AddToOrder id={dish.id} />}
                   </div>
                 </article>
@@ -133,7 +140,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                         {dish.description && <span>{dish.description}</span>}
                         <div className="manifestDishMeta">
                           <DietaryMarker status={dish.dietaryStatus} compact />
-                          <small className="allergenMarker">{dish.allergens.length ? `Allergens: ${dish.allergens.join(", ")}` : "Allergens: ask our team"}</small>
+                          <AllergenMarker dish={dish} />
                           {!dish.available && <small>Temporarily unavailable</small>}
                         </div>
                       </div>
@@ -146,6 +153,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
           })}
         </div>
         <div className="menuNotices"><p>{page.dietaryNotice}</p><p>{page.alcoholNotice}</p></div>
+        <div className="dietaryKey allergenKey" aria-label="Allergen marker key"><span><b>D</b>Dairy</span><span><b>N</b>Nuts</span><span><b>G</b>Gluten</span></div>
         <div className="dietaryKey"><DietaryMarker status="vegan" /><DietaryMarker status="vegetarian" /><DietaryMarker status="nonVegetarian" /><DietaryMarker status="unconfirmed" /></div>
       </section>
 

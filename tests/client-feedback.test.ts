@@ -34,7 +34,7 @@ test('intermediate tablet layouts keep signature and story content in normal flo
   assert.match(storyStyles, /@media \(max-width: 1024px\) \{[\s\S]*?\.storyManifestoCopy \{ grid-template-columns: 1fr;/)
 })
 
-test('every drink category hides its rate and every dish exposes allergen guidance', async () => {
+test('drink prices stay hidden and source-backed allergen markers use the D/N/G key', async () => {
   const [catalogue, cmsMenu, experience] = await Promise.all([
     readFile(new URL('../app/lib/menu.ts', import.meta.url), 'utf8'),
     readFile(new URL('../sanity/lib/menu.ts', import.meta.url), 'utf8'),
@@ -45,7 +45,44 @@ test('every drink category hides its rate and every dish exposes allergen guidan
   assert.match(catalogue, /hidePrice: isDrink/)
   assert.match(catalogue, /onlineOrdering: isDrink \? false/)
   assert.match(cmsMenu, /const isDrink = drinkCategorySlugs\.has/)
-  assert.match(experience, /Allergens: ask our team/)
+  assert.match(experience, /formatAllergenSummary/)
+  assert.match(experience, /AllergenMarker/)
+  assert.match(experience, /Dairy/)
+  assert.match(experience, /Nuts/)
+  assert.match(experience, /Gluten/)
+  assert.doesNotMatch(experience, /Allergens: confirmation required/)
+})
+
+test('the supplied September menu is mirrored in the fallback and safe CMS sync', async () => {
+  const [catalogue, sync, schema] = await Promise.all([
+    readFile(new URL('../app/lib/menu.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../scripts/sync-menu-catalogue.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../studio/schemaTypes/documents/menuItem.ts', import.meta.url), 'utf8'),
+  ])
+  for (const category of ['Indian Snacks', 'Main Courses - Tikka Meals', 'King Prawn Curries']) assert.match(catalogue, new RegExp(category))
+  for (const dish of ['Garlic Mushroom', 'Dragon Chicken Tikka', 'Neymeen Pollichathu', 'Calicut Halwa']) assert.match(catalogue, new RegExp(dish))
+  assert.match(sync, /Malabar_Coast_Full_Menu_Updated\.pdf/)
+  assert.match(sync, /protectedAllergenDeclarations/)
+  assert.match(sync, /menuAllergenEvidence/)
+  assert.match(sync, /sourceAllergenDeclarations/)
+  assert.match(sync, /published: false, available: false, onlineOrdering: false/)
+  assert.match(schema, /name: 'allergenReviewStatus'/)
+  assert.match(schema, /allergenSource/)
+  assert.match(schema, /allergenReviewedBy/)
+  assert.match(schema, /allergenReviewedAt/)
+})
+
+test('the Chennai journey stop features a photorealistic masala dosa', async () => {
+  const [menuFallback, syncScript] = await Promise.all([
+    readFile(new URL('../sanity/lib/menu.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../scripts/update-menu-regions.ts', import.meta.url), 'utf8'),
+  ])
+  for (const source of [menuFallback, syncScript]) {
+    assert.match(source, /dosa-masala-dosa/)
+    assert.match(source, /Chennai masala dosa\.jpeg/)
+    assert.match(source, /courseLabel: 'Dosa'|course: "Dosa"/)
+    assert.doesNotMatch(source, /area: ['"]Chennai['"][^\n]*Butter Chicken/)
+  }
 })
 
 test('offers use a restaurant background and do not append a menu link to every card', async () => {
@@ -78,6 +115,20 @@ test('hall event photography is responsive and represented in the CMS model', as
   assert.match(syncScript, /galleryImages: page\.gallery\.length/)
 })
 
+test('restaurant photography is responsive and represented in the CMS page', async () => {
+  const [restaurantPage, editorialStyles, syncScript] = await Promise.all([
+    readFile(new URL('../app/restaurant/page.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../app/editorial.css', import.meta.url), 'utf8'),
+    readFile(new URL('../scripts/sync-restaurant-gallery.ts', import.meta.url), 'utf8'),
+  ])
+  for (let index = 1; index <= 10; index += 1) assert.match(restaurantPage, new RegExp(`Store/${index}\\.jpeg`))
+  assert.match(restaurantPage, /gallerySection\?\.gallery/)
+  assert.match(restaurantPage, /restaurantGalleryGrid/)
+  assert.match(editorialStyles, /\.restaurantGalleryGrid \{ display: grid; grid-template-columns: repeat\(12,minmax\(0,1fr\)\)/)
+  assert.match(editorialStyles, /@media \(max-width: 600px\)[\s\S]*?\.restaurantGalleryGrid \{ grid-template-columns: 1fr;/)
+  assert.match(syncScript, /galleryImages: page\.gallery\.length/)
+})
+
 test('small-screen typography and shared controls stay readable and touch friendly', async () => {
   const [globalStyles, editorialStyles, menuStyles, storyStyles, adminStyles] = await Promise.all([
     readFile(new URL('../app/globals.css', import.meta.url), 'utf8'),
@@ -93,4 +144,14 @@ test('small-screen typography and shared controls stay readable and touch friend
   assert.match(menuStyles, /\.portContent h2 \{ font-size: clamp\(3rem,15vw,4\.25rem\); overflow-wrap: normal; \}/)
   assert.match(storyStyles, /\.calicutHero h1 \{ bottom: 10rem; left: 1rem; font-size: clamp\(5rem,25vw,8rem\);/)
   assert.match(adminStyles, /\.adminLoginCard h1 \{ font-size: clamp\(2\.2rem,10vw,3\.3rem\); overflow-wrap: normal; \}/)
+})
+
+test('long legal contact links wrap inside compact viewports', async () => {
+  const legalStyles = await readFile(new URL('../app/legal.css', import.meta.url), 'utf8')
+  assert.match(legalStyles, /\.legalSectionBody a \{[^}]*overflow-wrap: anywhere;[^}]*word-break: break-word;/)
+})
+
+test('the private login card stays inside a 320px viewport', async () => {
+  const adminStyles = await readFile(new URL('../app/admin/admin.css', import.meta.url), 'utf8')
+  assert.match(adminStyles, /\.adminLoginCard \{[^}]*box-sizing: border-box;/)
 })

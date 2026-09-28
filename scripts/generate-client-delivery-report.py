@@ -186,7 +186,7 @@ def add_header_footer(section) -> None:
     footer = section.footer
     paragraph = footer.paragraphs[0]
     paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = paragraph.add_run("CLIENT HANDOVER  ·  19 SEPTEMBER 2026  ·  PAGE ")
+    run = paragraph.add_run("FINAL CLIENT HANDOVER  ·  29 SEPTEMBER 2026  ·  PAGE ")
     run.font.name = "Aptos"
     run.font.size = Pt(7.5)
     run.font.color.rgb = RGBColor.from_string(GREY)
@@ -209,7 +209,7 @@ def add_cover(document: Document) -> None:
         p.add_run().add_picture(str(LOGO), width=Inches(2.7))
     p = cell.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run("COMPLETE PRODUCT DELIVERY,\nOPERATIONS & HANDOVER REPORT")
+    run = p.add_run("FINAL CONSOLIDATED PRODUCT DELIVERY,\nOPERATIONS & HANDOVER REPORT")
     run.font.name = "Aptos Display"
     run.font.size = Pt(29)
     run.font.bold = True
@@ -233,7 +233,7 @@ def add_cover(document: Document) -> None:
     p = cell.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(24)
-    run = p.add_run("Prepared for client handover\n19 September 2026  ·  Version 1.0\nwww.malabarcoast.co.uk")
+    run = p.add_run("Prepared for client handover\n29 September 2026  ·  Version 2.0\nwww.malabarcoast.co.uk")
     run.font.name = "Aptos"
     run.font.size = Pt(10)
     run.font.color.rgb = RGBColor.from_string(WHITE)

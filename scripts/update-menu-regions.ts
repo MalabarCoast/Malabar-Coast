@@ -25,7 +25,7 @@ const definitions = [
   {key: 'mangaluru', sourceKey: 'malabar-coast-signature-masala-grilled-fish', area: 'Mangaluru', region: 'Karnataka coast', coordinates: '12.9141° N · 74.8560° E', yearLabel: 'Western coast', courseLabel: 'Masala Grilled Fish', imageFile: 'food/Masala grill fish.jpeg', alt: 'Masala grilled fish served at Malabar Coast', description: 'Masala-coated grilled fish carries the bright heat and sea-facing character of India’s western coast.'},
   {key: 'mumbai', sourceKey: 'chicken-indian-garlic-chilli-chicken', area: 'Mumbai', region: 'Maharashtra', coordinates: '19.0760° N · 72.8777° E', yearLabel: 'Gateway harbour', courseLabel: 'Indian Garlic Chilli Chicken', imageFile: 'food/indian garlic chilli chicken tikka.jpeg', alt: 'Indian garlic chilli chicken served at Malabar Coast', description: 'A bold garlic and chilli dish for a city whose tables bring regional flavours together.'},
   {key: 'surat', sourceKey: 'breads-peshwari-naan', area: 'Surat', region: 'Gujarat', coordinates: '21.1702° N · 72.8311° E', yearLabel: 'Gulf of Khambhat', courseLabel: 'Peshwari Naan', imageFile: 'food/Peshwari naan.jpeg', alt: 'Peshwari naan served at Malabar Coast', description: 'A fragrant, fruit-and-nut-filled naan marks Gujarat on the west-coast route with a sweet counterpoint.'},
-  {key: 'chennai', sourceKey: 'chicken-butter-chicken', area: 'Chennai', region: 'Tamil Nadu', coordinates: '13.0827° N · 80.2707° E', yearLabel: 'Coromandel coast', courseLabel: 'Butter Chicken', imageFile: 'food/Butter chicken.jpeg', alt: 'Butter chicken served at Malabar Coast', description: 'A rich restaurant favourite closes the route on the Coromandel Coast before the story reaches Scotland.'},
+  {key: 'chennai', sourceKey: 'dosa-masala-dosa', area: 'Chennai', region: 'Tamil Nadu', coordinates: '13.0827° N · 80.2707° E', yearLabel: 'Coromandel coast', courseLabel: 'Dosa', imageFile: 'food/Chennai masala dosa.jpeg', alt: 'Chennai-style masala dosa served with sambar and chutneys', description: 'A crisp masala dosa brings Tamil Nadu’s griddle tradition to the final stop on the Coromandel Coast.'},
 ] as const
 
 const additionalDescriptions = [
@@ -42,7 +42,7 @@ const baseUpdate = {
   manifestEyebrow: 'The full menu',
   manifestHeading: 'What we carry to the table.',
   manifestIntroduction: 'The current Malabar Coast menu, prepared for sharing and available to order online where shown.',
-  dietaryNotice: 'Please tell the team about allergies before ordering. Dietary markers are a helpful guide, but recipes can change and the kitchen handles all 14 regulated allergens, so cross-contact may occur.',
+  dietaryNotice: 'D means dairy, N means nuts and G means gluten. Only the restaurant-supplied markers are shown. Please tell the team about all allergies before ordering because recipes can change and cross-contact may occur.',
   alcoholNotice: 'Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.',
   'seo.title': 'Indian Cuisine & Bar Menu in Holytown',
   'seo.description': 'Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast.',
@@ -138,12 +138,13 @@ async function main() {
   }})
   await transaction.commit()
 
-  const verified = await client.fetch<Array<{_id: string; headingLineOne?: string; headingLineTwo?: string; journeyLinkLabel?: string; areas: string[]}>>(
-    `*[_id in ["menuPage", "drafts.menuPage"]] | order(_id asc){_id,eyebrow,headingLineOne,headingLineTwo,introduction,journeyLinkLabel,manifestEyebrow,manifestHeading,manifestIntroduction,dietaryNotice,alcoholNotice,seo,"areas":voyageStops[].area}`,
+  const verified = await client.fetch<Array<{_id: string; headingLineOne?: string; headingLineTwo?: string; journeyLinkLabel?: string; areas: string[]; stops: Array<{area?: string; courseLabel?: string; dishSourceKey?: string; imageUrl?: string}>}>>(
+    `*[_id in ["menuPage", "drafts.menuPage"]] | order(_id asc){_id,eyebrow,headingLineOne,headingLineTwo,introduction,journeyLinkLabel,manifestEyebrow,manifestHeading,manifestIntroduction,dietaryNotice,alcoholNotice,seo,"areas":voyageStops[].area,"stops":voyageStops[]{area,courseLabel,"dishSourceKey":dish->sourceKey,"imageUrl":image.asset->url}}`,
   )
   const expectedAreas = definitions.map((definition) => definition.area)
   if (!verified.every((document) => JSON.stringify(document.areas) === JSON.stringify(expectedAreas))) throw new Error('Post-migration verification found an unexpected Indian destination list.')
   if (!verified.every((document) => document.headingLineOne === baseUpdate.headingLineOne && document.headingLineTwo === baseUpdate.headingLineTwo && document.journeyLinkLabel === baseUpdate.journeyLinkLabel)) throw new Error('Post-migration verification found stale menu-page copy.')
+  if (!verified.every((document) => document.stops.some((stop) => stop.area === 'Chennai' && stop.courseLabel === 'Dosa' && stop.dishSourceKey === 'dosa-masala-dosa' && Boolean(stop.imageUrl)))) throw new Error('Post-migration verification found an incomplete Chennai dosa stop.')
   const drinkVerification = await client.fetch<{total: number; visiblePrices: number; orderable: number; labelMismatch: number}>(`{
     "total": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"]]),
     "visiblePrices": count(*[_type == "menuItem" && category->slug.current in ["soft-drinks","tea-coffee","draught-beer","bottled-beer-cider","spirits","wine","mixers"] && hidePrice != true]),
