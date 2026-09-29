@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./menu.css";
 import { JsonLd } from "../components/json-ld";
 import { absoluteUrl, pageLastUpdated } from "../lib/site";
 import { getMenuContent } from "@/sanity/lib/menu";

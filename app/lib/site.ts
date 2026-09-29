@@ -17,7 +17,7 @@ export const site = {
   shortDescription: "Indian Cuisine & Bar, from tandoor fire to the Malabar coast.",
   cuisine: ["Indian", "North Indian", "South Indian", "Tandoori", "Kerala", "Seafood"],
   priceRange: "££",
-  lastUpdated: "2026-09-17",
+  lastUpdated: "2026-09-29",
   address: {
     streetAddress: "33 Main Street",
     addressLocality: "Holytown",
@@ -36,8 +36,8 @@ export const site = {
 } as const;
 
 export const pageLastUpdated = {
-  "/": "2026-09-17",
-  "/menu": "2026-09-17",
+  "/": "2026-09-29",
+  "/menu": "2026-09-29",
   "/offers": "2026-08-16",
   "/book-a-table": "2026-09-14",
   "/special-days": "2026-09-21",

@@ -10,13 +10,23 @@ import {getRestaurantSchedule} from "./lib/schedule-store";
 import {getActivePromotions} from "@/sanity/lib/promotions";
 
 const fallbackMetadata: Metadata = {
-  title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
-  description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown.",
+  title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",
+  description: "Malabar Coast serves Indian tandoor dishes, curries, biriyani and coastal specialities in Holytown, Scotland.",
   alternates: {canonical: "/"},
 };
 
-export function generateMetadata() {
-  return getMarketingPageMetadata("home", "/", fallbackMetadata);
+export async function generateMetadata() {
+  const metadata = await getMarketingPageMetadata("home", "/", fallbackMetadata);
+  return {
+    ...metadata,
+    title: fallbackMetadata.title,
+    description: fallbackMetadata.description,
+    openGraph: {
+      ...metadata.openGraph,
+      title: fallbackMetadata.title,
+      description: fallbackMetadata.description,
+    },
+  };
 }
 
 export const dynamic = "force-dynamic";

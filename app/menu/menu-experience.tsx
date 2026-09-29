@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {MenuCategory, MenuItem} from "../lib/menu";
 import {formatAllergenSummary, formatPrice} from "../lib/menu";
 import type {MenuPageContent} from "@/sanity/lib/menu";
@@ -19,6 +19,21 @@ function AllergenMarker({dish}: {dish: MenuItem}) {
   const labels = dish.allergens.map((allergen) => allergen === "milk" ? "dairy" : allergen === "cereals containing gluten" ? "gluten" : allergen).join(", ");
   return <small className="allergenMarker" aria-label={`Contains ${labels}`}>{markers}</small>;
 }
+
+const menuInterludes: ReadonlyMap<number, {src: string; alt: string; eyebrow: string; title: string}> = new Map([
+  [5, {
+    src: "/food/indian garlic chilli chicken tikka.jpeg",
+    alt: "Indian garlic chilli chicken tikka served at Malabar Coast",
+    eyebrow: "From the tandoor",
+    title: "Char, spice and the first pull of smoke.",
+  }],
+  [13, {
+    src: "/food/Meen Moilee.jpeg",
+    alt: "Meen Moilee fish curry served at Malabar Coast",
+    eyebrow: "From the coast",
+    title: "Coconut, curry leaf and a gentler tide.",
+  }],
+] as const);
 
 export function MenuExperience({categories, items, page}: {categories: MenuCategory[]; items: MenuItem[]; page: MenuPageContent}) {
   const voyageRef = useRef<HTMLElement>(null);
@@ -122,38 +137,45 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
         {visibleCategories.length > 0 && <nav className="menuCategoryNav" aria-label="Jump to a menu category"><span>Jump to</span>{visibleCategories.map((category) => <a href={`#${category.slug}`} key={category.slug}>{category.title}</a>)}</nav>}
         {normalisedSearch && filteredItems.length === 0 && <div className="menuSearchEmpty"><p>No dishes match “{searchQuery.trim()}”.</p><span>Try a dish name, ingredient or category, or clear the search to see the full menu.</span><button type="button" onClick={() => setSearchQuery("")}>Show the full menu</button></div>}
         <div className="manifestGrid">
-          {visibleCategories.map((category) => {
+          {visibleCategories.map((category, categoryIndex) => {
             const categoryItems = filteredItems.filter((menuItem) => menuItem.category === category.slug);
             if (!categoryItems.length) return null;
             let previousSubheading = "";
+            const interlude = !normalisedSearch ? menuInterludes.get(categoryIndex) : undefined;
             return (
-              <article className="manifestCard" id={category.slug} key={category.slug}>
-                <div className="manifestHeading"><span>{category.number}</span><div><p>{category.note}</p><h3>{category.title}</h3></div></div>
-                <ul>{categoryItems.map((dish) => {
-                  const showSubheading = Boolean(dish.subheading && dish.subheading !== previousSubheading);
-                  previousSubheading = dish.subheading || previousSubheading;
-                  return (
-                    <li key={dish.id} className={!dish.available ? "isUnavailable" : undefined}>
-                      <div className="manifestDish">
-                        {showSubheading && <em className="manifestSubheading">{dish.subheading}</em>}
-                        <strong>{dish.name}</strong>
-                        {dish.description && <span>{dish.description}</span>}
-                        <div className="manifestDishMeta">
-                          <DietaryMarker status={dish.dietaryStatus} compact />
-                          <AllergenMarker dish={dish} />
-                          {!dish.available && <small>Temporarily unavailable</small>}
+              <Fragment key={category.slug}>
+                <article className="manifestCard" id={category.slug}>
+                  <div className="manifestHeading"><span>{category.number}</span><div><p>{category.note}</p><h3>{category.title}</h3></div></div>
+                  <ul>{categoryItems.map((dish) => {
+                    const showSubheading = Boolean(dish.subheading && dish.subheading !== previousSubheading);
+                    previousSubheading = dish.subheading || previousSubheading;
+                    return (
+                      <li key={dish.id} className={!dish.available ? "isUnavailable" : undefined}>
+                        <div className="manifestDish">
+                          {showSubheading && <em className="manifestSubheading">{dish.subheading}</em>}
+                          <strong>{dish.name}</strong>
+                          {dish.description && <span>{dish.description}</span>}
+                          <div className="manifestDishMeta">
+                            <DietaryMarker status={dish.dietaryStatus} compact />
+                            <AllergenMarker dish={dish} />
+                            {!dish.available && <small>Temporarily unavailable</small>}
+                          </div>
                         </div>
-                      </div>
-                      <div className="manifestOrder">{dish.hidePrice ? <a className="manifestAskTeam" href={`mailto:reservations@malabarcoast.co.uk?subject=${encodeURIComponent(`A quick question about ${dish.name}`)}`}>{dish.priceLabel || "Ask the coastal crew"} <span aria-hidden="true">↗</span></a> : <b>{formatPrice(dish.pricePence, dish.priceLabel)}</b>}{dish.onlineOrdering && dish.available && <AddToOrder id={dish.id} compact />}</div>
-                    </li>
-                  );
-                })}</ul>
-              </article>
+                        <div className="manifestOrder">{dish.hidePrice ? <a className="manifestAskTeam" href={`mailto:reservations@malabarcoast.co.uk?subject=${encodeURIComponent(`A quick question about ${dish.name}`)}`}>{dish.priceLabel || "Ask the coastal crew"} <span aria-hidden="true">↗</span></a> : <b>{formatPrice(dish.pricePence, dish.priceLabel)}</b>}{dish.onlineOrdering && dish.available && <AddToOrder id={dish.id} compact />}</div>
+                      </li>
+                    );
+                  })}</ul>
+                </article>
+                {interlude && <figure className="menuDishInterlude">
+                  <div><Image src={interlude.src} alt={interlude.alt} fill sizes="(max-width: 820px) 100vw, 88vw" /></div>
+                  <figcaption><span>{interlude.eyebrow}</span><strong>{interlude.title}</strong></figcaption>
+                </figure>}
+              </Fragment>
             );
           })}
         </div>
         <div className="menuNotices"><p>{page.dietaryNotice}</p><p>{page.alcoholNotice}</p></div>
-        <div className="dietaryKey allergenKey" aria-label="Allergen marker key"><span><b>D</b>Dairy</span><span><b>N</b>Nuts</span><span><b>G</b>Gluten</span></div>
+        <div className="dietaryKey allergenKey" aria-label="Allergen labels"><span>Dairy</span><span>Nuts</span><span>Gluten</span></div>
         <div className="dietaryKey"><DietaryMarker status="vegan" /><DietaryMarker status="vegetarian" /><DietaryMarker status="nonVegetarian" /><DietaryMarker status="unconfirmed" /></div>
       </section>
 

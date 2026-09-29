@@ -132,3 +132,12 @@
 - Replaced the Chennai journey dish with Masala Dosa and added a production-optimised photorealistic Chennai dosa image with sambar and chutneys.
 - Kept the checked-in fallback, repeatable seed and live CMS migration aligned around the existing `dosa-masala-dosa` catalogue record.
 - Uploaded and verified the new image in both published and draft CMS menu pages, then passed 104 automated tests, ESLint and TypeScript.
+
+2026-09-29 - Brand discovery, menu clarity and rotating guest book implemented
+
+- Replaced the single-letter browser and installed-app mark with the original Malabar Coast logo and strengthened homepage discovery signals for Malabar Coast UK and Holytown.
+- Replaced public D, N and G allergen abbreviations with the full Dairy, Nuts and Gluten labels, including the FAQ wording.
+- Added tandoor and curry wording to the core restaurant FAQ and added copyright and trademark symbols to the shared footer.
+- Rebuilt the guest book as a compact sequential carousel with layered upcoming reviews, automatic movement, manual controls and reduced-motion handling for any review count.
+- Added two lazy-loaded food interludes to the full menu and moved menu and FAQ styles out of the global stylesheet path to reduce unrelated render-blocking CSS.
+- Implementation was intentionally left unverified at the owner’s request.

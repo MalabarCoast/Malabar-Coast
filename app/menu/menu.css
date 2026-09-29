@@ -240,12 +240,20 @@
 .manifestSubheading { margin: 1rem 0 .3rem; color: #8c6028; font-size: .65rem; font-style: normal; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .manifestCard li:first-child .manifestSubheading { margin-top: 0; }
 .manifestCard li.isUnavailable { opacity: .58; }
+.menuDishInterlude { position: relative; grid-column: 1 / -1; min-height: clamp(24rem, 44vw, 39rem); margin: clamp(1.5rem, 3vw, 3rem) 0; overflow: hidden; background: #10201c; color: var(--menu-ivory); }
+.menuDishInterlude > div { position: absolute; inset: 0; }
+.menuDishInterlude img { object-fit: cover; transition: transform .8s cubic-bezier(.22, 1, .36, 1); }
+.menuDishInterlude::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 38%, rgba(4,12,10,.82)); pointer-events: none; }
+.menuDishInterlude figcaption { position: absolute; z-index: 1; right: clamp(1.25rem, 4vw, 4rem); bottom: clamp(1.25rem, 4vw, 3.5rem); left: clamp(1.25rem, 4vw, 4rem); display: flex; justify-content: space-between; gap: 2rem; align-items: end; }
+.menuDishInterlude figcaption span { color: var(--menu-brass); font-size: .56rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.menuDishInterlude figcaption strong { max-width: 38rem; font-family: "Bodoni 72", Didot, serif; font-size: clamp(2.4rem, 4.5vw, 5rem); font-weight: 400; line-height: .88; text-align: right; }
+.menuDishInterlude:hover img { transform: scale(1.025); }
 .menuNotices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2.5rem; padding: 1.5rem 0; border-top: 1px solid rgba(16,32,28,.2); border-bottom: 1px solid rgba(16,32,28,.2); }
 .menuNotices p { margin: 0; color: rgba(16,32,28,.72); font-size: .78rem; line-height: 1.6; }
 .dietaryKey { display: flex; align-items: center; gap: 1.4rem; padding-top: 2.5rem; color: rgba(16,32,28,.65); font-size: .58rem; letter-spacing: .06em; text-transform: uppercase; }
 .dietaryKey > span { display: flex; align-items: center; gap: .4rem; white-space: nowrap; }
 .dietaryKey .dietaryMarker { color: #10201c; }
-.dietaryKey b { display: grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border: 1px solid rgba(16,32,28,.45); border-radius: 50%; font-size: .48rem; }
+.allergenKey > span { min-height: 2rem; padding: .42rem .7rem; border: 1px solid rgba(16,32,28,.45); border-radius: 999px; color: #10201c; font-weight: 800; }
 .dietaryKey p { margin: 0 0 0 auto; text-align: right; text-transform: none; }
 .allergenKey { padding-top: 2rem; }
 .allergenKey + .dietaryKey { padding-top: 1.25rem; }
@@ -290,6 +298,9 @@
   .manifestGrid { grid-template-columns: 1fr; }
   .manifestCard { padding: 2.75rem 0; }
   .manifestCard li { align-items: flex-start; }
+  .menuDishInterlude { min-height: 68svh; }
+  .menuDishInterlude figcaption { display: block; }
+  .menuDishInterlude figcaption strong { display: block; max-width: 24rem; margin-top: .8rem; text-align: left; }
   .manifestOrder { flex-basis: 6.5rem; }
   .menuNotices { grid-template-columns: 1fr; }
   .dietaryKey { flex-wrap: wrap; }
@@ -340,4 +351,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .voyageTrack, .routeShip, .routeLineBase div { transition: none; }
+  .menuDishInterlude img { transition: none; }
 }

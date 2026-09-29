@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "lenis/dist/lenis.css";
 import "./globals.css";
-import "./menu/menu.css";
 import "./editorial.css";
 import "./order.css";
-import "./faq/faq.css";
 import "./legal.css";
 import { SiteHeader } from "./components/site-header";
 import { SiteFooter } from "./components/site-footer";
@@ -21,7 +19,7 @@ import {dayNames, servicePeriods, type RestaurantSchedule} from "./lib/restauran
 const fallbackMetadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "Malabar Coast | Indian Cuisine & Bar in Holytown",
+    default: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",
     template: "%s | Malabar Coast",
   },
   description: site.description,
@@ -32,6 +30,8 @@ const fallbackMetadata: Metadata = {
   publisher: site.name,
   keywords: [
     "South Indian restaurant Holytown",
+    "Malabar Coast UK",
+    "Malabar Coast Holytown",
     "Kerala restaurant Holytown",
     "Indian restaurant North Lanarkshire",
     "Malabar cuisine Scotland",
@@ -62,7 +62,7 @@ const fallbackMetadata: Metadata = {
     locale: "en_GB",
     url: "/",
     siteName: site.name,
-    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
+    title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",
     description: site.description,
     images: [
       {
@@ -75,18 +75,22 @@ const fallbackMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
+    title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",
     description: site.shortDescription,
     images: ["/og/home.jpg"],
   },
-  icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
+  icons: {
+    icon: [{url: "/malabar af.svg", type: "image/svg+xml", sizes: "any"}],
+    shortcut: "/malabar af.svg",
+    apple: "/malabar af.png",
+  },
   formatDetection: { address: false, email: false, telephone: false },
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const seo = settings.defaultSeo;
-  const title = seo?.title || "Malabar Coast | Indian Cuisine & Bar in Holytown";
+  const title = "Malabar Coast UK | Indian Restaurant & Bar in Holytown";
   const description = seo?.description || settings.description || site.description;
   const image = seo?.image?.url || "/og/home.jpg";
   return {
@@ -153,6 +157,7 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, sch
       "@type": "Restaurant",
       "@id": `${site.url}/#restaurant`,
       name: settings.restaurantName,
+      alternateName: ["Malabar Coast UK", "Malabar Coast Holytown"],
       legalName: settings.legalName,
       url: site.url,
       logo: settings.logo.url,
@@ -163,6 +168,7 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, sch
         absoluteUrl("/Hall1.jpeg"),
       ],
       description: settings.description,
+      slogan: "Indian Cuisine & Bar, from tandoor fire to the Malabar coast.",
       priceRange: site.priceRange,
       servesCuisine: site.cuisine,
       acceptsReservations: true,
@@ -195,6 +201,7 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, sch
       "@id": `${site.url}/#website`,
       url: site.url,
       name: settings.restaurantName,
+      alternateName: ["Malabar Coast UK", "Malabar Coast Holytown"],
       description: settings.shortDescription,
       inLanguage: "en-GB",
       publisher: { "@id": `${site.url}/#restaurant` },
