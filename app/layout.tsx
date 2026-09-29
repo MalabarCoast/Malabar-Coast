@@ -45,7 +45,6 @@ const fallbackMetadata: Metadata = {
     "function hall North Lanarkshire",
     "private dining Holytown",
   ],
-  alternates: { canonical: "/" },
   robots: {
     index: true,
     follow: true,

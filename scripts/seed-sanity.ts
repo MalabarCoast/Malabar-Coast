@@ -373,7 +373,7 @@ async function seed() {
     description: "Malabar Coast is an Indian restaurant and bar in Holytown, Scotland, serving tandoor dishes, curries, biriyani, vegetarian plates and Malabar coastal specialities.",
     logo: image("logo", "Malabar Coast logo"),
     lightLogo: image("lightLogo", "Malabar Coast white logo"),
-    siteUrl: "https://malabarcoast.co.uk",
+    siteUrl: "https://www.malabarcoast.co.uk",
     email: "reservations@malabarcoast.co.uk",
     reservationEmail: "reservations@malabarcoast.co.uk",
     footerEyebrow: "Stay close to the coast",
