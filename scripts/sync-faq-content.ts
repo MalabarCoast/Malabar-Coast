@@ -28,6 +28,7 @@ const categoryFor = (id: string) => ['private-hall', 'hall-facilities', 'hall-en
   : 'Restaurant'
 
 const targetFaqIds = new Set([
+  'what-is-malabar-coast',
   'what-cuisine',
   'licensed-alcohol',
   'signature-dishes',

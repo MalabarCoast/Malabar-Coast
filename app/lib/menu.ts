@@ -575,8 +575,8 @@ export function formatAllergenSummary(item: Pick<MenuItem, "allergens" | "allerg
   if (item.allergenReviewStatus !== "confirmed") return "";
   const allergens = new Set(item.allergens);
   return [
-    allergens.has("milk") ? "D" : "",
-    allergens.has("nuts") ? "N" : "",
-    allergens.has("cereals containing gluten") ? "G" : "",
+    allergens.has("milk") ? "Dairy" : "",
+    allergens.has("nuts") ? "Nuts" : "",
+    allergens.has("cereals containing gluten") ? "Gluten" : "",
   ].filter(Boolean).join(" · ");
 }

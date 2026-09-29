@@ -7,7 +7,9 @@ test('restaurant FAQs publish the corrected cuisine, bar and signature-dish answ
   const byId = new Map(faqItems.map((faq) => [faq.id, faq]))
 
   assert.equal(faqItems.length, 21)
+  assert.match(byId.get('what-is-malabar-coast')?.answer || '', /tandoor and curry restaurant/)
   assert.match(byId.get('what-cuisine')?.answer || '', /Indian cuisine from across the country/)
+  assert.match(byId.get('what-cuisine')?.answer || '', /tandoor cooking, curries/)
   assert.match(byId.get('what-cuisine')?.answer || '', /not limited to Kerala dishes/)
   assert.match(byId.get('licensed-alcohol')?.answer || '', /licensed restaurant and bar/)
   for (const dish of ['Chicken Tikka', 'Peshwari Naan', 'Chicken Chasni', 'Mughlai Korma']) {
@@ -23,7 +25,7 @@ test('dietary FAQs explain practical vegan choices and the supplied gluten marke
   assert.match(vegan, /Vegan options are available/)
   assert.match(vegan, /Masala Dosa/)
   assert.match(vegan, /confirm ingredients and shared-fryer preparation/)
-  assert.match(gluten, /G to mark dishes that contain gluten/)
+  assert.match(gluten, /labelled Gluten in full/)
   assert.match(gluten, /not a cross-contact guarantee/)
   assert.doesNotMatch(gluten, /Not yet/)
 })

@@ -26,7 +26,7 @@ test("the current menu catalogue has unique stable identifiers and source-backed
   assert.equal(unmarkedItem?.allergenReviewStatus, "needs-review");
   assert.deepEqual(unmarkedItem?.allergens, []);
   assert.equal(unmarkedItem && formatAllergenSummary(unmarkedItem), "");
-  assert.equal(formatAllergenSummary(menuItems.find((item) => item.id === "desserts-malabar-coast-special-dessert")!), "D · N · G");
+  assert.equal(formatAllergenSummary(menuItems.find((item) => item.id === "desserts-malabar-coast-special-dessert")!), "Dairy · Nuts · Gluten");
 });
 
 test("menu descriptions remain editable, required and visible to content editors", async () => {

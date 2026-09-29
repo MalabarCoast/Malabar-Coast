@@ -17,6 +17,8 @@ function SocialIcon({platform}: {platform: string}) {
 }
 
 export function SiteFooter({settings}: {settings: SiteSettings}) {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="siteFooter" aria-label={`${settings.restaurantName} footer`}>
       <div className="siteFooterLead">
@@ -60,7 +62,10 @@ export function SiteFooter({settings}: {settings: SiteSettings}) {
         <div aria-label="Legal and policy pages">
           {settings.footerNavigation.map((link, index) => <Fragment key={`${link.href}-${link.label}`}><Link href={link.href}>{link.label}</Link>{index < settings.footerNavigation.length - 1 && <i>·</i>}</Fragment>)}
         </div>
-        <p>{settings.copyrightText}</p>
+        <p aria-label={`Copyright ${currentYear} ${settings.restaurantName}, trademark. All rights reserved.`}>
+          <span className="siteFooterTrademark">© {currentYear} {settings.restaurantName}<sup>™</sup></span>
+          <span> All rights reserved.</span>
+        </p>
       </div>
 
       <a className="siteFooterCredit" href={settings.footerCreditUrl} target="_blank" rel="noreferrer" aria-label={settings.footerCreditLabel}>

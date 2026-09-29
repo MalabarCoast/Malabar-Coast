@@ -3,7 +3,7 @@ export const faqItems = [
     id: "what-is-malabar-coast",
     question: "What is Malabar Coast restaurant in Holytown?",
     answer:
-      "Malabar Coast is an Indian restaurant and bar in Holytown. The menu brings together tandoor cooking, curries, biriyani, vegetarian dishes and Kerala’s pepper, coconut, curry leaf and tamarind in a warm neighbourhood dining room.",
+      "Malabar Coast is an Indian tandoor and curry restaurant and bar in Holytown. The menu brings together tandoor cooking, curries, biriyani, vegetarian dishes and Kerala’s pepper, coconut, curry leaf and tamarind in a warm neighbourhood dining room.",
   },
   {
     id: "where-is-malabar-coast",
@@ -15,7 +15,7 @@ export const faqItems = [
     id: "what-cuisine",
     question: "What type of cuisine does Malabar Coast serve?",
     answer:
-      "Malabar Coast serves Indian cuisine from across the country, including tandoori favourites, tikka dishes, chasni, korma, biriyani, vegetarian plates and Kerala coastal specialities. The menu is not limited to Kerala dishes.",
+      "Malabar Coast serves Indian cuisine from across the country, including tandoor cooking, curries, tandoori favourites, tikka dishes, chasni, korma, biriyani, vegetarian plates and Kerala coastal specialities. The menu is not limited to Kerala dishes.",
   },
   {
     id: "licensed-alcohol",
@@ -45,13 +45,13 @@ export const faqItems = [
     id: "gluten-free-options",
     question: "Are gluten-free choices marked on the menu?",
     answer:
-      "The menu uses G to mark dishes that contain gluten, and many other dishes are prepared without gluten-containing ingredients. The absence of G is not a cross-contact guarantee, so please tell the team about a gluten allergy or coeliac requirement before ordering and they will confirm the safest suitable choices from the current recipes.",
+      "Dishes confirmed to contain gluten are labelled Gluten in full, and many other dishes are prepared without gluten-containing ingredients. The absence of a Gluten label is not a cross-contact guarantee, so please tell the team about a gluten allergy or coeliac requirement before ordering and they will confirm the safest suitable choices from the current recipes.",
   },
   {
     id: "food-allergies",
     question: "How does Malabar Coast display food allergens?",
     answer:
-      "The menu uses D for dairy, N for nuts and G for gluten on dishes marked by the restaurant. Guests must still state every allergy before ordering so the team can check the current recipe, other regulated allergens and cross-contact risk.",
+      "The menu writes Dairy, Nuts and Gluten in full on dishes marked by the restaurant. Guests must still state every allergy before ordering so the team can check the current recipe, other regulated allergens and cross-contact risk.",
   },
   {
     id: "catering-services",

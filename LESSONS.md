@@ -81,3 +81,11 @@
 - Preserve confirmed declarations during broad catalogue synchronisation, and require an evidence source, named approver and approval date so later recipe changes can be audited.
 - Owner-supplied venue photography needs the same parity as other managed content: checked-in fallback, responsive layout, accessible descriptions, CMS assets and a reproducible synchronisation command.
 - Final responsive evidence should include a smallest supported width after the last CSS change; a long email or URL can be the only remaining source of document-level overflow.
+
+# Discovery, reviews and menu-conversion lessons
+
+- Search-result favicons should reuse the actual square brand artwork rather than a generated initial so browser, installed-app and organic-search identity remain consistent.
+- Allergen markers are safer and easier to scan when Dairy, Nuts and Gluten are written in full instead of relying on single-letter decoding.
+- A testimonial surface should keep one review readable while rotating the rest through a bounded card stack; this prevents seven or eight records from creating a long page and still keeps every record reachable.
+- Menu photography can break up a long catalogue without harming initial load when existing optimized assets are inserted sparingly and left lazy-loaded.
+- Route-specific CSS belongs with its route layout or page so the homepage does not block on menu and FAQ styling.

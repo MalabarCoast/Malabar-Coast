@@ -1320,6 +1320,8 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .siteFooterLegal > div span { cursor: help; }
 .siteFooterLegal > div i { color: rgba(242, 234, 217, .33); font-style: normal; }
 .siteFooterLegal p { margin: 0; }
+.siteFooterTrademark { color: #f2ead9; font-weight: 700; white-space: nowrap; }
+.siteFooterTrademark sup { margin-left: .08em; color: #c89b53; font-size: .7em; line-height: 0; }
 
 .siteFooterCredit { display: flex; width: fit-content; min-height: 2.75rem; align-items: center; margin: 1.25rem auto 0; color: rgba(242, 234, 217, .55); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
 .siteFooterCredit span { color: #c89b53; }
@@ -1969,3 +1971,109 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .careerApplyPanel small { display:block; margin-top:.55rem; color:#78817d; font-size:.72rem; line-height:1.45; }
 .careerApplyPanel .careerApply { flex:0 0 auto; margin-top:0; }
 @media (max-width:820px) { .openingHours { grid-template-columns:1fr; }.careersHero h1 { overflow-wrap:anywhere; }.careerCardHeading,.careerCardFooter,.careerApplyPanel { align-items:flex-start; flex-direction:column; }.careerMeta { display:grid; gap:.55rem; }.careerMeta li + li::before { display:none; }.careerApplyPanel .careerApply { width:100%; } }
+
+/* A compact, sequential guest-book stack that scales to any review count. */
+.homeTestimonialsArchive {
+  display: block;
+  flex: none;
+  width: 100%;
+  height: clamp(28rem, 35vw, 34rem);
+  min-height: 0;
+  padding: 1rem 0 2rem;
+}
+
+.homeTestimonialsArchive .homeTestimonialBackplates { inset: 1.25rem 12% 1rem; }
+.homeTestimonialsArchive .homeTestimonialBackplates span { width: 100%; height: 92%; }
+.homeTestimonialsArchive .homeTestimonialBackplates span:nth-child(n) { top: calc(var(--plate, 1) * .45rem); left: 0; right: auto; }
+
+.homeTestimonialsArchive .homeTestimonialCard {
+  position: absolute;
+  z-index: calc(20 - var(--stack-depth));
+  top: 1rem;
+  left: 50%;
+  width: min(78%, 58rem);
+  min-height: 25rem;
+  margin: 0;
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0) rotate(0) scale(1);
+  transition: transform .62s cubic-bezier(.22, 1, .36, 1), opacity .42s ease, filter .42s ease, visibility .42s;
+}
+
+.homeTestimonialsArchive .homeTestimonialCard.isActive,
+.homeTestimonialsArchive .homeTestimonialCard.isActive:hover,
+.homeTestimonialsArchive .homeTestimonialCard.isActive:focus-visible {
+  z-index: 20;
+  opacity: 1;
+  visibility: visible;
+  filter: saturate(1) brightness(1);
+  transform: translate3d(-50%, -.45rem, 0) rotate(0) scale(1);
+}
+
+.homeTestimonialsArchive .homeTestimonialCard.isQueued {
+  z-index: calc(15 - var(--stack-depth));
+  opacity: calc(.62 - (var(--stack-depth) * .1));
+  visibility: visible;
+  filter: saturate(.5) brightness(.68);
+  pointer-events: none;
+  transform: translate3d(calc(-50% + var(--stack-offset)), calc(var(--stack-depth) * .9rem), 0) rotate(var(--stack-rotation)) scale(calc(1 - (var(--stack-depth) * .025)));
+}
+
+.homeTestimonialsArchive .homeTestimonialCard.isHidden {
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(-50%, 2.5rem, 0) scale(.88);
+}
+
+.homeTestimonialsArchive .homeTestimonialCard blockquote > p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.homeTestimonialsControls {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, auto) 2.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: .75rem;
+  margin: .25rem auto 1.25rem;
+}
+
+.homeTestimonialsControls > button {
+  display: grid;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(242,234,217,.28);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ivory);
+  cursor: pointer;
+}
+
+.homeTestimonialsControls > div { display: flex; flex-wrap: wrap; justify-content: center; gap: .15rem; }
+.homeTestimonialsControls > div button { display: grid; width: 2rem; min-height: 2.75rem; place-items: center; border: 0; background: transparent; cursor: pointer; }
+.homeTestimonialsControls > div span { width: .42rem; height: .42rem; border: 1px solid rgba(242,234,217,.5); border-radius: 50%; transition: width .25s ease, background .25s ease; }
+.homeTestimonialsControls > div button.isActive span { width: 1.25rem; border-radius: 999px; border-color: var(--brass); background: var(--brass); }
+.homeTestimonialsControls button:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+@media (max-width: 1024px) {
+  .homeTestimonialsArchive { height: clamp(31rem, 60vw, 35rem); }
+  .homeTestimonialsArchive .homeTestimonialCard { width: min(86%, 42rem); min-height: 28rem; }
+}
+
+@media (max-width: 720px) {
+  .homeTestimonialsArchive { height: clamp(34rem, 142vw, 37rem); }
+  .homeTestimonialsArchive .homeTestimonialCard { width: 94%; min-height: 30.5rem; padding: 1.4rem; }
+  .homeTestimonialsArchive .homeTestimonialCard blockquote > p { font-size: clamp(1.12rem, 5vw, 1.42rem); -webkit-line-clamp: 6; }
+  .homeTestimonialsControls { width: 100%; grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem; }
+  .homeTestimonialsControls > div button { width: 1.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeTestimonialsArchive .homeTestimonialCard,
+  .homeTestimonialsControls > div span { transition: none; }
+}

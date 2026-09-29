@@ -5,6 +5,7 @@ import type {TestimonialRecord} from "@/sanity/lib/testimonials";
 
 const CARD_CYCLE_MS = 4600;
 const CYCLE_RESUME_DELAY_MS = 1100;
+const VISIBLE_STACK_DEPTH = 3;
 
 const testimonialRecords = [
   {
@@ -51,14 +52,9 @@ const testimonialRecords = [
   },
 ] as const;
 
-function pickAnotherCard(currentIndex: number, recordCount: number) {
-  const candidate = Math.floor(Math.random() * (recordCount - 1));
-  return candidate >= currentIndex ? candidate + 1 : candidate;
-}
-
 export function HomeTestimonials({records = testimonialRecords}: {records?: readonly TestimonialRecord[]}) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [interactionIndex, setInteractionIndex] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
   const resumeTimerRef = useRef<number | null>(null);
 
   const clearResumeTimer = useCallback(() => {
@@ -68,31 +64,38 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
   }, []);
 
   useEffect(() => {
-    if (interactionIndex !== null) return;
+    if (isPaused || records.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const cycleTimer = window.setInterval(() => {
-      setActiveIndex((currentIndex) => pickAnotherCard(currentIndex, records.length));
+      setActiveIndex((currentIndex) => (currentIndex + 1) % records.length);
     }, CARD_CYCLE_MS);
 
     return () => window.clearInterval(cycleTimer);
-  }, [interactionIndex, records.length]);
+  }, [isPaused, records.length]);
 
   useEffect(() => () => clearResumeTimer(), [clearResumeTimer]);
 
-  const handleCardEnter = (index: number) => {
+  const pauseCarousel = () => {
     clearResumeTimer();
-    setInteractionIndex(index);
-    setActiveIndex(index);
+    setIsPaused(true);
   };
 
-  const handleCardLeave = () => {
+  const resumeCarousel = () => {
     clearResumeTimer();
     resumeTimerRef.current = window.setTimeout(() => {
-      setInteractionIndex(null);
+      setIsPaused(false);
       resumeTimerRef.current = null;
     }, CYCLE_RESUME_DELAY_MS);
   };
+
+  const showCard = (index: number) => {
+    setActiveIndex(index);
+    pauseCarousel();
+    resumeCarousel();
+  };
+
+  if (!records.length) return null;
 
   return (
     <section
@@ -113,7 +116,14 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
         </h2>
       </header>
 
-      <div className="homeTestimonialsArchive" aria-label="Guest records">
+      <div
+        className="homeTestimonialsArchive"
+        aria-label="Guest records"
+        onMouseEnter={pauseCarousel}
+        onMouseLeave={resumeCarousel}
+        onFocusCapture={pauseCarousel}
+        onBlurCapture={resumeCarousel}
+      >
         <div className="homeTestimonialsHalo" aria-hidden="true" />
         <div className="homeTestimonialBackplates" aria-hidden="true">
           <span />
@@ -123,17 +133,22 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
         </div>
         {records.map((record, index) => {
           const isActive = activeIndex === index;
+          const depth = (index - activeIndex + records.length) % records.length;
+          const isQueued = depth > 0 && depth <= VISIBLE_STACK_DEPTH;
+          const stackOffset = depth % 2 === 0 ? depth * -.7 : depth * .7;
 
           return (
             <article
-              className={`homeTestimonialCard homeTestimonialCard${index + 1} ${isActive ? "isActive" : ""}`}
+              className={`homeTestimonialCard ${isActive ? "isActive" : isQueued ? "isQueued" : "isHidden"}`}
               key={record.author}
-              tabIndex={0}
+              tabIndex={isActive ? 0 : -1}
               aria-current={isActive ? "true" : undefined}
-              onMouseEnter={() => handleCardEnter(index)}
-              onMouseLeave={handleCardLeave}
-              onFocus={() => handleCardEnter(index)}
-              onBlur={handleCardLeave}
+              aria-hidden={!isActive}
+              style={{
+                "--stack-depth": Math.min(depth, VISIBLE_STACK_DEPTH + 1),
+                "--stack-offset": `${stackOffset}rem`,
+                "--stack-rotation": `${stackOffset * .32}deg`,
+              } as React.CSSProperties}
             >
               <span className="homeTestimonialIndex" aria-hidden="true">
                 {String(index + 1).padStart(2, "0")}
@@ -154,7 +169,7 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
                   </span>
                   <span className="homeTestimonialSources">
                     {record.sources.map((source) => (
-                      <a href={source.url} target="_blank" rel="noreferrer" key={source.label}>
+                      <a href={source.url} target="_blank" rel="noreferrer" key={source.label} tabIndex={isActive ? 0 : -1}>
                         {source.label} <span aria-hidden="true">↗</span>
                       </a>
                     ))}
@@ -166,9 +181,15 @@ export function HomeTestimonials({records = testimonialRecords}: {records?: read
         })}
       </div>
 
+      {records.length > 1 && <div className="homeTestimonialsControls" aria-label="Choose a guest review">
+        <button type="button" onClick={() => showCard((activeIndex - 1 + records.length) % records.length)} aria-label="Previous review">←</button>
+        <div>{records.map((record, index) => <button type="button" key={`${record.author}-control`} className={index === activeIndex ? "isActive" : ""} onClick={() => showCard(index)} aria-label={`Show review ${index + 1} of ${records.length}`} aria-current={index === activeIndex ? "true" : undefined}><span /></button>)}</div>
+        <button type="button" onClick={() => showCard((activeIndex + 1) % records.length)} aria-label="Next review">→</button>
+      </div>}
+
       <footer className="homeTestimonialsFootnote">
         <span><i aria-hidden="true" /> Active leaf</span>
-        <p>Hover or focus a manuscript to hold it in the light.</p>
+        <p>Reviews turn automatically. Use the controls to browse at your pace.</p>
         <time dateTime="2026-07-16">Public ratings checked 16 July 2026</time>
       </footer>
     </section>

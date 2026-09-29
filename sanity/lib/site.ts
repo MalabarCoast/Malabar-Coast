@@ -78,11 +78,11 @@ export const fallbackSiteSettings: SiteSettings = {
   footerText: "Follow the kitchen, new dishes and moments from Malabar Coast.",
   footerCreditLabel: "Made by Codrantlabs.in",
   footerCreditUrl: "https://codrantlabs.in/",
-  copyrightText: "© Malabar Coast 2026. All rights reserved.",
+  copyrightText: "© 2026 Malabar Coast™. All rights reserved.",
   logo: {url: "/malabar af.svg", alt: "Malabar Coast"},
   lightLogo: {url: "/logo-white.png", alt: "Malabar Coast"},
   defaultSeo: {
-    title: "Malabar Coast | Indian Cuisine & Bar in Holytown",
+    title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",
     description: site.description,
     image: {url: "/og/home.jpg", alt: "An Indian restaurant table with tandoor and coastal dishes"},
   },

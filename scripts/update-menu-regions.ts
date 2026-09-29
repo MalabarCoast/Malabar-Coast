@@ -133,8 +133,8 @@ async function main() {
   if (siteSettingsId) transaction = transaction.patch(siteSettingsId, {set: {
     shortDescription: 'Indian Cuisine & Bar, from tandoor fire to the Malabar coast.',
     description: 'Malabar Coast is an Indian restaurant and bar in Holytown, Scotland, serving tandoor dishes, curries, biriyani, vegetarian plates and Malabar coastal specialities.',
-    'defaultSeo.title': 'Malabar Coast | Indian Cuisine & Bar in Holytown',
-    'defaultSeo.description': 'Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown.',
+    'defaultSeo.title': 'Malabar Coast UK | Indian Restaurant & Bar in Holytown',
+    'defaultSeo.description': 'Malabar Coast serves Indian tandoor dishes, curries, biriyani and coastal specialities in Holytown, Scotland.',
   }})
   await transaction.commit()
 

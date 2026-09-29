@@ -141,7 +141,7 @@ const pageSeeds = () => [
       {_type: "contentSection", _key: "home-story", internalName: "Coastal story", eyebrow: "Our story", heading: "A coast that changed the table.", body: [block("Follow the old sea road from Calicut to the new coast in Scotland.", "story-copy")], image: image("storyPort", "A rain-washed historic spice port on the Malabar Coast")},
       {_type: "callToAction", _key: "home-reservations", eyebrow: "Book your table", heading: "Your table by the coast.", text: "Choose your date, arrival time and party size online, with live capacity checked before confirmation.", primaryLink: {_type: "link", label: "Book your table", href: "/book-a-table", openInNewTab: false}, secondaryLink: {_type: "link", label: "Get directions", href: site.maps.directionsUrl, openInNewTab: true}, image: image("tableForTwo", "An intimate table for two at Malabar Coast")},
     ],
-    seo: {title: "Malabar Coast | Indian Cuisine & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown."},
+    seo: {title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown", description: "Malabar Coast serves Indian tandoor dishes, curries, biriyani and coastal specialities in Holytown, Scotland."},
   },
   {
     pageKey: "restaurant",
@@ -407,8 +407,8 @@ async function seed() {
       {_type: "link", _key: "cookie", label: "Cookie", href: "/cookie", openInNewTab: false},
       {_type: "link", _key: "privacy", label: "Privacy", href: "/privacy", openInNewTab: false},
     ],
-    copyrightText: "© Malabar Coast 2026. All rights reserved.",
-    defaultSeo: {title: "Malabar Coast | Indian Cuisine & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown.", image: image("hero", "An Indian restaurant table with tandoor and coastal dishes")},
+    copyrightText: "© 2026 Malabar Coast™. All rights reserved.",
+    defaultSeo: {title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown, Scotland.", image: image("hero", "An Indian restaurant table with tandoor and coastal dishes")},
   });
 
   const marketingPages = pageSeeds();

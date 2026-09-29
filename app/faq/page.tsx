@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import "./faq.css";
 import { JsonLd } from "../components/json-ld";
 import { absoluteUrl, formatPublicDate, pageLastUpdated } from "../lib/site";
 import {getFaqItems} from "@/sanity/lib/faq";
@@ -8,7 +9,7 @@ import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableText
 const fallbackMetadata: Metadata = {
   title: "Restaurant FAQs",
   description:
-    "Answers about Malabar Coast in Holytown, including cuisine, the licensed bar, The Kerala Suite, ordering, delivery, vegan choices, allergens and spice levels.",
+    "Answers about Malabar Coast in Holytown, including tandoor cooking, curries, the licensed bar, The Kerala Suite, ordering, delivery, dietary choices and allergens.",
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "website",
@@ -61,7 +62,7 @@ export default async function FaqPage() {
         <h1 aria-label={page?.heroHeading || "Before you come ashore."}><span>{page?.heroHeading || "Before you"}</span>{!page?.heroHeading && <span>come ashore.</span>}</h1>
         <div>
           <p>
-            {page?.heroText || "Direct answers about the food, licensed bar, The Kerala Suite, dietary choices, location and ordering at Malabar Coast in Holytown."}
+            {page?.heroText || "Direct answers about tandoor dishes, curries, the licensed bar, The Kerala Suite, dietary choices, location and ordering at Malabar Coast in Holytown."}
           </p>
           <time dateTime={pageLastUpdated["/faq"]}>Last reviewed {formatPublicDate(pageLastUpdated["/faq"])}</time>
         </div>
