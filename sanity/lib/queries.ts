@@ -327,6 +327,7 @@ export const specialDayCampaignQuery = defineQuery(`*[
 export const liveSpecialDayCampaignsQuery = defineQuery(`*[
   _type == "specialDayCampaign" &&
   status == "active" &&
+  seo.noIndex != true &&
   (!defined(startsAt) || startsAt <= now()) &&
   (!defined(endsAt) || endsAt >= now())
 ] | order(_updatedAt desc) {"slug": slug.current, "updatedAt": _updatedAt}`);

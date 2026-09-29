@@ -1914,6 +1914,11 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .bookingSideLinks { display: grid; gap: .4rem; margin-top: 2.5rem; }
 .bookingSideLinks a { display: flex; justify-content: space-between; min-height: 3rem; align-items: center; border-bottom: 1px solid rgba(16,32,28,.24); color: #805621; font-size: .56rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .bookingFormCard { padding: clamp(1.25rem,4vw,3rem); border: 1px solid rgba(16,32,28,.2); background: #e9dfca; }
+.bookingCampaignNotice { display:flex; min-height:28rem; flex-direction:column; justify-content:center; }
+.bookingCampaignNotice > p { margin:0; color:#8c6028; font-size:.58rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+.bookingCampaignNotice > h2 { max-width:10ch; margin:1.25rem 0 1.5rem; }
+.bookingCampaignNotice > span { max-width:34rem; color:rgba(16,32,28,.66); font:1rem/1.65 "Iowan Old Style",Georgia,serif; }
+.bookingCampaignNotice > a { display:flex; min-height:3.25rem; align-items:center; justify-content:space-between; gap:1rem; margin-top:2rem; border-top:1px solid rgba(16,32,28,.24); border-bottom:1px solid rgba(16,32,28,.24); color:#805621; font-size:.56rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
 .hallEnquiryPanel { width: min(100%,52rem); margin-top: 2.5rem; padding: clamp(1rem,3vw,2.5rem); border: 1px solid rgba(238,229,210,.28); background: #e9dfca; color: #10201c; }
 @media (max-width: 820px) { .bookingIntro { display: block; min-height: 0; }.bookingIntro h1 { margin: 3rem 0 1.5rem; }.bookingWorkspace { grid-template-columns: 1fr; }.hallEnquiryPanel { width: 100%; } }
 @media (max-width: 820px) { .offersHero { display:block; min-height:38rem; padding-top:6rem; }.offersHeroImage { object-position:58% center; }.offersHero h1 { margin:2rem 0 1.5rem; overflow-wrap:anywhere; }.offersHero > span { display:block; max-width:34rem; } }

@@ -1,6 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 const privatePathPrefixes = ["/admin", "/order", "/checkout", "/api"];
+const legacyWordPressPathPrefixes = ["/wp-admin", "/wp-content", "/wp-includes", "/wp-login.php"];
+
+function goneResponse() {
+  return new NextResponse(null, {
+    status: 410,
+    headers: {"X-Robots-Tag": "noindex, nofollow, noarchive"},
+  });
+}
 
 function supabaseConnectSources() {
   const configured = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -22,6 +30,11 @@ function supabaseConnectSources() {
 // nonce-aware browsers ignore the legacy 'unsafe-inline' fallback and close the
 // reflected-script gap while older clients still receive a usable application.
 export default function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname.toLowerCase();
+  if (legacyWordPressPathPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)) || request.nextUrl.searchParams.has("wc-ajax")) {
+    return goneResponse();
+  }
+
   const isDevelopment = process.env.NODE_ENV === "development";
   const canonicalSiteUsesHttps = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ?? false;
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -67,6 +80,10 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/wp-admin/:path*",
+    "/wp-content/:path*",
+    "/wp-includes/:path*",
+    "/wp-login.php",
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|json|woff|woff2)$).*)",
   ],
 };

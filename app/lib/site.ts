@@ -2,9 +2,9 @@ const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
 function resolveSiteUrl() {
   try {
-    return new URL(configuredSiteUrl || "https://malabarcoast.co.uk").origin;
+    return new URL(configuredSiteUrl || "https://www.malabarcoast.co.uk").origin;
   } catch {
-    return "https://malabarcoast.co.uk";
+    return "https://www.malabarcoast.co.uk";
   }
 }
 
