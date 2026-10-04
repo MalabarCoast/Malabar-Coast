@@ -1,4 +1,4 @@
-import {drinkCategorySlugs, drinkPriceLabel, getMenuItem, menuCategories, menuItems, type DietaryStatus, type MenuCategory, type MenuItem} from "@/app/lib/menu";
+import {drinkCategorySlugs, drinkPriceLabel, formatMenuItemName, getMenuItem, menuCategories, menuItems, type DietaryStatus, type MenuCategory, type MenuItem} from "@/app/lib/menu";
 import {getSanityClient} from "./client";
 import {checkoutMenuItemQuery, menuContentQuery} from "./queries";
 
@@ -84,7 +84,7 @@ function normaliseItem(raw: RawMenuItem): MenuItem | null {
   return {
     id: raw.id,
     category: raw.category,
-    name: raw.name,
+    name: formatMenuItemName(raw.name, {category: raw.category, menuItemId: raw.id}),
     description: raw.description?.trim() || fallback?.description || "",
     subheading: raw.subheading ?? fallback?.subheading,
     pricePence,

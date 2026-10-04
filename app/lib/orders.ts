@@ -1,3 +1,4 @@
+import { formatMenuItemName } from "@/app/lib/menu";
 import { getCheckoutMenuItem } from "@/sanity/lib/menu";
 import { defaultRestaurantSchedule, isWithinSchedule, scheduleNotice, type RestaurantSchedule } from "./restaurant-schedule";
 
@@ -281,7 +282,7 @@ export async function validateCheckout(input: unknown, schedule: RestaurantSched
   const lines: OrderLine[] = await Promise.all(Array.from(combined.values()).map(async (entry) => {
     const item = await getCheckoutMenuItem(entry.id);
     if (!item?.available || !item.onlineOrdering || item.pricePence === null) throw new CheckoutValidationError("A dish in your order is no longer available. Please review your order.");
-    return { menuItemId: item.id, name: item.name, unitPricePence: item.pricePence, quantity: entry.quantity, note: entry.note ?? "", lineTotalPence: item.pricePence * entry.quantity };
+    return { menuItemId: item.id, name: formatMenuItemName(item.name, {category: item.category, menuItemId: item.id}), unitPricePence: item.pricePence, quantity: entry.quantity, note: entry.note ?? "", lineTotalPence: item.pricePence * entry.quantity };
   }));
   const totalUnits = lines.reduce((total, line) => total + line.quantity, 0);
   if (totalUnits > 100) throw new CheckoutValidationError("Your order contains too many items.");

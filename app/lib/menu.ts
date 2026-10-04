@@ -64,6 +64,13 @@ export const drinkCategorySlugs = new Set([
 
 export const drinkPriceLabel = "Ask the coastal crew";
 
+export function formatMenuItemName(name: string, context: {category?: string; menuItemId?: string} = {}) {
+  const trimmedName = name.trim();
+  if (!trimmedName) return trimmedName;
+  const isBiriyani = context.category === "biriyani" || context.menuItemId?.startsWith("biriyani-");
+  return isBiriyani && !/\bbiriyani\b/i.test(trimmedName) ? `${trimmedName} Biriyani` : trimmedName;
+}
+
 const item = (name: string, pricePence: number, options: ItemOptions = {}) => [name, pricePence, options] as const;
 const vegetarian = (name: string, pricePence: number, options: ItemOptions = {}) => item(name, pricePence, {...options, vegetarian: true});
 const alcohol = (name: string, options: ItemOptions = {}) => [name, null, {...options, alcoholic: true, orderable: false}] as const;
@@ -153,7 +160,13 @@ const definitions: MenuDefinition[] = [
   },
   {
     slug: "biriyani", title: "Biriyani", note: "The dum pot", description: "Fragrant rice dishes.",
-    items: [item("Chicken", 1295, {description: "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."}), item("Beef", 1395), item("Lamb", 1495), item("Fish", 1495), item("King Prawn", 1895)],
+    items: [
+      item("Chicken Biriyani", 1295, {sourceKey: "biriyani-chicken", description: "Fragrant basmati rice layered with spiced chicken and slow-cooked together in the dum style."}),
+      item("Beef Biriyani", 1395, {sourceKey: "biriyani-beef"}),
+      item("Lamb Biriyani", 1495, {sourceKey: "biriyani-lamb"}),
+      item("Fish Biriyani", 1495, {sourceKey: "biriyani-fish"}),
+      item("King Prawn Biriyani", 1895, {sourceKey: "biriyani-king-prawn"}),
+    ],
   },
   {
     slug: "dosa", title: "Dosa", note: "From the griddle", description: "Crisp South Indian dosas.",
@@ -426,7 +439,10 @@ function fallbackMenuDescription(category: string, name: string, subheading?: st
     const style = curryStyleDescriptions.find(([pattern]) => pattern.test(name));
     if (style) return style[1](protein);
   }
-  if (category === "biriyani") return `Fragrant basmati rice layered with spiced ${name.toLowerCase()} and slow-cooked together in the dum style.`;
+  if (category === "biriyani") {
+    const protein = name.replace(/\s+biriyani$/i, "").toLowerCase();
+    return `Fragrant basmati rice layered with spiced ${protein} and slow-cooked together in the dum style.`;
+  }
   if (category === "draught-beer") {
     if (name === "Toddy") return "A traditional palm-inspired drink from the bar selection; ask the team for serving details.";
     const serve = name.endsWith(" Half") ? "half-pint" : "pint";

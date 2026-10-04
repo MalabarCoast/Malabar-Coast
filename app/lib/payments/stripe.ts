@@ -1,3 +1,4 @@
+import { formatMenuItemName } from "../menu";
 import type { OrderRecord } from "../orders";
 
 export type StripeCheckoutSession = {
@@ -66,7 +67,7 @@ export async function createStripeCheckout(order: OrderRecord, baseUrl: string) 
       params.set(`line_items[${index}][quantity]`, String(line.quantity));
       params.set(`line_items[${index}][price_data][currency]`, "gbp");
       params.set(`line_items[${index}][price_data][unit_amount]`, String(line.unitPricePence));
-      params.set(`line_items[${index}][price_data][product_data][name]`, line.name);
+      params.set(`line_items[${index}][price_data][product_data][name]`, formatMenuItemName(line.name, {menuItemId: line.menuItemId}));
       if (line.note) params.set(`line_items[${index}][price_data][product_data][description]`, `Note: ${line.note}`);
     });
   }
