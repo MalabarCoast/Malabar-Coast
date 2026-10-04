@@ -158,20 +158,21 @@ async function main() {
 
   const verification = await client.fetch<Array<{
     sourceKey: string
+    name?: string
     published?: boolean
     category?: string
     pricePence?: number | null
     allergenReviewStatus?: string
     allergens?: string[]
     allergenSource?: string
-  }>>(`*[_type == "menuItem" && sourceKey in $sourceKeys]{sourceKey,published,"category":category->slug.current,pricePence,allergenReviewStatus,allergens,allergenSource}`, {
+  }>>(`*[_type == "menuItem" && sourceKey in $sourceKeys]{sourceKey,name,published,"category":category->slug.current,pricePence,allergenReviewStatus,allergens,allergenSource}`, {
     sourceKeys: [...menuItems.map((item) => item.id), ...retiredSourceKeys],
   })
   const verifiedByKey = new Map(verification.map((item) => [item.sourceKey, item]))
   const missingAfterApply = menuItems.filter((item) => !verifiedByKey.has(item.id)).map((item) => item.id)
   const mismatches = menuItems.filter((item) => {
     const saved = verifiedByKey.get(item.id)
-    return !saved || saved.published !== true || saved.category !== item.category || saved.pricePence !== (item.isAlcoholic ? null : item.pricePence)
+    return !saved || saved.name !== item.name || saved.published !== true || saved.category !== item.category || saved.pricePence !== (item.isAlcoholic ? null : item.pricePence)
   }).map((item) => item.id)
   const allergenMismatches = menuItems.filter((item) => {
     if (item.allergenReviewStatus !== 'confirmed') return false

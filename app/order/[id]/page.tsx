@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OrderStatusRefresh } from "../../components/order-status-refresh";
 import { hasOrderAccess } from "../../lib/order-access";
+import { formatMenuItemName } from "../../lib/menu";
 import { getOrder } from "../../lib/order-store";
 import { inferPaymentStatus, orderStatusLabels, paymentStatusLabels } from "../../lib/orders";
 import { isValidOrderId } from "../../lib/security";
@@ -53,7 +54,7 @@ export default async function CustomerOrderPage({ params }: { params: Promise<{ 
       </section>
       <section className="customerOrderLines" aria-labelledby="order-items-title">
         <p>Server-confirmed basket</p><h2 id="order-items-title">Order details</h2>
-        <div>{order.lines.map((line) => <article key={line.menuItemId}><span>{line.quantity} ×</span><strong>{line.name}</strong><b>{money(line.lineTotalPence)}</b></article>)}</div>
+        <div>{order.lines.map((line) => <article key={line.menuItemId}><span>{line.quantity} ×</span><strong>{formatMenuItemName(line.name, {menuItemId: line.menuItemId})}</strong><b>{money(line.lineTotalPence)}</b></article>)}</div>
       </section>
       <nav className="customerOrderActions" aria-label="Order links">
         <Link href="/menu">Return to the menu <span aria-hidden="true">↗</span></Link>

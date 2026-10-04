@@ -1,3 +1,4 @@
+import { formatMenuItemName } from "./menu";
 import { inferPaymentStatus, type OrderRecord, type OrderStatus } from "./orders";
 
 export type ReportPeriod = "today" | "7d" | "30d" | "90d" | "year" | "all";
@@ -99,7 +100,7 @@ export function summariseOrders(orders: OrderRecord[]) {
   const dishMap = new Map<string, { name: string; units: number; salesPence: number }>();
   for (const order of paidOrders) {
     for (const line of order.lines) {
-      const current = dishMap.get(line.menuItemId) || { name: line.name, units: 0, salesPence: 0 };
+      const current = dishMap.get(line.menuItemId) || { name: formatMenuItemName(line.name, {menuItemId: line.menuItemId}), units: 0, salesPence: 0 };
       current.units += line.quantity;
       current.salesPence += line.lineTotalPence;
       dishMap.set(line.menuItemId, current);

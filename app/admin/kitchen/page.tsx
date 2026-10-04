@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "../../lib/admin-auth";
 import { activeOrderStatuses, displayDate, money } from "../../lib/admin-reporting";
+import { formatMenuItemName } from "../../lib/menu";
 import { listOrdersForReport } from "../../lib/order-store";
 import { getAllowedAdminTransitions, orderStatusLabels, type OrderStatus } from "../../lib/orders";
 import { AdminFrame, AdminPageHeader, EmptyState, StatusBadge } from "../components/admin-ui";
@@ -36,7 +37,7 @@ export default async function AdminKitchenPage() {
           return <article className="adminKitchenCard" key={order.id}>
             <div className="adminKitchenCardTop"><Link href={`/admin/orders/${order.id}`}>{order.id.slice(-8).toUpperCase()}</Link><strong>{money(order.totalPence)}</strong></div>
             <div className="adminKitchenCustomer"><strong>{order.customer.name}</strong><span>{order.fulfilment} · {order.requestedTime.replace("T", " ")}</span></div>
-            <ul>{order.lines.map((line) => <li key={line.menuItemId}><b>{line.quantity}×</b><span>{line.name}{line.note && <small>{line.note}</small>}</span></li>)}</ul>
+            <ul>{order.lines.map((line) => <li key={line.menuItemId}><b>{line.quantity}×</b><span>{formatMenuItemName(line.name, {menuItemId: line.menuItemId})}{line.note && <small>{line.note}</small>}</span></li>)}</ul>
             {order.orderNote && <p className="adminKitchenNote"><strong>Customer note</strong>{order.orderNote}</p>}
             {order.adminNotes && <p className="adminKitchenNote isInternal"><strong>Kitchen note</strong>{order.adminNotes}</p>}
             <footer><small>Placed {displayDate(order.createdAt)}</small>{next && <form action={`/api/admin/orders/${order.id}/status`} method="post"><input type="hidden" name="csrf" value={session.csrfToken} /><input type="hidden" name="status" value={next} /><input type="hidden" name="returnTo" value="/admin/kitchen" /><button type="submit">{next === "completed" ? "Complete" : `Move to ${orderStatusLabels[next]}`}</button></form>}</footer>

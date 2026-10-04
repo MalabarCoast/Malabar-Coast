@@ -16,6 +16,7 @@
     "stripe:webhook:sync": "tsx scripts/sync-stripe-webhook-events.ts",
     "sanity:seed": "tsx scripts/seed-sanity.ts",
     "sanity:sync-menu-catalogue": "tsx scripts/sync-menu-catalogue.ts",
+    "sanity:sync-biriyani-names": "tsx scripts/sync-biriyani-names.ts",
     "sanity:sync-menu-descriptions": "tsx scripts/sync-menu-descriptions.ts",
     "sanity:sync-faqs": "tsx scripts/sync-faq-content.ts",
     "sanity:sync-menu-page": "tsx scripts/update-menu-regions.ts",

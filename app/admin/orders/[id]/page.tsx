@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { displayDate, money } from "../../../lib/admin-reporting";
 import { getAdminSession } from "../../../lib/admin-auth";
 import { adminCan } from "../../../lib/admin-permissions";
+import { formatMenuItemName } from "../../../lib/menu";
 import { getOrder } from "../../../lib/order-store";
 import { getAllowedAdminTransitions, inferPaymentStatus, orderStatusLabels, paymentStatusLabels } from "../../../lib/orders";
 import { isValidOrderId } from "../../../lib/security";
@@ -35,7 +36,7 @@ export default async function AdminOrderPage({ params, searchParams }: { params:
       <div>
         <article className="adminPanel adminLines">
           <div className="adminPanelHeading"><div><p>Kitchen ticket</p><h2>{units} item{units === 1 ? "" : "s"}</h2></div><strong>{money(order.totalPence)}</strong></div>
-          {order.lines.map((line) => <article key={line.menuItemId}><div><span>{line.quantity} ×</span><strong>{line.name}</strong>{line.note && <small>{line.note}</small>}</div><b>{money(line.lineTotalPence)}</b></article>)}
+          {order.lines.map((line) => <article key={line.menuItemId}><div><span>{line.quantity} ×</span><strong>{formatMenuItemName(line.name, {menuItemId: line.menuItemId})}</strong>{line.note && <small>{line.note}</small>}</div><b>{money(line.lineTotalPence)}</b></article>)}
           <dl><div><dt>Subtotal</dt><dd>{money(order.subtotalPence)}</dd></div><div><dt>Delivery</dt><dd>{money(order.deliveryFeePence)}</dd></div>{(order.discountPence ?? 0) > 0 && <div><dt>Discount · {order.discountCode}</dt><dd>−{money(order.discountPence ?? 0)} ({order.discountPercent}%)</dd></div>}<div><dt>Total</dt><dd>{money(order.totalPence)}</dd></div></dl>
           {order.orderNote && <div className="adminOrderNote"><span>Customer note</span><p>{order.orderNote}</p></div>}
         </article>

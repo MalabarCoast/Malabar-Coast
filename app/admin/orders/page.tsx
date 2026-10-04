@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "../../lib/admin-auth";
 import { adminCan } from "../../lib/admin-permissions";
+import { formatMenuItemName } from "../../lib/menu";
 import { listOrdersForReport } from "../../lib/order-store";
 import { orderStatusLabels, type OrderStatus } from "../../lib/orders";
 import { isWithinSchedule } from "../../lib/restaurant-schedule";
@@ -29,7 +30,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   }), getRestaurantSchedule()]);
   const filtered = allOrders.filter((order) => {
     if (!q) return true;
-    const haystack = [order.id, order.customer.name, order.customer.email, order.customer.phone, order.requestedTime, ...order.lines.map((line) => line.name)].join(" ").toLowerCase();
+    const haystack = [order.id, order.customer.name, order.customer.email, order.customer.phone, order.requestedTime, ...order.lines.map((line) => formatMenuItemName(line.name, {menuItemId: line.menuItemId}))].join(" ").toLowerCase();
     return haystack.includes(q);
   });
   const closedOrders = allOrders.filter((order) => !isWithinSchedule(schedule, order.requestedTime.slice(0, 10), order.requestedTime.slice(11)) && ["paid", "confirmed", "preparing", "ready", "out_for_delivery"].includes(order.status));

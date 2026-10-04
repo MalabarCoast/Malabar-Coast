@@ -1,4 +1,5 @@
 import type { HallEnquiry, TableReservation } from "../bookings";
+import { formatMenuItemName } from "../menu";
 import type { OrderRecord, PaymentStatus } from "../orders";
 import { ownerEmail, sendBrevoEmail } from "./brevo";
 
@@ -133,7 +134,7 @@ function orderItemsTable(order: OrderRecord) {
   const items = order.lines.map((line) => `<tr>
     <td style="padding:14px 0;border-bottom:1px solid #d7cbb7;vertical-align:top;color:#8a5d24;font-size:13px">${esc(line.quantity)} ×</td>
     <td style="padding:14px 12px;border-bottom:1px solid #d7cbb7;vertical-align:top">
-      <strong style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:400">${esc(line.name)}</strong>
+      <strong style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:400">${esc(formatMenuItemName(line.name, {menuItemId: line.menuItemId}))}</strong>
       ${line.note ? `<span class="item-note" style="display:block;margin-top:5px;color:#8a5d24;font-size:11px;line-height:1.45">Note: ${esc(line.note)}</span>` : ""}
     </td>
     <td align="right" style="padding:14px 0;border-bottom:1px solid #d7cbb7;vertical-align:top;font-family:Georgia,'Times New Roman',serif;font-size:15px;white-space:nowrap">${esc(money(line.lineTotalPence))}</td>
@@ -162,7 +163,7 @@ function optionalOrderDetails(order: OrderRecord) {
 }
 
 function plainOrderLines(order: OrderRecord) {
-  return order.lines.map((line) => `${line.quantity} × ${line.name}: ${money(line.lineTotalPence)}${line.note ? `\n  Note: ${line.note}` : ""}`).join("\n");
+  return order.lines.map((line) => `${line.quantity} × ${formatMenuItemName(line.name, {menuItemId: line.menuItemId})}: ${money(line.lineTotalPence)}${line.note ? `\n  Note: ${line.note}` : ""}`).join("\n");
 }
 
 export async function notifyPaidOrder(order: OrderRecord) {
