@@ -22,10 +22,10 @@ function AllergenMarker({dish}: {dish: MenuItem}) {
 
 const menuInterludes: ReadonlyMap<number, {src: string; alt: string; eyebrow: string; title: string}> = new Map([
   [5, {
-    src: "/food/indian garlic chilli chicken tikka.jpeg",
-    alt: "Indian garlic chilli chicken tikka served at Malabar Coast",
-    eyebrow: "From the tandoor",
-    title: "Char, spice and the first pull of smoke.",
+    src: "/food/chicken-chasni.png",
+    alt: "Creamy chicken chasni served at Malabar Coast",
+    eyebrow: "From the curry pot",
+    title: "Creamy, bright and gently tangy.",
   }],
   [13, {
     src: "/food/Meen Moilee.jpeg",

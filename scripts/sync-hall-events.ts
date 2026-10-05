@@ -19,15 +19,9 @@ const client = createClient({projectId, dataset, token, apiVersion: '2025-02-19'
 const publicDirectory = join(process.cwd(), 'public')
 
 const eventImages = [
-  {file: 'festive1.jpeg', alt: 'Guests gathered in the Malabar Coast private hall for a family celebration', caption: 'Celebration layout'},
-  {file: 'festive2.jpeg', alt: 'The private hall dressed with balloons and tables for a celebration', caption: 'Room dressed for the day'},
-  {file: 'festive3.jpeg', alt: 'A celebration table and balloon backdrop beside the private hall stage', caption: 'A stage made personal'},
-  {file: 'festive4.jpeg', alt: 'Guests sharing a celebration moment beside the decorated stage', caption: 'Moments together'},
-  {file: 'festive5.jpeg', alt: 'The private hall arranged with theatre seating facing the stage', caption: 'Theatre seating'},
-  {file: 'festive6.jpeg', alt: 'Guests enjoying a celebration in the Malabar Coast private hall', caption: 'A full room'},
-  {file: 'festive7.jpeg', alt: 'A wide view of the private hall prepared with rows of seating', caption: 'Flexible floor plan'},
-  {file: 'festive8.jpeg', alt: 'The private hall set with tables and seating viewed from the bar', caption: 'Table layout and bar'},
-  {file: 'festive9.jpeg', alt: 'Guests gathered around tables during a private hall celebration', caption: 'Made for gathering'},
+  {file: 'hall/private-event-gathering.png', alt: 'Guests gathered in the Malabar Coast private hall for a family celebration', caption: 'A real celebration in the room'},
+  {file: 'hall/theatre-layout.png', alt: 'The Malabar Coast private hall arranged with theatre seating and its built-in bar', caption: 'Theatre layout and bar'},
+  {file: 'hall/room-layout.png', alt: 'The private hall set with tables and seating facing the decorated stage', caption: 'Flexible tables and stage'},
 ] as const
 
 async function uploadImage(filename: string) {
@@ -68,12 +62,12 @@ async function main() {
   let transaction = client.transaction()
   for (const page of hallPages) {
     transaction = transaction.patch(page._id, {set: {
-      heroImage: image(assets.get('festive1.jpeg')!, eventImages[0].alt),
-      'sections[_key=="hall-stage"].image': image(assets.get('festive5.jpeg')!, eventImages[4].alt),
+      heroImage: image(assets.get('hall/private-event-gathering.png')!, eventImages[0].alt),
+      'sections[_key=="hall-stage"].image': image(assets.get('hall/theatre-layout.png')!, eventImages[1].alt),
       'sections[_key=="hall-gallery"].internalName': 'Celebrations in the hall',
       'sections[_key=="hall-gallery"].eyebrow': 'Real gatherings · Real layouts',
       'sections[_key=="hall-gallery"].heading': 'Made for the moment.',
-      'sections[_key=="hall-gallery"].image': image(assets.get('festive6.jpeg')!, eventImages[5].alt),
+      'sections[_key=="hall-gallery"].image': image(assets.get('hall/room-layout.png')!, eventImages[2].alt),
       'sections[_key=="hall-gallery"].gallery': gallery,
     }})
   }

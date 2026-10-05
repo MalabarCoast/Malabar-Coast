@@ -92,12 +92,12 @@ const dishesFromTheStory = [
     description: "Fish gently cooked in a mild coconut sauce with ginger and curry leaves.",
   },
   {
-    name: "Indian Garlic Chilli Chicken",
+    name: "Chicken Chasni",
     link: "/menu#chicken",
-    image: "/food/indian garlic chilli chicken tikka.jpeg",
-    alt: "Indian garlic chilli chicken served at Malabar Coast",
-    connection: "Mumbai · Garlic and chilli",
-    description: "Chicken cooked in a bold garlic and chilli sauce with aromatic spices.",
+    image: "/food/chicken-chasni.png",
+    alt: "Creamy chicken chasni served at Malabar Coast",
+    connection: "Mumbai · Sweet and tangy",
+    description: "Chicken folded through a creamy sauce balanced with gentle sweetness and a bright tang.",
   },
   {
     name: "Aattirachi Kurumulak",

@@ -19,7 +19,7 @@ test('story images use distinct documentary restaurant scenes and real plated di
   const story = await readFile(new URL('../app/story/page.tsx', import.meta.url), 'utf8')
   for (const image of ['restaurant-kitchen-service.jpg', 'restaurant-spice-prep.jpg', 'restaurant-service-pass.jpg', 'restaurant-shared-table.jpg']) assert.match(story, new RegExp(image.replace('.', '\\.')))
   assert.match(story, /food\/Meen Moilee\.jpeg/)
-  assert.match(story, /food\/indian garlic chilli chicken tikka\.jpeg/)
+  assert.match(story, /food\/chicken-chasni\.png/)
   assert.match(story, /food\/aatirachi kurumulak ittath\.jpeg/)
   assert.match(story, /story-table/)
 })
@@ -97,7 +97,7 @@ test('guest-facing brand fallbacks contain no pictographic emoji', async () => {
   assert.doesNotMatch(brand, /[\u{1F300}-\u{1FAFF}]/u)
 })
 
-test('hall event photography is responsive and represented in the CMS model', async () => {
+test('hall event photography uses the enhanced venue set and remains responsive in the CMS model', async () => {
   const [hallPage, hallStyles, sectionSchema, pageQuery, syncScript] = await Promise.all([
     readFile(new URL('../app/hall/page.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../app/editorial.css', import.meta.url), 'utf8'),
@@ -105,8 +105,11 @@ test('hall event photography is responsive and represented in the CMS model', as
     readFile(new URL('../sanity/lib/queries.ts', import.meta.url), 'utf8'),
     readFile(new URL('../scripts/sync-hall-events.ts', import.meta.url), 'utf8'),
   ])
-  for (let index = 1; index <= 9; index += 1) assert.match(hallPage, new RegExp(`festive${index}\\.jpeg`))
-  assert.match(hallPage, /gallerySection\?\.gallery/)
+  for (const image of ['private-event-gathering.png', 'theatre-layout.png', 'room-layout.png']) {
+    assert.match(hallPage, new RegExp(image.replace('.', '\\.')))
+    assert.match(syncScript, new RegExp(image.replace('.', '\\.')))
+  }
+  assert.doesNotMatch(hallPage, /festive\d+\.jpeg/)
   assert.match(hallPage, /\(max-width: 600px\) 100vw/)
   assert.match(hallStyles, /hallGalleryGrid/)
   assert.match(hallStyles, /grid-template-columns: repeat\(12,minmax\(0,1fr\)\)/)

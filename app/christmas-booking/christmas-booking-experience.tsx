@@ -153,7 +153,7 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
         <div className={`${styles.festiveMark} ${emblemClass}`}>
           <span className={styles.logoHat} aria-hidden="true"/>
           <span className={styles.wreath} aria-hidden="true"/>
-          <span className={styles.logoPlate}><Image src={campaign.campaignLogo?.url || "/malabar af.svg"} alt={campaign.campaignLogo?.alt || "Malabar Coast"} width={campaign.campaignLogo?.dimensions?.width || 2383} height={campaign.campaignLogo?.dimensions?.height || 2402} priority/></span>
+          <span className={styles.logoPlate}><Image src="/malabar.png" alt="Malabar Coast" width={2384} height={2403} priority/></span>
           <span className={styles.logoRibbon}>{campaign.logoRibbon}</span>
         </div>
         <div className={styles.heroCopy}>

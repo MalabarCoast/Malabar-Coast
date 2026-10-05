@@ -79,9 +79,12 @@ const fallbackMetadata: Metadata = {
     images: ["/og/home.jpg"],
   },
   icons: {
-    icon: [{url: "/malabar af.svg", type: "image/svg+xml", sizes: "any"}],
-    shortcut: "/malabar af.svg",
-    apple: "/malabar af.png",
+    icon: [
+      {url: "/icon-192.png", type: "image/png", sizes: "192x192"},
+      {url: "/icon-512.png", type: "image/png", sizes: "512x512"},
+    ],
+    shortcut: "/icon-192.png",
+    apple: [{url: "/icon-192.png", type: "image/png", sizes: "192x192"}],
   },
   formatDetection: { address: false, email: false, telephone: false },
 };
@@ -159,12 +162,12 @@ function globalSchema(settings: Awaited<ReturnType<typeof getSiteSettings>>, sch
       alternateName: ["Malabar Coast UK", "Malabar Coast Holytown"],
       legalName: settings.legalName,
       url: site.url,
-      logo: settings.logo.url,
+      logo: absoluteUrl("/malabar.png"),
       image: [
         absoluteUrl("/restaurant/dining-room.png"),
         absoluteUrl("/menu/calicut-pepper-prawns.png"),
         absoluteUrl("/restaurant/table-for-two.png"),
-        absoluteUrl("/Hall1.jpeg"),
+        absoluteUrl("/hall/private-event-gathering.png"),
       ],
       description: settings.description,
       slogan: "Indian Cuisine & Bar, from tandoor fire to the Malabar coast.",

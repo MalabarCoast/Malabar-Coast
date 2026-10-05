@@ -120,10 +120,10 @@ export function HomeExperience({content, menuItems, dailySpecials, promotions, b
           </div>
           <div className="introLogo" aria-hidden="true">
             <Image
-              src="/malabar af.svg"
+              src="/malabar.png"
               alt=""
-              width={2383}
-              height={2402}
+              width={2384}
+              height={2403}
               priority
             />
           </div>

@@ -54,7 +54,7 @@ export function SiteFooter({settings}: {settings: SiteSettings}) {
 
       <div className="siteFooterBrand" aria-hidden="true">
         <i />
-        <Image src={settings.logo.url} alt="" width={2383} height={2402} sizes="(max-width: 600px) 28vw, 7rem" />
+        <Image src="/malabar.png" alt="" width={2384} height={2403} sizes="(max-width: 600px) 28vw, 7rem" />
         <i />
       </div>
 

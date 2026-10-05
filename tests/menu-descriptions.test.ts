@@ -13,9 +13,11 @@ test("every catalogue item has one concise public description", () => {
 });
 
 test("the current menu catalogue has unique stable identifiers and source-backed allergen markers", () => {
-  assert.equal(menuItems.length, 195);
+  assert.equal(menuItems.length, 194);
   assert.equal(new Set(menuItems.map((item) => item.id)).size, menuItems.length);
   assert.equal(menuItems.find((item) => item.id === "chicken-dragon-chicken")?.name, "Dragon Chicken Tikka");
+  assert.equal(menuItems.find((item) => item.id === "chicken-chicken-chasni")?.name, "Chicken Chasni");
+  assert.equal(menuItems.find((item) => item.id === "chicken-indian-garlic-chilli-chicken"), undefined);
   assert.equal(menuItems.find((item) => item.id === "biriyani-chicken")?.name, "Chicken Biriyani");
   assert.equal(menuItems.find((item) => item.id === "biriyani-beef")?.name, "Beef Biriyani");
   assert.equal(menuItems.find((item) => item.id === "biriyani-lamb")?.name, "Lamb Biriyani");
@@ -23,7 +25,7 @@ test("the current menu catalogue has unique stable identifiers and source-backed
   assert.equal(menuItems.find((item) => item.id === "biriyani-king-prawn")?.name, "King Prawn Biriyani");
   assert.equal(formatMenuItemName("Chicken", {menuItemId: "biriyani-chicken"}), "Chicken Biriyani");
   assert.equal(formatMenuItemName("Chicken Biriyani", {category: "biriyani"}), "Chicken Biriyani");
-  assert.equal(menuItems.filter((item) => item.allergenReviewStatus === "confirmed").length, 63);
+  assert.equal(menuItems.filter((item) => item.allergenReviewStatus === "confirmed").length, 62);
   assert.deepEqual(menuItems.find((item) => item.id === "starters-chicken-65")?.allergens, ["milk", "cereals containing gluten"]);
   assert.deepEqual(menuItems.find((item) => item.id === "chicken-butter-chicken")?.allergens, ["milk", "nuts"]);
   assert.deepEqual(menuItems.find((item) => item.id === "breads-peshwari-naan")?.allergens, ["nuts", "cereals containing gluten"]);

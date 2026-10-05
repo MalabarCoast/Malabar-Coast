@@ -150,8 +150,8 @@ export default async function RestaurantPage() {
 
       <section className="restaurantHallTeaser" aria-labelledby="restaurant-hall-title">
         <Image
-          src={hallSection?.image?.url || "/Hall3.jpeg"}
-          alt={hallSection?.image?.alt || "The private event hall at Malabar Coast with a raised stage and flexible seating"}
+          src="/hall/room-layout.png"
+          alt="The private event hall at Malabar Coast with a raised stage and flexible seating"
           fill
           sizes="100vw"
         />

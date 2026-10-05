@@ -4,23 +4,31 @@ import { getBookingSettings } from "../lib/booking-store";
 import {getRestaurantSchedule} from "../lib/schedule-store";
 import Link from "next/link";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
-import {getBookingExperienceSettings, isCampaignLive} from "@/sanity/lib/special-days";
+import {getActiveBookingCampaign} from "@/sanity/lib/special-days";
+import {SpecialDayBookingExperience} from "../christmas-booking/christmas-booking-experience";
 
 export const dynamic = "force-dynamic";
 const fallbackMetadata: Metadata = { title: "Book a Table", description: "Reserve a table at Malabar Coast in Holytown.", alternates: { canonical: "/book-a-table" } };
 
-export function generateMetadata() {
-  return getMarketingPageMetadata("book-a-table", "/book-a-table", fallbackMetadata);
+export async function generateMetadata(): Promise<Metadata> {
+  const campaign = await getActiveBookingCampaign();
+  if (!campaign) return getMarketingPageMetadata("book-a-table", "/book-a-table", fallbackMetadata);
+  const sharingImage = campaign.seo?.image || campaign.desktopHero;
+  return {
+    title: campaign.seo?.title || campaign.title,
+    description: campaign.seo?.description || campaign.heroText,
+    alternates: {canonical: "/book-a-table"},
+    robots: campaign.seo?.noIndex ? {index: false, follow: true} : undefined,
+    openGraph: {title: campaign.seo?.title || campaign.title, description: campaign.seo?.description || campaign.heroText, images: [{url: sharingImage.url, alt: sharingImage.alt}]},
+  };
 }
 
 export default async function BookATablePage() {
-  const [settings, schedule, page, bookingExperience] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table"), getBookingExperienceSettings()]);
-  const activeCampaign = bookingExperience.bookingMode === "special" && bookingExperience.activeCampaign?.slug && isCampaignLive(bookingExperience.activeCampaign)
-    ? bookingExperience.activeCampaign
-    : null;
+  const [settings, schedule, page, activeCampaign] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table"), getActiveBookingCampaign()]);
+  if (activeCampaign) return <SpecialDayBookingExperience campaign={activeCampaign} settings={settings} schedule={schedule} />;
   const details = getPageSection(page, "booking-details");
   return <main className="bookingPage">
     <section className="bookingIntro"><p>{page?.eyebrow || "Book your table · Holytown"}</p><h1>{page?.heroHeading || <>Come sit<br />by the coast.</>}</h1><span>{page?.heroText || `Choose a date, arrival time and party size. We check the restaurant's live ${settings.capacity}-seat capacity before confirming your table.`}<span className="bookingIntroLinks"><Link href={page?.heroPrimaryLink?.href || "/menu"}>{page?.heroPrimaryLink?.label || "See what's cooking"} <b aria-hidden="true">↗</b></Link><Link href={page?.heroSecondaryLink?.href || "/hall"}>{page?.heroSecondaryLink?.label || "Planning something bigger?"} <b aria-hidden="true">↗</b></Link></span></span></section>
-    <section className="bookingWorkspace"><div><p>{details?.eyebrow || "Before you book"}</p><h2>{details?.heading || <>A table prepared<br />for your people.</>}</h2>{portableTextToPlainText(details?.body) && <span>{portableTextToPlainText(details?.body)}</span>}<ul><li><b>{settings.sittingMinutes} minutes</b><span>Reserved for each table</span></li><li><b>Up to {settings.maximumPartySize}</b><span>Guests per online booking</span></li><li><b>{Math.ceil(settings.minimumLeadMinutes/60)} hours</b><span>Minimum booking notice</span></li></ul><nav className="bookingSideLinks"><Link href="/offers">Today&apos;s offers <span>→</span></Link><Link href="/faq">Questions before you book <span>→</span></Link></nav></div><div className="bookingFormCard">{activeCampaign ? <div className="bookingCampaignNotice"><p>Seasonal reservations</p><h2>A special table is waiting.</h2><span>Bookings for this occasion use a dedicated experience with the current dates and details.</span><Link href={`/special-days/${activeCampaign.slug}`}>Open seasonal booking <span aria-hidden="true">→</span></Link></div> : <TableBookingForm settings={settings} schedule={schedule} />}</div></section>
+    <section className="bookingWorkspace"><div><p>{details?.eyebrow || "Before you book"}</p><h2>{details?.heading || <>A table prepared<br />for your people.</>}</h2>{portableTextToPlainText(details?.body) && <span>{portableTextToPlainText(details?.body)}</span>}<ul><li><b>{settings.sittingMinutes} minutes</b><span>Reserved for each table</span></li><li><b>Up to {settings.maximumPartySize}</b><span>Guests per online booking</span></li><li><b>{Math.ceil(settings.minimumLeadMinutes/60)} hours</b><span>Minimum booking notice</span></li></ul><nav className="bookingSideLinks"><Link href="/offers">Today&apos;s offers <span>→</span></Link><Link href="/faq">Questions before you book <span>→</span></Link></nav></div><div className="bookingFormCard"><TableBookingForm settings={settings} schedule={schedule} /></div></section>
   </main>;
 }

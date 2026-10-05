@@ -111,7 +111,7 @@ export function SiteHeader({settings}: {settings: SiteSettings}) {
         </div>
 
         <Link className="brand" href="/" aria-label={`${settings.restaurantName} home`} onClick={handleBrandClick}>
-          <Image src={settings.logo.url} alt={settings.logo.alt} width={2383} height={2402} priority />
+          <Image src="/malabar.png" alt={settings.logo.alt} width={2384} height={2403} priority />
         </Link>
 
         <div className="headerActions" inert={navMinimal}>
