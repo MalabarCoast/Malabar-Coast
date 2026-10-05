@@ -15,7 +15,7 @@ from docx.shared import Inches, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs" / "CLIENT_PRODUCT_DELIVERY_REPORT.md"
 OUTPUT = ROOT / "docs" / "Malabar_Coast_Complete_Product_Delivery_Report.docx"
-LOGO = ROOT / "public" / "logo-white.png"
+LOGO = ROOT / "public" / "malabar.png"
 HERO = ROOT / "public" / "malabar-restaurant-hero-v2.jpg"
 
 INK = "10202A"

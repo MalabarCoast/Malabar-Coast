@@ -26,7 +26,7 @@ The report is intentionally evidence-led. “Verified” means the relevant sour
 | Public website | Release candidate complete; final deployment verification pending | The public domain exists and the latest release candidate passed local production-mode review. The final menu, FAQ, gallery, Chennai Dosa and documentation changes must be deployed and smoke-tested on the canonical domain before client acceptance. |
 | Responsive presentation | Verified locally | Twenty-one public and entry routes were reviewed at 320 × 800 and 390 × 844 phone, 768 × 1024 tablet and 1440 × 900 desktop sizes with no broken images. A long privacy-page email was found at phone width and corrected with safe wrapping before the final recheck. |
 | Administration application | Delivered and protected | Every protected administration URL redirected unauthenticated visitors to `/admin/login`. Credentialed role-by-role review remains pending because credentials are intentionally not included. |
-| CMS and live content | Updated and readable | The owner-supplied menu, 63 source-backed D/N/G declarations, 21 FAQs, Chennai Dosa journey entry and ten restaurant images are synchronised. A live read-only Sanity audit returned 24 categories, 201 menu documents (195 current catalogue items), 8 marketing pages, 4 legal pages, 3 promotions and 1 daily special. |
+| CMS and live content | Updated and readable | The owner-supplied menu, 62 source-backed D/N/G declarations, 21 FAQs, Chennai Dosa journey entry and ten restaurant images are synchronised. A live read-only Sanity audit returned 24 categories, 201 menu documents (194 current catalogue items), 8 marketing pages, 4 legal pages, 3 promotions and 1 daily special. |
 | Database and administrator contract | Connected | Supabase health checks reported all required operational tables and one active administrator. |
 | Payments | Provider account connected | Stripe reported a live GB/GBP account with charges and payouts enabled. A canonical-domain webhook check remains a handover action; the current enabled endpoint is on the Vercel deployment URL. |
 | Transactional email | Provider connected | Brevo connection check passed. Actual inbox placement was not tested because that would send a real external email. |
@@ -462,7 +462,7 @@ The live read-only audit on 29 September 2026 returned:
 | Content type | Count / state |
 |---|---:|
 | Menu categories | 24 |
-| Menu documents | 201 total; 195 current catalogue items, 5 deliberately retired source items and 1 disabled historical test item |
+| Menu documents | 201 total; 194 current catalogue items, 6 deliberately retired source items and 1 disabled historical test item |
 | FAQs | 21 |
 | Marketing pages | 8 |
 | Legal pages | 4 |
@@ -660,9 +660,9 @@ Validation enforces key business rules: an orderable dish needs a price; vegan i
 
 The September 2026 synchronisation resolved the six earlier housekeeping records. “Gautham Krishna” is unpublished, unavailable and excluded from online ordering. Mango Chutney, Mixed Pickle, Pakora Sauce, Poppadom and Spiced Onion now have an explicit published state.
 
-The owner-supplied PDF was reconciled into 24 categories and 195 current catalogue items. Five removed source items were retired without deletion, preserving history. The ten supplied restaurant photographs were uploaded to Sanity and connected to the restaurant hero, room image and responsive gallery. The hosted Studio was redeployed with the expanded allergen governance fields.
+The owner-supplied PDF was reconciled into 24 categories and 194 current catalogue items. Six removed source items were retired without deletion, preserving history. The ten supplied restaurant photographs were uploaded to Sanity and connected to the restaurant hero, room image and responsive gallery. The hosted Studio was redeployed with the expanded allergen governance fields.
 
-The revised PDF contains item-level D/N/G markers, defined by the restaurant as dairy, nuts and gluten. The synchronisation applies those source markers to 63 matching current catalogue items, records the PDF evidence in the CMS and shows compact D/N/G codes with a visible legend on the public menu. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly; absence of a marker must not be interpreted as allergen-free. Complete the remaining regulated-allergen and cross-contact review in `MENU_ALLERGEN_REGISTER.csv` under the process in section 6.16.
+The revised PDF contains item-level D/N/G markers, defined by the restaurant as dairy, nuts and gluten. The synchronisation applies those source markers to 62 matching current catalogue items, records the PDF evidence in the CMS and shows compact D/N/G codes with a visible legend on the public menu. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly; absence of a marker must not be interpreted as allergen-free. Complete the remaining regulated-allergen and cross-contact review in `MENU_ALLERGEN_REGISTER.csv` under the process in section 6.16.
 
 ### 6.16 Menu allergen evidence, workflow and sign-off
 
@@ -670,14 +670,14 @@ The revised PDF contains item-level D/N/G markers, defined by the restaurant as 
 
 The owner-supplied `Malabar_Coast_Full_Menu_Updated.pdf` uses item-level **D**, **N** and **G** markers. Those printed markers have been mapped to the matching catalogue records and implemented as compact public codes with a visible legend: **D = Dairy**, **N = Nuts**, **G = Gluten**.
 
-Only markers explicitly printed in the supplied menu are treated as source-confirmed. The mapping covers 63 of the 195 current catalogue items. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly. A missing marker does not mean allergen-free, and the D/N/G system does not cover all 14 regulated allergen groups or kitchen cross-contact. The general guest notice remains in place, asking customers to tell the team about allergies before ordering because recipes can change and cross-contact may occur.
+Only markers explicitly printed in the supplied menu are treated as source-confirmed. The mapping covers 62 of the 194 current catalogue items. Unmarked dishes remain **Needs restaurant confirmation** internally and show no allergen line publicly. A missing marker does not mean allergen-free, and the D/N/G system does not cover all 14 regulated allergen groups or kitchen cross-contact. The general guest notice remains in place, asking customers to tell the team about allergies before ordering because recipes can change and cross-contact may occur.
 
 #### Evidence and working files
 
 | File / record | Purpose |
 |---|---|
 | `Malabar_Coast_Full_Menu_Updated.pdf` | Owner-supplied item, price and D/N/G source. |
-| `MENU_ALLERGEN_REGISTER.csv` | One row for each of the 195 current items, with the 63 source-backed declarations and evidence fields pre-populated. |
+| `MENU_ALLERGEN_REGISTER.csv` | One row for each of the 194 current items, with the 62 source-backed declarations and evidence fields pre-populated. |
 | Content Studio menu-item records | Publishing source for public website allergen information. |
 
 The CSV is the restaurant’s working and sign-off register. `pnpm handover:allergen-register` recreates it from the checked-in catalogue and replaces the working copy, so preserve every signed/approved version separately before regenerating it.
@@ -692,7 +692,7 @@ The register provides columns for celery, cereals containing gluten, crustaceans
 |---|---:|---|
 | Biriyani | 4 | Chicken; Beef; Lamb; Fish |
 | Breads | 8 | Plain Naan; Butter Naan; Garlic Naan; Peshwari Naan; Tandoori Roti; Kerala Porotta (2); Appam (3); Chapathi (2) |
-| Chicken | 6 | Traditional Chicken Curry; Butter Chicken; Chicken Chasni; Mughlai Korma; Indian Garlic Chilli Chicken; Malaidar Chicken |
+| Chicken | 5 | Traditional Chicken Curry; Butter Chicken; Chicken Chasni; Mughlai Korma; Malaidar Chicken |
 | Clay Oven | 7 | Tandoori Chicken; Chicken Tikka; Lamb Tikka; Tandoori Mixed Grill; Paneer Tikka; Chicken Shashlik; Tandoori Jinga |
 | Desserts | 3 | Gulab Jamun; Palada Payasam; Malabar Coast Special Dessert |
 | Dosa | 2 | Ghee Roast; Chicken Tikka Dosa |
@@ -704,12 +704,12 @@ The register provides columns for celery, cereals containing gluten, crustaceans
 | Sundries | 2 | Raita; Pakora Sauce |
 | Tea & Coffee | 3 | Tea; Coffee; Masala Chai |
 | Vegetarian | 5 | Dal Tadka; Vegetable Mughlai Korma; Paneer Butter Masala; Vegetable Chasni; Aloo Gobi |
-| **Total** | **63** | Owner-menu D/N/G evidence mapped |
+| **Total** | **62** | Owner-menu D/N/G evidence mapped |
 
 #### Required completion workflow
 
 1. Nominate the restaurant person responsible for allergen information.
-2. Review every dish against its current recipe, packaged ingredient labels and actual preparation method, including the 63 source-marked items.
+2. Review every dish against its current recipe, packaged ingredient labels and actual preparation method, including the 62 source-marked items.
 3. Confirm D/N/G and add any other regulated allergens supported by evidence. Record shared-fryer, shared-equipment and other cross-contact risks separately; absence from ingredients is not proof that cross-contact cannot occur.
 4. Record the evidence source, approver and approval date for every completed row.
 5. In Content Studio, open the matching item and choose either **Confirmed allergens listed** or **Confirmed: no regulated allergens declared**. Enter the same evidence source, approver, approval date and cross-contact note.
@@ -724,9 +724,9 @@ The Studio rejects a confirmed item when no allergen is selected unless the edit
 
 #### Final allergen acceptance
 
-- [x] Source D/N/G markers mapped to the 63 matching current items.
+- [x] Source D/N/G markers mapped to the 62 matching current items.
 - [x] Public menu legend and compact item codes implemented.
-- [ ] All 195 current items reviewed against recipes and ingredient labels for all regulated allergens.
+- [ ] All 194 current items reviewed against recipes and ingredient labels for all regulated allergens.
 - [ ] Cross-contact and shared-equipment risks recorded.
 - [ ] Evidence source present for every confirmed row.
 - [ ] Responsible approver and approval date present for every confirmed row.
@@ -896,7 +896,7 @@ Run commands from the repository root unless a command explicitly targets `studi
 | `npm run sanity:sync-map` | Site settings | Synchronises map/location configuration. | Confirm exact coordinates/embed URL first. |
 | `npm run sanity:sync-restaurant-gallery` | Restaurant page | Dry-runs the ten checked-in restaurant images; add `-- --apply` to upload and connect them. | Review image rights, alt text and crops before publication. |
 | `npm run sanity:typegen` | Website types | Regenerates Sanity query/schema TypeScript types. | Run after schema/query changes; commit the generated type changes. |
-| `npm run handover:allergen-register` | Handover records | Recreates the 195-row allergen working register from the checked-in catalogue. | Preserve a signed copy first: regeneration replaces the working CSV and does not replace restaurant review. |
+| `npm run handover:allergen-register` | Handover records | Recreates the 194-row allergen working register from the checked-in catalogue. | Preserve a signed copy first: regeneration replaces the working CSV and does not replace restaurant review. |
 | `npm --prefix studio run build` | Studio | Builds the standalone Studio. | Same intent as `npm run build:studio`. |
 | `npm --prefix studio run deploy` | Hosted Studio | Publishes the Studio application. | External state change; run only with approved Sanity access and after a successful Studio build. |
 | `npm --prefix studio run typegen` | Studio types | Generates Studio-side schema/query types where configured. | Run after schema edits. |
@@ -1006,7 +1006,7 @@ The tests cover authentication/roles, reservations, Kerala Suite enquiries, CMS 
 
 The following public and entry routes were opened in a local production-mode build: `/`, `/menu`, `/offers`, `/book-a-table`, `/restaurant`, `/hall`, `/careers`, `/story`, `/story/calicut`, `/faq`, `/special-days`, `/payments`, `/returns`, `/cookie`, `/privacy`, `/checkout`, `/checkout/success`, `/checkout/cancelled`, `/checkout/expired`, `/checkout/failure` and `/admin/login`. `/special-days` correctly redirects to `/book-a-table`.
 
-The surfaces were checked at 320 × 800 and 390 × 844 phone, 768 × 1024 tablet and 1440 × 900 desktop sizes. No broken images were found. The first phone pass identified a long privacy-page contact link extending 33 pixels beyond the viewport; the legal-link wrapping rule was corrected, covered by an automated regression test, and the final 320-pixel route sweep reported zero horizontal overflow. The restaurant gallery and full menu were also inspected visually on desktop and phone, including the 195-item catalogue. The final menu implementation shows source-backed D/N/G codes only on marked dishes, with a compact legend and no per-dish confirmation prompt on unmarked items.
+The surfaces were checked at 320 × 800 and 390 × 844 phone, 768 × 1024 tablet and 1440 × 900 desktop sizes. No broken images were found. The first phone pass identified a long privacy-page contact link extending 33 pixels beyond the viewport; the legal-link wrapping rule was corrected, covered by an automated regression test, and the final 320-pixel route sweep reported zero horizontal overflow. The restaurant gallery and full menu were also inspected visually on desktop and phone, including the 194-item catalogue. The final menu implementation shows source-backed D/N/G codes only on marked dishes, with a compact legend and no per-dish confirmation prompt on unmarked items.
 
 Protected-route checks covered `/admin`, `/admin/orders`, `/admin/kitchen`, `/admin/reservations`, `/admin/schedule`, `/admin/hall-enquiries`, `/admin/reports`, `/admin/content`, `/admin/careers` and `/admin/settings`; all redirected a signed-out visitor to `/admin/login`.
 
@@ -1054,7 +1054,7 @@ If the release fails, redeploy the previous known-good website revision. If paym
 
 ### Priority 0 — before commercial go-live/sign-off
 
-1. Complete and sign the 195-item allergen register from recipes, ingredient labels and kitchen cross-contact controls; then publish matching declarations in the CMS.
+1. Complete and sign the 194-item allergen register from recipes, ingredient labels and kitchen cross-contact controls; then publish matching declarations in the CMS.
 2. Put the commercial production site on Vercel Pro or another business-eligible plan; do not rely on Hobby for this commercial product.
 3. In the production deployment, set `NEXT_PUBLIC_SITE_URL=https://www.malabarcoast.co.uk` and set the Stripe webhook URL to `https://www.malabarcoast.co.uk/api/webhooks/stripe` unless an intentionally documented alternative is approved.
 4. Create/synchronise the canonical-domain Stripe webhook, confirm it is enabled with every required event, update the matching webhook secret, redeploy and verify readiness.
@@ -1135,7 +1135,7 @@ Complete this table through the client’s secure handover process; do not put p
 ### Content and compliance
 
 - [x] Six identified CMS housekeeping records resolved.
-- [ ] All 195 current menu items have a signed allergen declaration backed by recipe/label evidence and cross-contact review.
+- [ ] All 194 current menu items have a signed allergen declaration backed by recipe/label evidence and cross-contact review.
 - [ ] CMS allergen statuses, evidence source, approver and approval date match the signed register.
 - [ ] Prices, opening hours, address, contact details and offer dates signed off by client.
 - [ ] Dietary/allergen process reviewed by the restaurant.

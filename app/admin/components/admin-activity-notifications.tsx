@@ -71,7 +71,7 @@ export function AdminActivityNotifications({supabaseUrl, publishableKey}: {supab
         playOrderNotificationSound();
         setNotices((current) => [notice, ...current.filter((item) => item.key !== key)].slice(0, 4));
         if (document.visibilityState === "hidden" && "Notification" in window && Notification.permission === "granted") {
-          new Notification(notice.title, {body: notice.detail, icon: "/icon.svg", tag: key});
+          new Notification(notice.title, {body: notice.detail, icon: "/icon-192.png", tag: key});
         }
       } catch (error) {
         console.error("Could not verify the new restaurant activity.", error);

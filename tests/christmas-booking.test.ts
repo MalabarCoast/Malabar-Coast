@@ -23,14 +23,15 @@ test("the reusable special-day booking page uses the live reservation service", 
   assert.match(experience, /name="partySize"/);
   assert.match(experience, /name="dietaryRequirements"/);
   assert.match(experience, /name="accessibilityNeeds"/);
-  assert.match(standardBooking, /getBookingExperienceSettings/);
-  assert.match(standardBooking, /activeCampaign/);
-  assert.match(standardBooking, /Open seasonal booking/);
+  assert.match(standardBooking, /getActiveBookingCampaign/);
+  assert.match(standardBooking, /SpecialDayBookingExperience/);
+  assert.doesNotMatch(standardBooking, /Open seasonal booking/);
   assert.doesNotMatch(standardBooking, /redirect\(/);
   assert.match(sitemap, /getLiveSpecialDayCampaigns/);
   assert.doesNotMatch(sitemap, /absoluteUrl\("\/special-days"\)/);
   assert.match(cms, /bookingExperienceSettingsQuery/);
   assert.match(cms, /specialDayCampaignQuery/);
+  assert.match(cms, /getActiveBookingCampaign/);
 });
 
 test("the Christmas experience is interactive, accessible and mobile ready", async () => {
@@ -90,6 +91,7 @@ test("the Onam campaign has distinct responsive art and festival behaviour", asy
   assert.match(migration, /ambientEffect: 'petals'/);
   assert.match(migration, /enableSound: false/);
   assert.match(experience, /styles\.floralMark/);
+  assert.match(experience, /src="\/malabar\.png"/);
   assert.match(schema, /Falling flower petals/);
   assert.match(proxy, /img-src[^\n]+https:\/\/cdn\.sanity\.io/);
 });

@@ -22,6 +22,7 @@ const retiredSourceKeys = [
   'beef-beef-chasni',
   'beef-beef-jalfrezi',
   'vegetarian-cherupayar-curry',
+  'chicken-indian-garlic-chilli-chicken',
 ] as const
 
 type ExistingCategory = {_id: string; slug?: string}

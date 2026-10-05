@@ -50,7 +50,7 @@ const fallbackMenuPage: MenuPageContent = {
     {itemId: "malabar-coast-signature-meen-moilee", area: "Kochi", region: "Kerala", coordinates: "9.9312° N · 76.2673° E", year: "Arabian Sea harbour", course: "Meen Moilee", image: {url: "/food/Meen Moilee.jpeg", alt: "Meen Moilee served at Malabar Coast"}, description: "A gentle fish and coconut curry that keeps Kerala's coastal cooking at the heart of the journey."},
     {itemId: "malabar-coast-signature-aattirachi-kurumulak", area: "Kozhikode", region: "Kerala", coordinates: "11.2588° N · 75.7804° E", year: "Historic spice port", course: "Aattirachi Kurumulak", image: {url: "/food/aatirachi kurumulak ittath.jpeg", alt: "Aattirachi Kurumulak served at Malabar Coast"}, description: "Pepper-led lamb recalls the spice trade that made Kozhikode one of the coast's great meeting places."},
     {itemId: "malabar-coast-signature-masala-grilled-fish", area: "Mangaluru", region: "Karnataka coast", coordinates: "12.9141° N · 74.8560° E", year: "Western coast", course: "Masala Grilled Fish", image: {url: "/food/Masala grill fish.jpeg", alt: "Masala grilled fish served at Malabar Coast"}, description: "Masala-coated grilled fish carries the bright heat and sea-facing character of India's western coast."},
-    {itemId: "chicken-indian-garlic-chilli-chicken", area: "Mumbai", region: "Maharashtra", coordinates: "19.0760° N · 72.8777° E", year: "Gateway harbour", course: "Indian Garlic Chilli Chicken", image: {url: "/food/indian garlic chilli chicken tikka.jpeg", alt: "Indian garlic chilli chicken served at Malabar Coast"}, description: "A bold garlic and chilli dish for a city whose tables bring regional flavours together."},
+    {itemId: "chicken-chicken-chasni", area: "Mumbai", region: "Maharashtra", coordinates: "19.0760° N · 72.8777° E", year: "Gateway harbour", course: "Chicken Chasni", image: {url: "/food/chicken-chasni.png", alt: "Creamy chicken chasni served at Malabar Coast"}, description: "A creamy, gently sweet-and-tangy chicken curry for a city whose tables bring regional flavours together."},
     {itemId: "breads-peshwari-naan", area: "Surat", region: "Gujarat", coordinates: "21.1702° N · 72.8311° E", year: "Gulf of Khambhat", course: "Peshwari Naan", image: {url: "/food/Peshwari naan.jpeg", alt: "Peshwari naan served at Malabar Coast"}, description: "A fragrant, fruit-and-nut-filled naan marks Gujarat on the west-coast route with a sweet counterpoint."},
     {itemId: "dosa-masala-dosa", area: "Chennai", region: "Tamil Nadu", coordinates: "13.0827° N · 80.2707° E", year: "Coromandel coast", course: "Dosa", image: {url: "/food/Chennai masala dosa.jpeg", alt: "Chennai-style masala dosa served with sambar and chutneys"}, description: "A crisp masala dosa brings Tamil Nadu’s griddle tradition to the final stop on the Coromandel Coast."},
   ],
@@ -124,7 +124,7 @@ export async function getMenuContent() {
       orderRank: category.orderRank ?? index,
       number: menuCategories[index]?.number || String(index + 1),
     })) : menuCategories;
-    const cmsItems = (result.items ?? []).map(normaliseItem).filter((entry): entry is MenuItem => Boolean(entry));
+    const cmsItems = (result.items ?? []).map(normaliseItem).filter((entry): entry is MenuItem => entry !== null && entry.id !== "chicken-indian-garlic-chilli-chicken");
     const items = cmsItems.length ? cmsItems : menuItems;
     const cmsPage = result.page ?? {};
     const cmsCopy = [cmsPage.eyebrow, cmsPage.headingLineOne, cmsPage.headingLineTwo, cmsPage.introduction, cmsPage.journeyLinkLabel].filter(Boolean).join(" ").toLocaleLowerCase("en-GB");
@@ -132,7 +132,10 @@ export async function getMenuContent() {
     const page = legacyKeralaJourney
       ? {...fallbackMenuPage, seo: {...cmsPage.seo, ...fallbackMenuPage.seo}}
       : {...fallbackMenuPage, ...cmsPage};
-    return {categories, items, page, source: "sanity" as const};
+    const voyageStops = (page.voyageStops || fallbackMenuPage.voyageStops).map((stop) => stop.itemId === "chicken-indian-garlic-chilli-chicken"
+      ? fallbackMenuPage.voyageStops.find((fallback) => fallback.itemId === "chicken-chicken-chasni")!
+      : stop);
+    return {categories, items, page: {...page, voyageStops}, source: "sanity" as const};
   } catch (error) {
     console.error("Sanity menu fetch failed; using the checked-in menu fallback.", error instanceof Error ? error.name : "UnknownError");
     return {categories: menuCategories, items: menuItems, page: fallbackMenuPage, source: "fallback" as const};
@@ -140,6 +143,7 @@ export async function getMenuContent() {
 }
 
 export async function getCheckoutMenuItem(id: string) {
+  if (id === "chicken-indian-garlic-chilli-chicken") return undefined;
   const fallback = getMenuItem(id);
   const client = getSanityClient();
   if (!client) return fallback;

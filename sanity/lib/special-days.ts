@@ -141,6 +141,14 @@ export async function getBookingExperienceSettings(): Promise<BookingExperienceS
   }
 }
 
+export async function getActiveBookingCampaign(now = new Date()): Promise<SpecialDayCampaign | null> {
+  const settings = await getBookingExperienceSettings()
+  const selected = settings.bookingMode === 'special' ? settings.activeCampaign : undefined
+  if (!selected?.slug || !isCampaignLive(selected, now)) return null
+  const campaign = await getSpecialDayCampaign(selected.slug)
+  return campaign && isCampaignLive(campaign, now) ? campaign : null
+}
+
 export async function getSpecialDayCampaign(slug: string): Promise<SpecialDayCampaign | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null
   const client = getSanityClient()

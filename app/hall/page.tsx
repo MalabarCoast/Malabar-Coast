@@ -29,9 +29,9 @@ const fallbackMetadata: Metadata = {
     description: "A flexible private room with tailored catering, its own bar and a raised stage, within Malabar Coast at 33 Main Street, Holytown.",
     images: [
       {
-        url: "/festive1.jpeg",
-        width: 1280,
-        height: 720,
+        url: "/hall/private-event-gathering.png",
+        width: 1536,
+        height: 1024,
         alt: "Guests gathered in the Malabar Coast private hall for a family celebration",
       },
     ],
@@ -40,7 +40,7 @@ const fallbackMetadata: Metadata = {
     card: "summary_large_image",
     title: "Private Event Hall at Malabar Coast",
     description: "A flexible hall with a built-in bar and raised stage at Malabar Coast in Holytown.",
-    images: ["/festive1.jpeg"],
+    images: ["/hall/private-event-gathering.png"],
   },
 };
 
@@ -76,15 +76,9 @@ const fallbackHallFaqs = [
 ] as const;
 
 const fallbackEventGallery = [
-  {url: "/festive1.jpeg", alt: "Guests gathered in the Malabar Coast private hall for a family celebration", caption: "Celebration layout"},
-  {url: "/festive2.jpeg", alt: "The private hall dressed with balloons and tables for a celebration", caption: "Room dressed for the day"},
-  {url: "/festive3.jpeg", alt: "A celebration table and balloon backdrop beside the private hall stage", caption: "A stage made personal"},
-  {url: "/festive4.jpeg", alt: "Guests sharing a celebration moment beside the decorated stage", caption: "Moments together"},
-  {url: "/festive5.jpeg", alt: "The private hall arranged with theatre seating facing the stage", caption: "Theatre seating"},
-  {url: "/festive6.jpeg", alt: "Guests enjoying a celebration in the Malabar Coast private hall", caption: "A full room"},
-  {url: "/festive7.jpeg", alt: "A wide view of the private hall prepared with rows of seating", caption: "Flexible floor plan"},
-  {url: "/festive8.jpeg", alt: "The private hall set with tables and seating viewed from the bar", caption: "Table layout and bar"},
-  {url: "/festive9.jpeg", alt: "Guests gathered around tables during a private hall celebration", caption: "Made for gathering"},
+  {url: "/hall/private-event-gathering.png", alt: "Guests gathered in the Malabar Coast private hall for a family celebration", caption: "A real celebration in the room"},
+  {url: "/hall/theatre-layout.png", alt: "The Malabar Coast private hall arranged with theatre seating and its built-in bar", caption: "Theatre layout and bar"},
+  {url: "/hall/room-layout.png", alt: "The private hall set with tables and seating facing the decorated stage", caption: "Flexible tables and stage"},
 ] as const;
 
 const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string; answer: string}>) => ({
@@ -154,15 +148,15 @@ export default async function HallPage() {
   const enquirySection = getPageSection(cmsPage, "hall-enquiry");
   const faqSection = getPageSection(cmsPage, "hall-faq");
   const closingSection = getPageSection(cmsPage, "hall-closing");
-  const eventGallery = gallerySection?.gallery && gallerySection.gallery.length >= 3 ? gallerySection.gallery : fallbackEventGallery;
+  const eventGallery = fallbackEventGallery;
   return (
     <main className="editorialPage hallPage">
       <JsonLd data={hallSchema} />
 
       <section className="hallHero" aria-labelledby="hall-title">
         <Image
-          src={cmsPage?.heroImage?.url || "/festive1.jpeg"}
-          alt={cmsPage?.heroImage?.alt || "Guests gathered in the Malabar Coast private hall for a family celebration"}
+          src="/hall/private-event-gathering.png"
+          alt="Guests gathered in the Malabar Coast private hall for a family celebration"
           fill
           sizes="100vw"
           priority
@@ -241,8 +235,8 @@ export default async function HallPage() {
       <section className="hallStagePortrait" aria-labelledby="hall-stage-title">
         <Reveal className="hallStageImage">
           <Image
-            src={stageSection?.image?.url || "/festive5.jpeg"}
-            alt={stageSection?.image?.alt || "The Malabar Coast private hall arranged with theatre seating facing the stage"}
+            src="/hall/theatre-layout.png"
+            alt="The Malabar Coast private hall arranged with theatre seating and its built-in bar"
             fill
             sizes="(max-width: 860px) 100vw, 62vw"
           />

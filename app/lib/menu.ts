@@ -114,7 +114,7 @@ const definitions: MenuDefinition[] = [
     items: [
       item("Traditional Chicken Curry", 1295), item("Chicken Tikka Masala", 1295), item("Butter Chicken", 1295), item("Chicken Chasni", 1295),
       item("Mughlai Korma", 1295), item("Chicken Bhuna", 1395), item("Chicken Jalfrezi", 1350), item("Chicken Dopiaza", 1350),
-      item("Chicken Kadai", 1495), item("Indian Garlic Chilli Chicken", 1350),
+      item("Chicken Kadai", 1495),
       item("Dragon Chicken Tikka", 1395, {sourceKey: "chicken-dragon-chicken"}), item("Malaidar Chicken", 1295),
     ],
   },
@@ -493,7 +493,6 @@ const menuAllergenDeclarations: Record<string, readonly string[]> = {
   "lamb-lamb-chasni": ["milk"],
   "chicken-mughlai-korma": ["milk"],
   "chicken-malaidar-chicken": ["milk"],
-  "chicken-indian-garlic-chilli-chicken": ["milk"],
   "lamb-indian-garlic-chilli-lamb": ["milk"],
   "chicken-traditional-chicken-curry": ["milk"],
   "lamb-traditional-lamb-curry": ["milk"],

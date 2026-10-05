@@ -351,6 +351,7 @@
 .hallGalleryTile:nth-child(1),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(7) { grid-column: span 8; aspect-ratio: 16 / 10; }
 .hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(8) { aspect-ratio: 4 / 5; }
 .hallGalleryTile:nth-child(5),.hallGalleryTile:nth-child(6) { grid-column: span 6; aspect-ratio: 16 / 10; }
+.hallGalleryTile:last-child:nth-child(3) { grid-column: 1 / -1; aspect-ratio: 16 / 8; }
 .hallGalleryTile:nth-child(9) { grid-column: 4 / 10; aspect-ratio: 4 / 5; }
 .hallGalleryTile img { object-fit: cover; transition: transform .8s cubic-bezier(.2,.75,.2,1); }
 .hallGalleryTile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,transparent 58%,rgba(3,9,8,.68)); pointer-events: none; }
@@ -402,6 +403,7 @@
   .hallGalleryTile,.hallGalleryTile:nth-child(n) { grid-column: span 1; aspect-ratio: 4 / 3; }
   .hallGalleryTile:nth-child(1),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(6),.hallGalleryTile:nth-child(7),.hallGalleryTile:nth-child(9) { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
   .hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(8) { aspect-ratio: 4 / 5; }
+  .hallGalleryTile:last-child:nth-child(3) { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
   .hallFaq { display: block; padding: 4.5rem 1.25rem; }
   .hallFaq > div:first-child { position: static; margin-bottom: 3rem; }
   .hallClosing { padding: 4.5rem 1.25rem; }
@@ -430,6 +432,7 @@
   .hallGalleryGrid { grid-template-columns: 1fr; gap: .8rem; }
   .hallGalleryTile,.hallGalleryTile:nth-child(n) { grid-column: 1; aspect-ratio: 16 / 10; }
   .hallGalleryTile:nth-child(2),.hallGalleryTile:nth-child(3),.hallGalleryTile:nth-child(4),.hallGalleryTile:nth-child(9) { aspect-ratio: 4 / 5; }
+  .hallGalleryTile:last-child:nth-child(3) { aspect-ratio: 16 / 10; }
   .hallFaqList article { grid-template-columns: 2rem 1fr; gap: .75rem 1rem; }
   .hallClosing h2 { font-size: clamp(3rem,16vw,4.25rem); overflow-wrap: normal; }
 }
