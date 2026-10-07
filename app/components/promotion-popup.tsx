@@ -2,19 +2,65 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type SyntheticEvent, type TouchEvent} from "react";
 import type {Promotion} from "@/sanity/lib/promotions";
+import {getCmsImageUrl} from "@/sanity/lib/image";
 
 const POPUP_DELAY_MS = 450;
-const SLIDE_INTERVAL_MS = 6500;
+const DEFAULT_SLIDE_DURATION_SECONDS = 7;
+const MIN_SLIDE_DURATION_SECONDS = 4;
+const MAX_SLIDE_DURATION_SECONDS = 15;
+const SWIPE_THRESHOLD_PX = 48;
+const POPUP_IMAGE_WIDTH = 960;
+const LOCAL_IMAGE_FALLBACK = "/restaurant/dining-room.png";
+
+type PromotionPoster = Promotion["poster"];
+
+function firstUsablePoster(...posters: Array<PromotionPoster | undefined>) {
+  return posters.find((poster) => Boolean(poster?.url)) as PromotionPoster;
+}
+
+function popupPosters(promotion: Promotion) {
+  const desktop = firstUsablePoster(promotion.popupDesktopPoster, promotion.poster);
+  const mobile = firstUsablePoster(promotion.popupMobilePoster, promotion.popupDesktopPoster, promotion.poster);
+  return {desktop, mobile};
+}
+
+function handlePosterError(event: SyntheticEvent<HTMLImageElement>, originalUrl: string) {
+  const image = event.currentTarget;
+  if (!image.dataset.fallbackStage && image.src !== originalUrl) {
+    image.dataset.fallbackStage = "original";
+    image.src = originalUrl;
+    return;
+  }
+  if (image.dataset.fallbackStage !== "local") {
+    image.dataset.fallbackStage = "local";
+    image.src = LOCAL_IMAGE_FALLBACK;
+  }
+}
 
 export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; ready: boolean}) {
   const popupPromotions = useMemo(() => promotions.filter((promotion) => promotion.showOnHomepage !== false), [promotions]);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const suppressInitialFocusPause = useRef(true);
   const storageKey = useMemo(() => `malabar-offers-seen:${popupPromotions.map((promotion) => `${promotion._id}:${promotion._updatedAt}`).join(",")}`, [popupPromotions]);
+  const activePromotion = popupPromotions[Math.min(activeIndex, Math.max(0, popupPromotions.length - 1))];
+  const activeDurationSeconds = Math.min(
+    MAX_SLIDE_DURATION_SECONDS,
+    Math.max(MIN_SLIDE_DURATION_SECONDS, activePromotion?.displayDurationSeconds || DEFAULT_SLIDE_DURATION_SECONDS),
+  );
+  const activeDurationMs = activeDurationSeconds * 1000;
+
+  const preloadPoster = useCallback((poster: PromotionPoster | undefined) => {
+    if (!poster?.url) return;
+    const preload = new window.Image();
+    preload.src = getCmsImageUrl(poster, POPUP_IMAGE_WIDTH);
+  }, []);
 
   useEffect(() => {
     if (!ready || popupPromotions.length === 0 || window.sessionStorage.getItem(storageKey)) return;
@@ -23,10 +69,19 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
   }, [popupPromotions.length, ready, storageKey]);
 
   useEffect(() => {
-    if (!open || popupPromotions.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActiveIndex((current) => (current + 1) % popupPromotions.length), SLIDE_INTERVAL_MS);
-    return () => window.clearInterval(timer);
-  }, [open, popupPromotions.length]);
+    if (!open) return;
+    for (const promotion of popupPromotions) {
+      const {desktop, mobile} = popupPosters(promotion);
+      preloadPoster(desktop);
+      if (mobile.url !== desktop.url) preloadPoster(mobile);
+    }
+  }, [open, popupPromotions, preloadPoster]);
+
+  useEffect(() => {
+    if (!open || paused || popupPromotions.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => setActiveIndex((current) => (current + 1) % popupPromotions.length), activeDurationMs);
+    return () => window.clearTimeout(timer);
+  }, [activeDurationMs, activeIndex, open, paused, popupPromotions.length]);
 
   useEffect(() => {
     if (!open) return;
@@ -54,7 +109,11 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
 
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
-    const frame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+    suppressInitialFocusPause.current = true;
+    const frame = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+      window.requestAnimationFrame(() => { suppressInitialFocusPause.current = false; });
+    });
     return () => {
       window.cancelAnimationFrame(frame);
       document.body.style.overflow = previousOverflow;
@@ -64,9 +123,9 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
   }, [open, storageKey]);
 
   if (!open || popupPromotions.length === 0) return null;
-  const activePromotion = popupPromotions[Math.min(activeIndex, popupPromotions.length - 1)];
-  const desktopPoster = activePromotion.popupDesktopPoster || activePromotion.poster;
-  const mobilePoster = activePromotion.popupMobilePoster || activePromotion.popupDesktopPoster || activePromotion.poster;
+  const {desktop: desktopPoster, mobile: mobilePoster} = popupPosters(activePromotion);
+  const desktopPosterUrl = getCmsImageUrl(desktopPoster, POPUP_IMAGE_WIDTH);
+  const mobilePosterUrl = getCmsImageUrl(mobilePoster, POPUP_IMAGE_WIDTH);
 
   const close = () => {
     window.sessionStorage.setItem(storageKey, "1");
@@ -75,46 +134,90 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
 
   const selectPrevious = () => setActiveIndex((current) => (current - 1 + popupPromotions.length) % popupPromotions.length);
   const selectNext = () => setActiveIndex((current) => (current + 1) % popupPromotions.length);
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+    setPaused(true);
+  };
+  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    const start = touchStartX.current;
+    const end = event.changedTouches[0]?.clientX;
+    touchStartX.current = null;
+    setPaused(false);
+    if (start == null || end == null || Math.abs(end - start) < SWIPE_THRESHOLD_PX) return;
+    if (end < start) selectNext();
+    else selectPrevious();
+  };
 
   return (
     <div className="promotionPopup" role="presentation" onMouseDown={(event) => event.currentTarget === event.target && close()}>
-      <div ref={dialogRef} className="promotionPopupDialog" role="dialog" aria-modal="true" aria-labelledby="promotion-popup-title">
+      <div
+        ref={dialogRef}
+        className="promotionPopupDialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="promotion-popup-title"
+        aria-roledescription="offer carousel"
+        data-paused={paused ? "true" : "false"}
+        style={{"--promotion-duration": `${activeDurationMs}ms`} as CSSProperties}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => !suppressInitialFocusPause.current && setPaused(true)}
+        onBlurCapture={(event) => !event.currentTarget.contains(event.relatedTarget) && setPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <button ref={closeButtonRef} className="promotionPopupClose" type="button" onClick={close} aria-label="Close offers popup">×</button>
-        <div className="promotionPopupPoster promotionPopupPosterDesktop">
-          <Image
-            src={desktopPoster.url}
-            alt={desktopPoster.alt}
-            fill
-            sizes="(max-width: 720px) 92vw, 480px"
-            placeholder={desktopPoster.lqip ? "blur" : "empty"}
-            blurDataURL={desktopPoster.lqip}
-          />
-        </div>
-        <div className="promotionPopupPoster promotionPopupPosterMobile">
-          <Image
-            src={mobilePoster.url}
-            alt={mobilePoster.alt}
-            fill
-            sizes="92vw"
-            placeholder={mobilePoster.lqip ? "blur" : "empty"}
-            blurDataURL={mobilePoster.lqip}
-          />
-        </div>
-        <div className="promotionPopupCopy">
-          <p>{activePromotion.badge || "Offer available"}</p>
-          <h2 id="promotion-popup-title">{activePromotion.title}</h2>
-          {activePromotion.summary && <span>{activePromotion.summary}</span>}
-          {activePromotion.offerCode && <strong>Use code <b>{activePromotion.offerCode}</b></strong>}
-          {activePromotion.validityLabel && <small>{activePromotion.validityLabel}</small>}
-          <div className="promotionPopupActions">
-            {activePromotion.callToAction?.href && <Link href={activePromotion.callToAction.href} target={activePromotion.callToAction.openInNewTab ? "_blank" : undefined} rel={activePromotion.callToAction.openInNewTab ? "noreferrer" : undefined} onClick={close}>{activePromotion.callToAction.label} <span aria-hidden="true">↗</span></Link>}
-            <Link href="/offers" onClick={close}>View all offers <span aria-hidden="true">→</span></Link>
+        <div className="promotionPopupSlide" key={activePromotion._id} role="group" aria-label={`Offer ${activeIndex + 1} of ${popupPromotions.length}`} aria-live="polite" aria-atomic="true">
+          <div className="promotionPopupPoster promotionPopupPosterDesktop">
+            <Image
+              src={desktopPosterUrl}
+              alt={desktopPoster.alt}
+              fill
+              sizes="(max-width: 760px) 94vw, 430px"
+              unoptimized
+              loading="eager"
+              fetchPriority="high"
+              onError={(event) => handlePosterError(event, desktopPoster.url)}
+            />
+          </div>
+          <div className="promotionPopupPoster promotionPopupPosterMobile">
+            <Image
+              src={mobilePosterUrl}
+              alt={mobilePoster.alt}
+              fill
+              sizes="94vw"
+              unoptimized
+              loading="eager"
+              fetchPriority="high"
+              onError={(event) => handlePosterError(event, mobilePoster.url)}
+            />
+          </div>
+          <div className="promotionPopupCopy">
+            <p>{activePromotion.badge || "Current offer"}</p>
+            <h2 id="promotion-popup-title">{activePromotion.title}</h2>
+            {activePromotion.summary && <span>{activePromotion.summary}</span>}
+            {activePromotion.validityLabel && <small>{activePromotion.validityLabel}</small>}
+            <div className="promotionPopupActions">
+              <Link
+                className="promotionPopupPrimary"
+                href={activePromotion.callToAction?.href || "/book-a-table"}
+                target={activePromotion.callToAction?.openInNewTab ? "_blank" : undefined}
+                rel={activePromotion.callToAction?.openInNewTab ? "noreferrer" : undefined}
+                onClick={close}
+              >
+                {activePromotion.callToAction?.label || "Book a table"} <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </div>
         {popupPromotions.length > 1 && <div className="promotionPopupNav" aria-label="Choose an offer">
           <button type="button" onClick={selectPrevious} aria-label="Previous offer">←</button>
-          <div>{popupPromotions.map((promotion, index) => <button type="button" key={promotion._id} className={index === activeIndex ? "isActive" : ""} onClick={() => setActiveIndex(index)} aria-label={`Show offer ${index + 1}: ${promotion.title}`} aria-current={index === activeIndex ? "true" : undefined} />)}</div>
-          <button type="button" onClick={selectNext} aria-label="Next offer">→</button>
+          <div className="promotionPopupProgress">
+            <div className="promotionPopupCount"><span>{String(activeIndex + 1).padStart(2, "0")}</span><span>{String(popupPromotions.length).padStart(2, "0")}</span></div>
+            <div className="promotionPopupTimer" key={`${activePromotion._id}-${activeIndex}`} aria-hidden="true"><i /></div>
+            <div className="promotionPopupDots">{popupPromotions.map((promotion, index) => <button type="button" key={promotion._id} className={index === activeIndex ? "isActive" : ""} onClick={() => setActiveIndex(index)} aria-label={`Show offer ${index + 1}: ${promotion.title}`} aria-current={index === activeIndex ? "true" : undefined}><i /></button>)}</div>
+          </div>
+          <button className="promotionPopupSkip" type="button" onClick={selectNext} aria-label="Skip to next offer">Skip <span aria-hidden="true">→</span></button>
         </div>}
       </div>
     </div>

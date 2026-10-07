@@ -28,6 +28,19 @@ export const menuPage = defineType({
     defineField({name: 'dietaryNotice', title: 'Dietary and allergen notice', type: 'text', rows: 4}),
     defineField({name: 'alcoholNotice', title: 'Alcohol notice', type: 'text', rows: 3}),
     defineField({
+      name: 'menuInterludes',
+      title: 'Images between menu sections',
+      description: 'Add, replace, reorder or remove the editorial image panels shown between full-menu categories.',
+      type: 'array',
+      of: [defineArrayMember({type: 'object', fields: [
+        defineField({name: 'afterCategory', title: 'Show after category', type: 'reference', to: [{type: 'menuCategory'}], validation: (rule) => rule.required()}),
+        defineField({name: 'image', title: 'Image', type: 'imageWithAlt', validation: (rule) => rule.required()}),
+        defineField({name: 'eyebrow', title: 'Eyebrow', type: 'string'}),
+        defineField({name: 'title', title: 'Caption', type: 'string'}),
+      ], preview: {select: {title: 'title', subtitle: 'afterCategory.title', media: 'image'}}})],
+      validation: (rule) => rule.max(8),
+    }),
+    defineField({
       name: 'voyageStops',
       title: 'Six Indian port-city food stories',
       description: 'Connect six Indian port cities, including Kerala, Gujarat, Mumbai and Chennai, to real dishes served by the restaurant.',

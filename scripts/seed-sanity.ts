@@ -52,6 +52,7 @@ const imageFiles = {
   foodChennaiDosa: "food/Chennai masala dosa.jpeg",
   foodButterChickenCombo: "food/Garlic naan butter chicken combo.jpeg",
   christmasHero: "christmas/christmas-booking-hero.png",
+  christmasDayOffer: "offers/christmas-day-booking-2026.png",
 } as const;
 
 type AssetKey = keyof typeof imageFiles;
@@ -116,7 +117,7 @@ async function upsertFaq(faq: (typeof faqItems)[number], displayOrder: number) {
   return (await client.create({_type: "faqItem", ...document}))._id;
 }
 
-const pageSeeds = () => [
+const pageSeeds = (itemIds: Map<string, string>) => [
   {
     pageKey: "home",
     title: "Home",
@@ -126,9 +127,14 @@ const pageSeeds = () => [
     heroImage: image("hero", "A Kerala-inspired restaurant table with coastal dishes in a warm dining room"),
     heroPrimaryLink: {_type: "link", label: "Explore the menu", href: "/menu", openInNewTab: false},
     heroSecondaryLink: {_type: "link", label: "Book your table", href: "/book-a-table", openInNewTab: false},
+    heroTertiaryLink: {_type: "link", label: "Book the private hall", href: "/hall", openInNewTab: false},
     sections: [
       {_type: "contentSection", _key: "home-overview", internalName: "What is Malabar Coast?", eyebrow: "Our restaurant", heading: "What is Malabar Coast?", body: malabarCoastIntroduction.map((paragraph,index)=>block(paragraph, `overview-copy-${index+1}`)), image: image("diningRoom", "The warmly lit Malabar Coast dining room")},
-      {_type: "contentSection", _key: "home-menu", internalName: "Signature menu", eyebrow: "From coast and tandoor", heading: "Come to the table.", body: [block("From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.", "menu-copy")], image: image("chickenTikka", "Charred chicken tikka with red onion and grilled lemon")},
+      {_type: "contentSection", _key: "home-menu", internalName: "Signature menu", eyebrow: "From coast and tandoor", heading: "Come to the table.", body: [block("From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.", "menu-copy")], image: image("chickenTikka", "Charred chicken tikka with red onion and grilled lemon"), featuredDishes: [
+        {_type: "object", _key: "konju-coconut-fry", dish: {_type: "reference", _ref: itemIds.get("malabar-coast-signature-konju-coconut-fry")!}, image: image("calicutPrawns", "Black pepper tiger prawns with curry leaf and charred lime"), note: "From Calicut · Small plate"},
+        {_type: "object", _key: "chicken-tikka", dish: {_type: "reference", _ref: itemIds.get("clay-oven-chicken-tikka")!}, image: image("chickenTikka", "Charred chicken tikka with red onion and grilled lemon"), note: "From Delhi · Tandoor fire"},
+        {_type: "object", _key: "aattirachi-kurumulak", dish: {_type: "reference", _ref: itemIds.get("malabar-coast-signature-aattirachi-kurumulak")!}, image: image("capeLamb", "Pepper-spiced lamb with flaky porotta"), note: "From the fire · Made for sharing"},
+      ]},
       {_type: "contentSection", _key: "home-story", internalName: "Coastal story", eyebrow: "Our story", heading: "A coast that changed the table.", body: [block("Follow the old sea road from Calicut to the new coast in Scotland.", "story-copy")], image: image("storyPort", "A rain-washed historic spice port on the Malabar Coast")},
       {_type: "callToAction", _key: "home-reservations", eyebrow: "Book your table", heading: "Your table by the coast.", text: "Choose your date, arrival time and party size online, with live capacity checked before confirmation.", primaryLink: {_type: "link", label: "Book your table", href: "/book-a-table", openInNewTab: false}, secondaryLink: {_type: "link", label: "Get directions", href: site.maps.directionsUrl, openInNewTab: true}, image: image("tableForTwo", "An intimate table for two at Malabar Coast")},
     ],
@@ -246,6 +252,7 @@ const pageSeeds = () => [
     eyebrow: "Current offers · From the coast",
     heroHeading: "Offers & specials.",
     heroText: "Seasonal plates, dining offers and moments worth gathering for. Every live offer and its terms are shown below.",
+    heroImage: image("diningRoom", "The dining room at Malabar Coast"),
     seo: {title: "Offers & Promotions", description: "Current dining, collection and seasonal offers from Malabar Coast in Holytown."},
   },
   {
@@ -343,6 +350,10 @@ async function seed() {
     manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
     dietaryNotice: "D means dairy, N means nuts and G means gluten. Only the restaurant-supplied markers are shown. Please tell the team about all allergies before ordering because recipes can change and cross-contact may occur.",
     alcoholNotice: "Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.",
+    menuInterludes: [
+      {_type: "object", _key: "after-beef", afterCategory: {_type: "reference", _ref: categoryIds.get("beef")!}, image: image("foodChickenChasni", "Creamy chicken chasni served at Malabar Coast"), eyebrow: "From the curry pot", title: "Creamy, bright and gently tangy."},
+      {_type: "object", _key: "after-rice", afterCategory: {_type: "reference", _ref: categoryIds.get("rice")!}, image: image("foodMeenMoilee", "Meen Moilee fish curry served at Malabar Coast"), eyebrow: "From the coast", title: "Coconut, curry leaf and a gentler tide."},
+    ],
     voyageStops: voyageSeeds.map(([itemId, area, region, coordinates, yearLabel, courseLabel, imageKey, alt, description], index) => ({
       _type: "object", _key: `voyage-${index + 1}`, dish: {_type: "reference", _ref: itemIds.get(itemId)!}, area, region, coordinates, yearLabel, courseLabel, image: image(imageKey, alt), description,
     })),
@@ -356,6 +367,7 @@ async function seed() {
     legalName: "Malabar Coast",
     shortDescription: "Indian Cuisine & Bar, from tandoor fire to the Malabar coast.",
     description: "Malabar Coast is an Indian restaurant and bar in Holytown, Scotland, serving tandoor dishes, curries, biriyani, vegetarian plates and Malabar coastal specialities.",
+    establishedDate: "2026-06-01",
     logo: image("logo", "Malabar Coast logo"),
     lightLogo: image("lightLogo", "Malabar Coast white logo"),
     siteUrl: "https://www.malabarcoast.co.uk",
@@ -396,7 +408,7 @@ async function seed() {
     defaultSeo: {title: "Malabar Coast UK | Indian Restaurant & Bar in Holytown", description: "Indian tandoor dishes, curries, biriyani and Malabar coastal cooking in Holytown, Scotland.", image: image("hero", "An Indian restaurant table with tandoor and coastal dishes")},
   });
 
-  const marketingPages = pageSeeds();
+  const marketingPages = pageSeeds(itemIds);
   for (const page of marketingPages) await upsertByField("marketingPage", "pageKey", page.pageKey, page);
   for (const [index, faq] of faqItems.entries()) await upsertFaq(faq, index);
 
@@ -428,15 +440,31 @@ async function seed() {
   await upsertByField("promotion", "slug.current", "coastal-weekday-table", {
     title: "The coastal weekday table",
     slug: {_type: "slug", current: "coastal-weekday-table"},
-    status: "active",
+    status: "paused",
     poster: image("foodButterChickenCombo", "Garlic naan and butter chicken served at Malabar Coast"),
     badge: "Weekday dining",
     summary: "Join us Sunday to Thursday and ask the coastal crew about the current chef-selected dining offer.",
     validityLabel: "Available on selected quieter services",
-    showOnHomepage: true,
+    showOnHomepage: false,
+    displayDurationSeconds: 7,
     callToAction: {_type: "link", label: "Explore the menu", href: "/menu", openInNewTab: false},
     terms: "Subject to availability and change. Please ask the team when booking and mention the offer before ordering. Not valid with another promotion.",
     displayOrder: 10,
+  });
+
+  await upsertByField("promotion", "slug.current", "christmas-day-bookings-2026", {
+    title: "Christmas Day at Malabar Coast",
+    slug: {_type: "slug", current: "christmas-day-bookings-2026"},
+    status: "active",
+    poster: image("christmasDayOffer", "Christmas Day table bookings for 25 December 2026 at Malabar Coast"),
+    badge: "Christmas Day · 25 December 2026",
+    summary: "Book your Christmas Day table at Malabar Coast in Holytown.",
+    validityLabel: "Tables are subject to availability",
+    showOnHomepage: true,
+    displayDurationSeconds: 7,
+    callToAction: {_type: "link", label: "Book a table", href: "/book-a-table", openInNewTab: false},
+    terms: "Christmas Day tables are subject to availability and restaurant confirmation.",
+    displayOrder: 1,
   });
 
   const christmasCampaignId = await upsertByField("specialDayCampaign", "slug.current", "christmas", {

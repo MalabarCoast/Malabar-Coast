@@ -24,6 +24,18 @@ export const contentSection = defineType({
       defineField({name: 'text', title: 'Description', type: 'text', rows: 3}),
       defineField({name: 'shortLabel', title: 'Short label or number', type: 'string'}),
     ], preview: {select: {title: 'title', subtitle: 'shortLabel'}}})]}),
+    defineField({
+      name: 'featuredDishes',
+      title: 'Homepage featured dishes',
+      description: 'Choose the three dishes and their card images shown in the Come to the table section.',
+      type: 'array',
+      of: [defineArrayMember({type: 'object', fields: [
+        defineField({name: 'dish', title: 'Dish', type: 'reference', to: [{type: 'menuItem'}], validation: (rule) => rule.required()}),
+        defineField({name: 'image', title: 'Card image', type: 'imageWithAlt', validation: (rule) => rule.required()}),
+        defineField({name: 'note', title: 'Small caption', type: 'string'}),
+      ], preview: {select: {title: 'dish.name', subtitle: 'note', media: 'image'}}})],
+      validation: (rule) => rule.max(3),
+    }),
     defineField({name: 'shortLabel', title: 'Short label or coordinate', type: 'string'}),
     defineField({name: 'note', title: 'Supporting note', type: 'text', rows: 2}),
     defineField({name: 'theme', title: 'Visual theme', type: 'string', options: {list: ['dark', 'light', 'green', 'copper']}}),

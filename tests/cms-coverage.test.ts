@@ -65,3 +65,40 @@ test("private hall features, assurances, FAQs and closing copy are CMS-owned", a
   assert.match(hall, /getPageSection\(cmsPage, "hall-faq"\)/);
   assert.match(hall, /getPageSection\(cmsPage, "hall-closing"\)/);
 });
+
+test("home signature cards, hall action and established date are CMS-owned", async () => {
+  const [home, experience, signatures, marketingSchema, sectionSchema, settingsSchema, query] = await Promise.all([
+    read("../app/page.tsx"),
+    read("../app/home-experience.tsx"),
+    read("../app/components/home-signatures.tsx"),
+    read("../studio/schemaTypes/documents/marketingPage.ts"),
+    read("../studio/schemaTypes/objects/contentSection.ts"),
+    read("../studio/schemaTypes/documents/siteSettings.ts"),
+    read("../sanity/lib/queries.ts"),
+  ]);
+  assert.match(marketingSchema, /name: 'heroTertiaryLink'/);
+  assert.match(sectionSchema, /name: 'featuredDishes'/);
+  assert.match(settingsSchema, /name: 'establishedDate'/);
+  assert.match(query, /heroTertiaryLink/);
+  assert.match(query, /featuredDishes\[\]/);
+  assert.match(query, /establishedDate/);
+  assert.match(home, /featuredDishes: menu\?\.featuredDishes/);
+  assert.match(home, /establishedDate: siteSettings\.establishedDate/);
+  assert.match(experience, /content\.heroTertiaryLink/);
+  assert.match(experience, /<div className="heroActions">[\s\S]*?heroTertiaryLink/);
+  assert.doesNotMatch(experience, /heroHallLink/);
+  assert.match(signatures, /featuredDishes\?\.length/);
+});
+
+test("menu interlude images are editable in the menu page CMS", async () => {
+  const [experience, schema, query] = await Promise.all([
+    read("../app/menu/menu-experience.tsx"),
+    read("../studio/schemaTypes/documents/menuPage.ts"),
+    read("../sanity/lib/queries.ts"),
+  ]);
+  assert.match(schema, /name: 'menuInterludes'/);
+  assert.match(schema, /name: 'afterCategory'/);
+  assert.match(query, /menuInterludes\[\]/);
+  assert.match(experience, /page\.menuInterludes/);
+  assert.match(experience, /menuInterludes\.get\(category\.slug\)/);
+});

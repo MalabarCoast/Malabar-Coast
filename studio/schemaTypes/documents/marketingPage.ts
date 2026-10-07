@@ -22,6 +22,7 @@ export const marketingPage = defineType({
     defineField({name: 'heroImage', title: 'Hero image', type: 'imageWithAlt'}),
     defineField({name: 'heroPrimaryLink', title: 'Primary action', type: 'link'}),
     defineField({name: 'heroSecondaryLink', title: 'Secondary action', type: 'link'}),
+    defineField({name: 'heroTertiaryLink', title: 'Third action', description: 'Use this for an additional page-specific action, such as booking the private hall.', type: 'link'}),
     defineField({name: 'sections', title: 'Page sections', type: 'array', of: [
       defineArrayMember({type: 'contentSection'}),
       defineArrayMember({type: 'callToAction'}),

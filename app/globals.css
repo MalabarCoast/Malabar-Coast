@@ -437,7 +437,7 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  width: min(25rem, 34vw);
+  width: min(43rem, 48vw);
   margin: clamp(1.4rem, 3vh, 2.5rem) 0 0 clamp(2rem, 10vw, 10rem);
 }
 
@@ -452,10 +452,12 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .storyNote > div { min-width: 0; }
 
 .heroActions {
-  display: flex;
-  align-items: center;
-  gap: .85rem;
-  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: .55rem;
+  width: 100%;
+  margin-top: 1.35rem;
 }
 
 .heroActions a {
@@ -463,9 +465,10 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   position: relative;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  min-height: 3.7rem;
-  padding: 0 1.45rem;
+  gap: .75rem;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0 1rem;
   border: 1px solid #d9a54d;
   background: #d9a54d;
   color: var(--ink);
@@ -477,9 +480,9 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 }
 
 .heroActions a:first-child {
-  min-width: 15.5rem;
-  min-height: 4.4rem;
-  padding: 0 1rem 0 1.7rem;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0 .85rem 0 1.35rem;
   border-color: #d9a54d;
   background: #d9a54d;
   color: var(--ink);
@@ -498,7 +501,15 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   font-size: 1rem;
   transition: background-color .25s ease, transform .25s ease;
 }
-.heroActions a:last-child { min-width: 12rem; }
+.heroActions a:nth-child(2),
+.heroActions a:nth-child(3) {
+  min-width: 0;
+  border-color: rgba(242, 234, 217, .5);
+  background: rgba(8, 20, 38, .54);
+  color: #f2ead9;
+  font-size: .62rem;
+  letter-spacing: .11em;
+}
 .heroActions a:hover { border-color: #e7b969; background: #e7b969; color: var(--ink); transform: translateY(-.18rem); }
 .heroActions a:first-child:hover span { background: rgba(8, 20, 38, .18); transform: translate(.12rem, -.12rem); }
 .heroActions a:focus-visible { border-color: #f2ead9; outline: 2px solid #f2ead9; outline-offset: 3px; }
@@ -1554,6 +1565,9 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   .siteMenuPanel .menuInner { padding-top: 7.5rem; }
   .heroFooter { min-height: 5.25rem; }
   .heroDish { display: none; }
+  .storyNote { width: min(38rem, 70vw); }
+  .heroActions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .heroActions a:first-child { grid-column: 1 / -1; }
 }
 
 @media (max-width: 1024px) and (min-width: 721px) {
@@ -1662,13 +1676,13 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
   .eyebrow i { width: 1.5rem; }
   h1 { font-size: clamp(3.2rem, 14vw, 5rem); line-height: .83; letter-spacing: -.06em; }
   h1 .indent { margin-left: 4vw; }
-  .storyNote { width: min(21rem, 88vw); margin-left: 4vw; }
+  .storyNote { width: min(23rem, 88vw); margin-left: 4vw; }
   .storyNote p { font-size: .82rem; }
-  .heroActions { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .85fr); gap: .65rem; }
+  .heroActions { display: grid; grid-template-columns: 1fr; gap: .55rem; }
   .heroActions a { min-width: 0; min-height: 3.45rem; gap: .65rem; padding-inline: .9rem; font-size: .64rem; letter-spacing: .1em; }
   .heroActions a:first-child { min-width: 0; min-height: 3.9rem; padding: 0 .7rem 0 1rem; font-size: .72rem; }
   .heroActions a:first-child span { width: 2.15rem; height: 2.15rem; font-size: .9rem; }
-  .heroActions a:last-child { min-width: 0; }
+  .heroActions a:nth-child(2), .heroActions a:nth-child(3) { min-width: 0; }
   .heroDish { display: none; }
   .coordinates { display: none; }
   .heroFooter { min-height: 5rem; padding-inline: 1rem; grid-template-columns: 1fr auto; }
@@ -1826,52 +1840,59 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 }
 
 /* CMS-managed promotions */
-.promotionPopup { position: fixed; z-index: 120; inset: 0; display: grid; place-items: center; padding: clamp(1rem, 3vw, 2.5rem); background: rgba(2,10,8,.78); backdrop-filter: blur(12px); animation: promotionFade .28s ease both; }
-.promotionPopupDialog { position: relative; display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(18rem, 1fr); width: min(62rem, 100%); max-height: min(48rem, calc(100svh - 2rem)); overflow: auto; border: 1px solid rgba(229,210,174,.4); background: #091814; color: #eee5d2; box-shadow: 0 2rem 7rem rgba(0,0,0,.55); }
-.promotionPopupClose { position: absolute; z-index: 4; top: .8rem; right: .8rem; display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 1px solid rgba(238,229,210,.48); border-radius: 50%; background: rgba(6,17,15,.78); color: #eee5d2; cursor: pointer; font: 300 1.5rem/1 sans-serif; }
+.promotionPopup { position: fixed; z-index: 120; inset: 0; display: grid; place-items: center; padding: clamp(.9rem, 2.5vw, 2rem); background: rgba(2,10,8,.82); backdrop-filter: blur(9px); animation: promotionFade .24s ease both; }
+.promotionPopupDialog { position: relative; width: min(57rem, 100%); max-height: calc(100svh - 2rem); overflow: hidden; border: 1px solid rgba(229,210,174,.42); background: #091814; color: #eee5d2; box-shadow: 0 1.75rem 6rem rgba(0,0,0,.52); }
+.promotionPopupSlide { display: grid; grid-template-columns: minmax(17.5rem, .84fr) minmax(20rem, 1.16fr); min-height: 34rem; animation: promotionSlideIn .3s cubic-bezier(.22,1,.36,1) both; }
+.promotionPopupClose { position: absolute; z-index: 4; top: .75rem; right: .75rem; display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 1px solid rgba(238,229,210,.46); border-radius: 50%; background: rgba(6,17,15,.88); color: #eee5d2; cursor: pointer; font: 300 1.35rem/1 sans-serif; transition: border-color .2s ease, background .2s ease; }
+.promotionPopupClose:hover { border-color: #c79b55; background: #10261f; }
 .promotionPopupClose:focus-visible { outline: 2px solid #c79b55; outline-offset: 3px; }
-.promotionPopupPoster { position: relative; min-height: 37rem; background: #111d19; }
+.promotionPopupPoster { position: relative; min-height: 34rem; background: #111d19; }
 .promotionPopupPoster img { object-fit: contain; }
 .promotionPopupPosterMobile { display: none; }
-.promotionPopupCopy { display: flex; flex-direction: column; justify-content: center; padding: clamp(3rem, 5vw, 5.5rem) clamp(1.5rem, 4vw, 4.5rem); }
-.promotionPopupCopy > p { margin: 0 0 1.1rem; color: #c79b55; font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; }
-.promotionPopupCopy h2 { margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(2.8rem, 5vw, 5.2rem); font-weight: 400; line-height: .86; letter-spacing: -.045em; text-transform: uppercase; }
-.promotionPopupCopy > span { margin-top: 1.5rem; color: rgba(238,229,210,.72); font-family: "Iowan Old Style", Georgia, serif; font-size: 1.05rem; line-height: 1.6; }
-.promotionPopupCopy > strong { width: fit-content; margin-top: 1.4rem; padding: .65rem .75rem; border: 1px dashed rgba(199,155,85,.65); color: rgba(238,229,210,.72); font-size: .59rem; letter-spacing: .12em; text-transform: uppercase; }
-.promotionPopupCopy > strong b { color: #eee5d2; }
-.promotionPopupCopy > small { margin-top: .9rem; color: rgba(238,229,210,.5); font-size: .6rem; letter-spacing: .06em; line-height: 1.5; text-transform: uppercase; }
-.promotionPopupActions { display: flex; flex-direction: column; margin-top: 2rem; }
-.promotionPopupActions a { display: flex; justify-content: space-between; gap: 2rem; min-height: 3.4rem; padding: 1rem 0; border-bottom: 1px solid rgba(238,229,210,.28); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; }
-.promotionPopupNav { position: absolute; right: 1rem; bottom: 1rem; left: calc(45% + 1rem); display: grid; grid-template-columns: 2.75rem 1fr 2.75rem; gap: .65rem; align-items: center; }
-.promotionPopupNav > button { width: 2.75rem; height: 2.75rem; border: 1px solid rgba(238,229,210,.3); background: rgba(6,17,15,.65); color: #eee5d2; cursor: pointer; }
-.promotionPopupNav > div { display: flex; justify-content: center; gap: 0; }
-.promotionPopupNav > div button { position: relative; display: grid; width: 2.75rem; height: 2.75rem; padding: 0; place-items: center; border: 0; background: transparent; cursor: pointer; }
-.promotionPopupNav > div button::after { content: ""; width: .55rem; height: .55rem; border: 1px solid #c79b55; border-radius: 50%; background: transparent; }
-.promotionPopupNav > div button.isActive::after { background: #c79b55; }
-.promotionPopupNav > div button:focus-visible { outline: 2px solid #c79b55; outline-offset: -4px; }
+.promotionPopupCopy { display: flex; flex-direction: column; justify-content: center; padding: clamp(3rem, 5vw, 4.75rem) clamp(2rem, 4.5vw, 4rem); }
+.promotionPopupCopy > p { margin: 0 0 1rem; color: #c79b55; font-size: .57rem; letter-spacing: .19em; text-transform: uppercase; }
+.promotionPopupCopy h2 { max-width: 11ch; margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(2.65rem, 4.4vw, 4.45rem); font-weight: 400; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; }
+.promotionPopupCopy > span { max-width: 28rem; margin-top: 1.25rem; color: rgba(238,229,210,.72); font-family: "Iowan Old Style", Georgia, serif; font-size: 1rem; line-height: 1.55; }
+.promotionPopupCopy > small { margin-top: .8rem; color: rgba(238,229,210,.5); font-size: .58rem; letter-spacing: .06em; line-height: 1.5; text-transform: uppercase; }
+.promotionPopupActions { display: grid; gap: .35rem; margin-top: 1.75rem; }
+.promotionPopupActions a { display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 3.6rem; padding: .9rem 1rem; font-size: .59rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.promotionPopupActions .promotionPopupPrimary { border: 1px solid #c79b55; background: #c79b55; color: #08140f; }
+.promotionPopupActions a:focus-visible { outline: 2px solid #eee5d2; outline-offset: 3px; }
+.promotionPopupNav { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr) 5.5rem; gap: 1rem; align-items: center; min-height: 4.2rem; padding: .45rem .75rem; border-top: 1px solid rgba(238,229,210,.18); background: #07120f; }
+.promotionPopupNav > button { width: 3.25rem; height: 3.25rem; border: 1px solid rgba(238,229,210,.28); background: transparent; color: #eee5d2; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+.promotionPopupNav > .promotionPopupSkip { display: flex; width: 5.5rem; align-items: center; justify-content: center; gap: .55rem; color: #c79b55; font-size: .52rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.promotionPopupNav > button:hover { border-color: #c79b55; background: rgba(199,155,85,.09); }
+.promotionPopupProgress { display: grid; grid-template-columns: 3rem minmax(4rem, 1fr) auto; align-items: center; gap: .85rem; color: rgba(238,229,210,.52); font-size: .52rem; letter-spacing: .12em; }
+.promotionPopupCount { display: flex; justify-content: space-between; }
+.promotionPopupTimer { height: 1px; overflow: hidden; background: rgba(238,229,210,.18); }
+.promotionPopupTimer i { display: block; width: 100%; height: 100%; background: #c79b55; transform: scaleX(0); transform-origin: left; animation: promotionTimer var(--promotion-duration, 7000ms) linear forwards; }
+.promotionPopupDialog[data-paused="true"] .promotionPopupTimer i { animation-play-state: paused; }
+.promotionPopupDots { display: flex; justify-content: center; gap: .05rem; }
+.promotionPopupDots button { display: grid; width: 2rem; height: 2.75rem; padding: 0; place-items: center; border: 0; background: transparent; cursor: pointer; }
+.promotionPopupDots i { display: block; width: .4rem; height: .4rem; border: 1px solid #c79b55; border-radius: 50%; transition: width .2s ease, background .2s ease; }
+.promotionPopupDots button.isActive i { width: 1.15rem; border-radius: 999px; background: #c79b55; }
+.promotionPopupNav button:focus-visible { outline: 2px solid #c79b55; outline-offset: 2px; }
 
 .offersPage { min-height: 100vh; padding-top: 7rem; background: #071310; color: #eee5d2; }
-.offersHero { position:relative; isolation:isolate; display:grid; grid-template-columns:.55fr 1.15fr .8fr; gap:clamp(1.5rem,5vw,6rem); align-items:end; min-height:clamp(36rem,72svh,52rem); overflow:hidden; padding:clamp(3rem,7vw,7rem) clamp(1.25rem,6vw,7rem) clamp(2.5rem,5vw,5rem); border-bottom:1px solid rgba(238,229,210,.18); }
+.offersHero { position:relative; isolation:isolate; display:grid; grid-template-columns:.55fr 1.15fr .8fr; gap:clamp(1.5rem,5vw,6rem); align-items:end; min-height:clamp(27rem,52svh,38rem); overflow:hidden; padding:clamp(3rem,7vw,6rem) clamp(1.25rem,6vw,7rem) clamp(2.5rem,5vw,4rem); border-bottom:1px solid rgba(238,229,210,.18); }
 .offersHeroImage { z-index:-2; object-fit:cover; object-position:center 58%; }
 .offersHeroShade { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(3,10,8,.9),rgba(3,10,8,.52) 55%,rgba(3,10,8,.72)),linear-gradient(180deg,rgba(3,10,8,.1),rgba(3,10,8,.72)); }
 .offersHero p { align-self:start; margin:0; color:#c89b53; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; }
-.offersHero h1 { margin:0; font:400 clamp(3.7rem,7vw,7.5rem)/.88 "Bodoni 72",Didot,serif; letter-spacing:-.045em; }
+.offersHero h1 { margin:0; font:400 clamp(3.4rem,6vw,6.25rem)/.9 "Bodoni 72",Didot,serif; letter-spacing:-.04em; }
 .offersHero > span { color:rgba(238,229,210,.7); font:clamp(1rem,1.4vw,1.3rem)/1.55 "Iowan Old Style",Georgia,serif; }
-.offersGrid { display: grid; gap: 0; padding: 3rem clamp(1.25rem, 6vw, 7rem) 7rem; }
-.offerCard { display: grid; grid-template-columns: minmax(18rem, .9fr) minmax(20rem, 1.1fr); min-height: 40rem; border-bottom: 1px solid rgba(238,229,210,.18); }
-.offerPoster { position: relative; margin: 4rem 0; background: #101d19; }
+.offersGrid { display: grid; width: min(82rem, 100%); margin: 0 auto; gap: 2rem; padding: clamp(2rem,5vw,4.5rem) clamp(1.25rem, 6vw, 5rem) clamp(4rem,8vw,7rem); }
+.offerCard { display: grid; grid-template-columns: minmax(18rem, .82fr) minmax(21rem, 1.18fr); min-height: 34rem; overflow: hidden; border: 1px solid rgba(238,229,210,.2); background: #091814; }
+.offerPoster { position: relative; min-height: 34rem; background: #101d19; }
 .offerPoster img { object-fit: contain; }
-.offerCardCopy { display: flex; flex-direction: column; justify-content: center; padding: 4rem clamp(2rem, 6vw, 7rem); }
+.offerCardCopy { display: flex; flex-direction: column; justify-content: center; padding: clamp(3rem,5vw,5rem) clamp(2rem,5vw,5.5rem); }
 .offerCardCopy > p { margin: 0 0 1rem; color: #c79b55; font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; }
-.offerCardCopy h2 { margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(3rem, 5vw, 5.6rem); font-weight: 400; line-height: .86; letter-spacing: -.045em; text-transform: uppercase; }
+.offerCardCopy h2 { max-width: 12ch; margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(2.8rem, 4.6vw, 4.9rem); font-weight: 400; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; }
 .offerCardCopy > span { margin-top: 1.5rem; color: rgba(238,229,210,.7); font-family: "Iowan Old Style", Georgia, serif; font-size: 1.05rem; line-height: 1.65; }
-.offerCardCopy > strong { margin-top: 1.5rem; color: rgba(238,229,210,.6); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
-.offerCardCopy > strong b { margin-left: .5rem; padding: .45rem .6rem; border: 1px dashed #c79b55; color: #eee5d2; }
 .offerCardCopy > small { margin-top: 1rem; color: rgba(238,229,210,.5); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
-.offerCardCopy > div { display: flex; flex-direction: column; margin-top: 2rem; }
-.offerCardCopy > div a { display: flex; justify-content: space-between; min-height: 3.4rem; padding: 1rem 0; border-bottom: 1px solid rgba(238,229,210,.25); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; }
-.offerCardCopy details { margin-top: 1.5rem; color: rgba(238,229,210,.58); font-size: .72rem; line-height: 1.6; }
-.offerCardCopy summary { display:flex; width:fit-content; min-height:2.75rem; align-items:center; cursor:pointer; color:#c79b55; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; }
+.offerCardActions { display: flex; flex-direction: column; margin-top: 1.75rem; }
+.offerCardActions a { display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 3.75rem; padding: 1rem 1.1rem; border: 1px solid #c79b55; background: #c79b55; color: #08140f; font-size: .59rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; transition: background .2s ease, border-color .2s ease; }
+.offerCardActions a:hover { border-color: #e7b969; background: #e7b969; }
+.offerCardActions a:focus-visible { outline: 2px solid #eee5d2; outline-offset: 3px; }
 .offersEmpty { display: flex; flex-direction: column; align-items: flex-start; min-height: 34rem; padding: 7rem clamp(1.25rem, 15vw, 14rem); background: #e8dfcb; color: #10201c; }
 .offersEmpty > p { margin: 0 0 1rem; color: #8c6028; font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; }
 .offersEmpty h2 { max-width: 48rem; margin: 0; font-family: "Bodoni 72", Didot, serif; font-size: clamp(3.3rem, 6vw, 6rem); font-weight: 400; line-height: .87; text-transform: uppercase; }
@@ -1879,21 +1900,34 @@ h1 .indent { margin-left: clamp(2rem, 10vw, 10rem); color: transparent; -webkit-
 .offersEmpty a { display: flex; gap: 3rem; min-height: 3.4rem; margin-top: 2rem; padding: 1rem 0; border-bottom: 1px solid #10201c; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; }
 
 @keyframes promotionFade { from { opacity: 0; } }
+@keyframes promotionSlideIn { from { opacity: 0; transform: translate3d(.75rem,0,0); } }
+@keyframes promotionTimer { to { transform: scaleX(1); } }
 
 @media (max-width: 760px) {
   .promotionPopup { padding: max(.65rem, env(safe-area-inset-top)) max(.65rem, env(safe-area-inset-right)) max(.65rem, env(safe-area-inset-bottom)) max(.65rem, env(safe-area-inset-left)); }
-  .promotionPopupDialog { display: block; max-height: calc(100dvh - max(1.3rem, env(safe-area-inset-top) + env(safe-area-inset-bottom))); overscroll-behavior: contain; }
-  .promotionPopupPoster { min-height: min(56svh, 30rem); }
+  .promotionPopupDialog { max-height: calc(100dvh - max(1.3rem, env(safe-area-inset-top) + env(safe-area-inset-bottom))); overscroll-behavior: contain; }
+  .promotionPopupSlide { display: flex; max-height: calc(100dvh - 5rem); min-height: 0; flex-direction: column; overflow-y: auto; }
+  .promotionPopupPoster { min-height: 0; height: min(44svh, 25rem); flex: 0 0 auto; }
   .promotionPopupPosterDesktop { display: none; }
   .promotionPopupPosterMobile { display: block; }
-  .promotionPopupCopy { padding: 2rem 1.25rem 5rem; }
-  .promotionPopupCopy h2 { font-size: clamp(2.6rem, 12vw, 4rem); }
-  .promotionPopupNav { left: 1rem; }
+  .promotionPopupCopy { justify-content: flex-start; padding: 1.5rem 1.15rem 1.35rem; }
+  .promotionPopupCopy h2 { max-width: 12ch; font-size: clamp(2.25rem, 10.5vw, 3.35rem); }
+  .promotionPopupCopy > span { margin-top: .9rem; font-size: .94rem; }
+  .promotionPopupActions { margin-top: 1.25rem; }
+  .promotionPopupActions a { min-height: 3.35rem; }
+  .promotionPopupNav { grid-template-columns: 3rem minmax(0,1fr) 4.75rem; gap: .45rem; min-height: 3.7rem; padding-block: .35rem; }
+  .promotionPopupNav > button { width: 3rem; height: 3rem; }
+  .promotionPopupNav > .promotionPopupSkip { width: 4.75rem; }
+  .promotionPopupProgress { grid-template-columns: 2.6rem minmax(2rem, 1fr) auto; gap: .35rem; }
+  .promotionPopupDots button { width: 1.55rem; }
+  .offersHero { display: flex; min-height: 28rem; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 1rem; }
+  .offersHero h1 { font-size: clamp(3.35rem, 15vw, 5rem); }
+  .offersHero > span { max-width: 28rem; }
   .offersGrid { padding-inline: 1rem; }
-  .offerCard { display: block; min-height: 0; padding: 1rem 0 4rem; }
-  .offerPoster { min-height: 65svh; margin: 0; }
-  .offerCardCopy { padding: 2.5rem .25rem 0; }
-  .offerCardCopy h2 { font-size: clamp(3rem, 13vw, 4.8rem); }
+  .offerCard { display: block; min-height: 0; }
+  .offerPoster { min-height: min(64svh, 34rem); }
+  .offerCardCopy { padding: 2.25rem 1.15rem 2.5rem; }
+  .offerCardCopy h2 { font-size: clamp(2.75rem, 12vw, 4.35rem); }
 }
 
 /* Table reservations and hall enquiries */
