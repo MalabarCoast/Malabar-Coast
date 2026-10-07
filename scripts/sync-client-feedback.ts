@@ -129,9 +129,9 @@ async function main() {
     'sections[_key=="restaurant-restaurants"].body[_key=="restaurants-location-title"].children[0].text': 'Motherwell',
   }})
   for (const page of offersPages) transaction = transaction.patch(page._id, {set: {
-    eyebrow: 'Current offers · At Malabar Coast',
-    heroHeading: 'Offers worth gathering for.',
-    heroText: 'Dining moments for quieter weekdays, celebrations and evenings together. Each live offer and its terms are shown below.',
+    eyebrow: 'Christmas Day · 25 December 2026',
+    heroHeading: 'Christmas Day at Malabar Coast.',
+    heroText: 'Reserve your table for Christmas Day in Holytown.',
   }})
   await transaction.commit()
 
@@ -142,12 +142,13 @@ async function main() {
       _type: 'promotion',
       title: offer.title,
       slug: {_type: 'slug', current: offer.slug},
-      status: 'active',
+      status: 'paused',
       poster: image(assetIds.get(offer.imageFile)!, offer.imageAlt),
       badge: offer.badge,
       summary: offer.summary,
       validityLabel: offer.validityLabel,
-      showOnHomepage: index === 0,
+      showOnHomepage: false,
+      displayDurationSeconds: 7,
       callToAction: offer.callToAction,
       terms: offer.terms,
       displayOrder: offer.displayOrder,
@@ -177,7 +178,7 @@ async function main() {
   if (!verification.socials.includes('Facebook') || !verification.socials.includes('TikTok')) throw new Error('Social profile verification failed.')
   if (!verification.hallLabels.includes('Special events')) throw new Error('Special events navigation verification failed.')
   if (new Set(verification.storyImages.filter(Boolean)).size !== 4) throw new Error('Story image verification found duplicate or missing assets.')
-  if (verification.offerTemplateCount || verification.offers.filter((offer) => offer.cta === 'Explore the menu').length !== 1) throw new Error('Offer verification failed.')
+  if (verification.offerTemplateCount || verification.offers.some((offer) => offer.cta === 'Explore the menu')) throw new Error('Offer verification failed.')
   console.log(JSON.stringify({mode: 'applied-and-verified', ...verification}, null, 2))
 }
 

@@ -16,6 +16,14 @@ export type MenuVoyageStop = {
   description: string;
 };
 
+export type MenuInterlude = {
+  _key?: string;
+  afterCategory: string;
+  image: CmsImage;
+  eyebrow?: string;
+  title?: string;
+};
+
 export type MenuPageContent = {
   eyebrow: string;
   headingLineOne: string;
@@ -27,6 +35,7 @@ export type MenuPageContent = {
   manifestIntroduction: string;
   dietaryNotice: string;
   alcoholNotice: string;
+  menuInterludes: MenuInterlude[];
   voyageStops: MenuVoyageStop[];
   seo?: {title?: string; description?: string; noIndex?: boolean; image?: {url: string; alt?: string}};
 };
@@ -42,6 +51,10 @@ const fallbackMenuPage: MenuPageContent = {
   manifestIntroduction: "The current Malabar Coast menu, prepared for sharing and available to order online where shown.",
   dietaryNotice: "D means dairy, N means nuts and G means gluten. Only the restaurant-supplied markers are shown. Please tell the team about all allergies before ordering because recipes can change and cross-contact may occur.",
   alcoholNotice: "Drink prices are not published online. Please ask the coastal crew for current soft drink, hot drink, mixer and bar prices. Drinks are not available through online ordering.",
+  menuInterludes: [
+    {afterCategory: "beef", image: {url: "/food/chicken-chasni.png", alt: "Creamy chicken chasni served at Malabar Coast"}, eyebrow: "From the curry pot", title: "Creamy, bright and gently tangy."},
+    {afterCategory: "rice", image: {url: "/food/Meen Moilee.jpeg", alt: "Meen Moilee fish curry served at Malabar Coast"}, eyebrow: "From the coast", title: "Coconut, curry leaf and a gentler tide."},
+  ],
   seo: {
     title: "Indian Cuisine & Bar Menu in Holytown",
     description: "Explore tandoori chicken, chicken tikka, biriyani, curries, vegetarian dishes, Malabar coastal specialities and desserts at Malabar Coast.",
@@ -135,7 +148,8 @@ export async function getMenuContent() {
     const voyageStops = (page.voyageStops || fallbackMenuPage.voyageStops).map((stop) => stop.itemId === "chicken-indian-garlic-chilli-chicken"
       ? fallbackMenuPage.voyageStops.find((fallback) => fallback.itemId === "chicken-chicken-chasni")!
       : stop);
-    return {categories, items, page: {...page, voyageStops}, source: "sanity" as const};
+    const menuInterludes = (page.menuInterludes || fallbackMenuPage.menuInterludes).filter((entry) => Boolean(entry.afterCategory && entry.image?.url && entry.image?.alt));
+    return {categories, items, page: {...page, voyageStops, menuInterludes}, source: "sanity" as const};
   } catch (error) {
     console.error("Sanity menu fetch failed; using the checked-in menu fallback.", error instanceof Error ? error.name : "UnknownError");
     return {categories: menuCategories, items: menuItems, page: fallbackMenuPage, source: "fallback" as const};

@@ -22,7 +22,7 @@ export default async function OffersPage() {
   return (
     <main className="offersPage">
       <header className="offersHero">
-        <Image className="offersHeroImage" src="/restaurant/dining-room.png" alt="The dining room at Malabar Coast" fill sizes="100vw" priority />
+        <Image className="offersHeroImage" src={page?.heroImage?.url || "/restaurant/dining-room.png"} alt={page?.heroImage?.alt || "The dining room at Malabar Coast"} fill sizes="100vw" priority />
         <div className="offersHeroShade" />
         <p>{page?.eyebrow || "Current offers · From the coast"}</p>
         <h1>{page?.heroHeading || "Offers & specials."}</h1>
@@ -46,12 +46,10 @@ export default async function OffersPage() {
               <p>{promotion.badge || "Current promotion"}</p>
               <h2>{promotion.title}</h2>
               {promotion.summary && <span>{promotion.summary}</span>}
-              {promotion.offerCode && <strong>Offer code <b>{promotion.offerCode}</b></strong>}
               {promotion.validityLabel && <small>{promotion.validityLabel}</small>}
-              <div>
-                {promotion.callToAction?.href && <Link href={promotion.callToAction.href} target={promotion.callToAction.openInNewTab ? "_blank" : undefined} rel={promotion.callToAction.openInNewTab ? "noreferrer" : undefined}>{promotion.callToAction.label} <span aria-hidden="true">↗</span></Link>}
+              <div className="offerCardActions">
+                <Link href={promotion.callToAction?.href || "/book-a-table"} target={promotion.callToAction?.openInNewTab ? "_blank" : undefined} rel={promotion.callToAction?.openInNewTab ? "noreferrer" : undefined}>{promotion.callToAction?.label || "Book a table"} <span aria-hidden="true">→</span></Link>
               </div>
-              {promotion.terms && <details><summary>Offer terms</summary><p>{promotion.terms}</p></details>}
             </div>
           </article>
         ))}

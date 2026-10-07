@@ -9,6 +9,7 @@ export type SiteSettings = {
   legalName: string;
   shortDescription: string;
   description: string;
+  establishedDate: string;
   siteUrl: string;
   phone: string;
   email: string;
@@ -37,6 +38,7 @@ export const fallbackSiteSettings: SiteSettings = {
   legalName: site.legalName,
   shortDescription: site.shortDescription,
   description: site.description,
+  establishedDate: "2026-06-01",
   siteUrl: site.url,
   phone: "",
   email: "reservations@malabarcoast.co.uk",

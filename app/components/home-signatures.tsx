@@ -5,8 +5,9 @@ import Link from "next/link";
 import { formatPrice, type MenuItem } from "../lib/menu";
 import { AddToOrder } from "./add-to-order";
 import type {DailySpecial} from "@/sanity/lib/daily-specials";
+import type {MarketingSection} from "@/sanity/lib/pages";
 
-const featuredDishes = [
+const fallbackFeaturedDishes = [
   {
     id: "malabar-coast-signature-konju-coconut-fry",
     image: "/menu/calicut-pepper-prawns.png",
@@ -27,8 +28,16 @@ const featuredDishes = [
   },
 ] as const;
 
-export function HomeSignatures({items, specials, eyebrow, heading, introduction}: {items: MenuItem[]; specials: DailySpecial[]; eyebrow?: string; heading?: string; introduction?: string}) {
+type FeaturedDish = NonNullable<MarketingSection["featuredDishes"]>[number];
+
+export function HomeSignatures({items, specials, featuredDishes, eyebrow, heading, introduction}: {items: MenuItem[]; specials: DailySpecial[]; featuredDishes?: FeaturedDish[]; eyebrow?: string; heading?: string; introduction?: string}) {
   const hasSpecials = specials.length > 0;
+  const cards = featuredDishes?.length ? featuredDishes.map((featured) => ({
+    id: featured.itemId,
+    image: featured.image.url,
+    alt: featured.image.alt,
+    note: featured.note || "From the Malabar Coast kitchen",
+  })) : fallbackFeaturedDishes;
   return (
     <section className="homeSignatures" aria-labelledby="home-signatures-title">
       <div className="homeSignaturesIntro">
@@ -48,7 +57,7 @@ export function HomeSignatures({items, specials, eyebrow, heading, introduction}
       </div>
 
       <div className="homeSignatureGrid">
-        {featuredDishes.map((featured, index) => {
+        {cards.map((featured, index) => {
           const dish = items.find((item) => item.id === featured.id);
           if (!dish) return null;
 

@@ -37,18 +37,20 @@ export default async function HomePage() {
   const menu = getPageSection(page, "home-menu");
   const reservations = getPageSection(page, "home-reservations");
   const content: HomeCmsContent = page ? {
-    heroEyebrow: "Indian Cuisine & Bar · Holytown · Scotland",
+    heroEyebrow: page.eyebrow,
     heroHeading: page.heroHeading,
-    heroText: "Tandoor fire, fragrant biriyani, rich curries and Malabar coastal flavours, served with a full bar in the heart of Holytown.",
+    heroText: page.heroText,
     heroImage: page.heroImage,
     heroPrimaryLink: page.heroPrimaryLink,
     heroSecondaryLink: page.heroSecondaryLink,
+    heroTertiaryLink: page.heroTertiaryLink,
     overviewEyebrow: overview?.eyebrow,
     overviewHeading: overview?.heading,
     overviewText: portableTextToPlainText(overview?.body),
-    menuEyebrow: "From coast and tandoor",
+    menuEyebrow: menu?.eyebrow,
     menuHeading: menu?.heading,
-    menuText: "From tandoor-charred Chicken Tikka to coconut-rich coastal plates and slow-cooked lamb, our table travels across India.",
+    menuText: portableTextToPlainText(menu?.body),
+    featuredDishes: menu?.featuredDishes,
     reservationEyebrow: reservations?.eyebrow,
     reservationHeading: reservations?.heading,
     reservationText: reservations?.text,
@@ -57,6 +59,7 @@ export default async function HomePage() {
     mapUrl: siteSettings.mapUrl,
     mapEmbedUrl: siteSettings.mapEmbedUrl,
     coordinates: siteSettings.coordinates,
+    establishedDate: siteSettings.establishedDate,
     testimonials,
   } : {};
   return <HomeExperience content={content} menuItems={menuItems} dailySpecials={dailySpecials} promotions={promotions} bookingSettings={bookingSettings} schedule={schedule} />;

@@ -17,6 +17,7 @@ import {malabarCoastIntroduction} from "./lib/brand-content";
 import {formatPublicDate, pageLastUpdated, site} from "./lib/site";
 import {PromotionPopup} from "./components/promotion-popup";
 import type {Promotion} from "@/sanity/lib/promotions";
+import type {MarketingSection} from "@/sanity/lib/pages";
 
 const REDUCED_MOTION_INTRO_DELAY_MS = 120;
 const REPLAY_INTRO_EVENT = "malabar:replay-intro";
@@ -28,12 +29,14 @@ export type HomeCmsContent = {
   heroImage?: {url: string; alt: string};
   heroPrimaryLink?: {label: string; href: string};
   heroSecondaryLink?: {label: string; href: string};
+  heroTertiaryLink?: {label: string; href: string};
   overviewEyebrow?: string;
   overviewHeading?: string;
   overviewText?: string;
   menuEyebrow?: string;
   menuHeading?: string;
   menuText?: string;
+  featuredDishes?: MarketingSection["featuredDishes"];
   reservationEyebrow?: string;
   reservationHeading?: string;
   reservationText?: string;
@@ -42,8 +45,16 @@ export type HomeCmsContent = {
   mapUrl?: string;
   mapEmbedUrl?: string;
   coordinates?: {latitude: number; longitude: number};
+  establishedDate?: string;
   testimonials?: TestimonialRecord[];
 };
+
+function formatEstablishedDate(value?: string) {
+  const match = /^(\d{4})-(\d{2})/.exec(value || "");
+  if (!match) return "June 2026";
+  return new Intl.DateTimeFormat("en-GB", {month: "long", year: "numeric", timeZone: "UTC"})
+    .format(new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1)));
+}
 
 function CompassMark() {
   return (
@@ -181,6 +192,7 @@ export function HomeExperience({content, menuItems, dailySpecials, promotions, b
             <div className="heroActions">
               <Link href={content.heroPrimaryLink?.href || "/menu"}>{content.heroPrimaryLink?.label || "Explore the menu"} <span aria-hidden="true">↗</span></Link>
               <Link href={content.heroSecondaryLink?.href || "/book-a-table"}>{content.heroSecondaryLink?.label || "Book your table"} <span aria-hidden="true">→</span></Link>
+              <Link href={content.heroTertiaryLink?.href || "/hall"}>{content.heroTertiaryLink?.label || "Book the private hall"} <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </div>
@@ -197,7 +209,7 @@ export function HomeExperience({content, menuItems, dailySpecials, promotions, b
         </div>
         <div className="year">
           <span>Est.</span>
-          <strong>MMXXVI</strong>
+          <strong>{formatEstablishedDate(content.establishedDate)}</strong>
         </div>
       </footer>
       </section>
@@ -223,7 +235,7 @@ export function HomeExperience({content, menuItems, dailySpecials, promotions, b
         </dl>
       </section>
 
-      <HomeSignatures items={menuItems} specials={dailySpecials} eyebrow={content.menuEyebrow} heading={content.menuHeading} introduction={content.menuText} />
+      <HomeSignatures items={menuItems} specials={dailySpecials} featuredDishes={content.featuredDishes} eyebrow={content.menuEyebrow} heading={content.menuHeading} introduction={content.menuText} />
       <OpeningHours schedule={schedule}/>
 
       <section className="homeBooking" id="book-your-table" aria-labelledby="home-booking-title">

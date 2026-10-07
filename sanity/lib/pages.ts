@@ -21,6 +21,7 @@ export type MarketingSection = {
   gallery?: CmsImage[];
   links?: SiteLink[];
   items?: Array<{_key: string; title: string; text?: string; shortLabel?: string}>;
+  featuredDishes?: Array<{_key?: string; itemId: string; image: CmsImage; note?: string}>;
   primaryLink?: SiteLink;
   secondaryLink?: SiteLink;
   shortLabel?: string;
@@ -37,6 +38,7 @@ export type MarketingPage = {
   heroImage?: CmsImage;
   heroPrimaryLink?: SiteLink;
   heroSecondaryLink?: SiteLink;
+  heroTertiaryLink?: SiteLink;
   sections?: MarketingSection[];
   seo?: {
     title?: string;
@@ -56,6 +58,7 @@ export async function getMarketingPage(pageKey: string): Promise<MarketingPage |
       ...page,
       heroPrimaryLink: sanitisePublicLink(page.heroPrimaryLink),
       heroSecondaryLink: sanitisePublicLink(page.heroSecondaryLink),
+      heroTertiaryLink: sanitisePublicLink(page.heroTertiaryLink),
       sections: page.sections?.map((section) => ({
         ...section,
         primaryLink: sanitisePublicLink(section.primaryLink),

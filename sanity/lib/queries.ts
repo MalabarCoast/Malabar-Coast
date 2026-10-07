@@ -47,6 +47,18 @@ export const menuContentQuery = defineQuery(`{
     manifestIntroduction,
     dietaryNotice,
     alcoholNotice,
+    menuInterludes[] {
+      _key,
+      "afterCategory": afterCategory->slug.current,
+      eyebrow,
+      title,
+      image {
+        alt,
+        caption,
+        "url": asset->url,
+        "dimensions": asset->metadata.dimensions
+      }
+    },
     voyageStops[] {
       _key,
       "itemId": coalesce(dish->sourceKey, dish->_id),
@@ -86,6 +98,7 @@ export const siteSettingsQuery = defineQuery(`*[_id == "siteSettings"][0] {
   legalName,
   shortDescription,
   description,
+  establishedDate,
   siteUrl,
   phone,
   email,
@@ -124,6 +137,7 @@ export const marketingPageQuery = defineQuery(`*[_type == "marketingPage" && pag
   heroImage {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},
   heroPrimaryLink,
   heroSecondaryLink,
+  heroTertiaryLink,
   sections[] {
     _key,
     _type,
@@ -137,6 +151,12 @@ export const marketingPageQuery = defineQuery(`*[_type == "marketingPage" && pag
     gallery[] {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions},
     links,
     items[] {_key, title, text, shortLabel},
+    featuredDishes[] {
+      _key,
+      "itemId": coalesce(dish->sourceKey, dish->_id),
+      note,
+      image {alt, caption, "url": asset->url, "dimensions": asset->metadata.dimensions}
+    },
     primaryLink,
     secondaryLink,
     shortLabel,
@@ -207,9 +227,11 @@ export const activePromotionsQuery = defineQuery(`
     startsAt,
     endsAt,
     showOnHomepage,
+    "displayDurationSeconds": coalesce(displayDurationSeconds, 7),
     terms,
     callToAction,
     poster {
+      asset,
       alt,
       caption,
       hotspot,
@@ -219,6 +241,7 @@ export const activePromotionsQuery = defineQuery(`
       "lqip": asset->metadata.lqip
     },
     popupDesktopPoster {
+      asset,
       alt,
       caption,
       hotspot,
@@ -228,6 +251,7 @@ export const activePromotionsQuery = defineQuery(`
       "lqip": asset->metadata.lqip
     },
     popupMobilePoster {
+      asset,
       alt,
       caption,
       hotspot,

@@ -20,21 +20,6 @@ function AllergenMarker({dish}: {dish: MenuItem}) {
   return <small className="allergenMarker" aria-label={`Contains ${labels}`}>{markers}</small>;
 }
 
-const menuInterludes: ReadonlyMap<number, {src: string; alt: string; eyebrow: string; title: string}> = new Map([
-  [5, {
-    src: "/food/chicken-chasni.png",
-    alt: "Creamy chicken chasni served at Malabar Coast",
-    eyebrow: "From the curry pot",
-    title: "Creamy, bright and gently tangy.",
-  }],
-  [13, {
-    src: "/food/Meen Moilee.jpeg",
-    alt: "Meen Moilee fish curry served at Malabar Coast",
-    eyebrow: "From the coast",
-    title: "Coconut, curry leaf and a gentler tide.",
-  }],
-] as const);
-
 export function MenuExperience({categories, items, page}: {categories: MenuCategory[]; items: MenuItem[]; page: MenuPageContent}) {
   const voyageRef = useRef<HTMLElement>(null);
   const [activeStop, setActiveStop] = useState(0);
@@ -52,6 +37,7 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
       .includes(normalisedSearch));
   }, [categories, items, normalisedSearch]);
   const visibleCategories = useMemo(() => categories.filter((category) => filteredItems.some((dish) => dish.category === category.slug)), [categories, filteredItems]);
+  const menuInterludes = useMemo(() => new Map(page.menuInterludes.map((interlude) => [interlude.afterCategory, interlude])), [page.menuInterludes]);
 
   useEffect(() => {
     let frame = 0;
@@ -137,11 +123,11 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
         {visibleCategories.length > 0 && <nav className="menuCategoryNav" aria-label="Jump to a menu category"><span>Jump to</span>{visibleCategories.map((category) => <a href={`#${category.slug}`} key={category.slug}>{category.title}</a>)}</nav>}
         {normalisedSearch && filteredItems.length === 0 && <div className="menuSearchEmpty"><p>No dishes match “{searchQuery.trim()}”.</p><span>Try a dish name, ingredient or category, or clear the search to see the full menu.</span><button type="button" onClick={() => setSearchQuery("")}>Show the full menu</button></div>}
         <div className="manifestGrid">
-          {visibleCategories.map((category, categoryIndex) => {
+          {visibleCategories.map((category) => {
             const categoryItems = filteredItems.filter((menuItem) => menuItem.category === category.slug);
             if (!categoryItems.length) return null;
             let previousSubheading = "";
-            const interlude = !normalisedSearch ? menuInterludes.get(categoryIndex) : undefined;
+            const interlude = !normalisedSearch ? menuInterludes.get(category.slug) : undefined;
             return (
               <Fragment key={category.slug}>
                 <article className="manifestCard" id={category.slug}>
@@ -167,8 +153,8 @@ export function MenuExperience({categories, items, page}: {categories: MenuCateg
                   })}</ul>
                 </article>
                 {interlude && <figure className="menuDishInterlude">
-                  <div><Image src={interlude.src} alt={interlude.alt} fill sizes="(max-width: 820px) 100vw, 88vw" /></div>
-                  <figcaption><span>{interlude.eyebrow}</span><strong>{interlude.title}</strong></figcaption>
+                  <div><Image src={interlude.image.url} alt={interlude.image.alt} fill sizes="(max-width: 820px) 100vw, 88vw" /></div>
+                  {(interlude.eyebrow || interlude.title) && <figcaption>{interlude.eyebrow && <span>{interlude.eyebrow}</span>}{interlude.title && <strong>{interlude.title}</strong>}</figcaption>}
                 </figure>}
               </Fragment>
             );

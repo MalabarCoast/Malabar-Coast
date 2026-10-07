@@ -33,10 +33,11 @@ export const promotion = defineType({
         return true
       }),
     }),
-    defineField({name: 'showOnHomepage', title: 'Show in the homepage popup', type: 'boolean', initialValue: true}),
-    defineField({name: 'callToAction', title: 'Optional action', type: 'link'}),
+    defineField({name: 'showOnHomepage', title: 'Show in the homepage popup', type: 'boolean', description: 'Every enabled live offer becomes a slide in the homepage carousel.', initialValue: true}),
+    defineField({name: 'displayDurationSeconds', title: 'Seconds before the next offer', type: 'number', description: 'Controls how long this offer stays visible before the carousel advances. Visitors can still skip manually.', initialValue: 7, validation: (rule) => rule.required().integer().min(4).max(15)}),
+    defineField({name: 'callToAction', title: 'Booking button', type: 'link', description: 'Use /book-a-table when the offer should open the standard table-booking page.'}),
     defineField({name: 'terms', title: 'Terms and conditions', type: 'text', rows: 4, validation: (rule) => rule.max(800)}),
-    defineField({name: 'displayOrder', title: 'Display order', type: 'number', initialValue: 100, validation: (rule) => rule.required().integer().min(0)}),
+    defineField({name: 'displayOrder', title: 'Display and carousel order', type: 'number', description: 'Lower numbers appear first on the Offers page and in the homepage carousel.', initialValue: 100, validation: (rule) => rule.required().integer().min(0)}),
   ],
   orderings: [{title: 'Display order', name: 'displayOrder', by: [{field: 'displayOrder', direction: 'asc'}]}],
   preview: {

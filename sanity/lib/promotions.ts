@@ -13,14 +13,18 @@ export type Promotion = {
   startsAt?: string
   endsAt?: string
   showOnHomepage?: boolean
+  displayDurationSeconds?: number
   terms?: string
   callToAction?: {label: string; href: string; openInNewTab?: boolean}
   poster: {
+    asset?: {_ref?: string}
     url: string
     alt: string
     caption?: string
     lqip?: string
     dimensions?: {width: number; height: number; aspectRatio: number}
+    crop?: {top: number; bottom: number; left: number; right: number}
+    hotspot?: {x: number; y: number; height: number; width: number}
   }
   popupDesktopPoster?: Promotion['poster']
   popupMobilePoster?: Promotion['poster']

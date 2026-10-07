@@ -25,7 +25,8 @@ test("mobile controls retain thumb-sized targets and safe viewport behaviour", a
     readFile(new URL("../app/admin/admin.css", import.meta.url), "utf8"),
     readFile(new URL("../public/admin-sw.js", import.meta.url), "utf8"),
   ]);
-  assert.match(globalCss, /promotionPopupNav > div button \{[\s\S]*?width: 2\.75rem;[\s\S]*?height: 2\.75rem/);
+  assert.match(globalCss, /promotionPopupDots button \{[\s\S]*?width: 2rem;[\s\S]*?height: 2\.75rem/);
+  assert.match(globalCss, /promotionPopupNav > button \{[\s\S]*?width: 3\.25rem;[\s\S]*?height: 3\.25rem/);
   assert.match(menuCss, /menuSearch button \{[\s\S]*?min-height: 2\.75rem/);
   assert.match(adminCss, /adminRecordGrid textarea[\s\S]*?font-size: 1rem/);
   assert.match(adminCss, /max-height: calc\(100dvh - 1rem\)/);

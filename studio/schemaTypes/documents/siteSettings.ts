@@ -9,6 +9,7 @@ export const siteSettings = defineType({
     defineField({name: 'legalName', title: 'Legal name', type: 'string'}),
     defineField({name: 'shortDescription', title: 'Short description', type: 'string', validation: (rule) => rule.max(160)}),
     defineField({name: 'description', title: 'Full description', type: 'text', rows: 4}),
+    defineField({name: 'establishedDate', title: 'Established date', description: 'Shown as month and year on the home page.', type: 'date', validation: (rule) => rule.required()}),
     defineField({name: 'logo', title: 'Main logo', type: 'imageWithAlt'}),
     defineField({name: 'lightLogo', title: 'Logo for dark backgrounds', type: 'imageWithAlt'}),
     defineField({name: 'favicon', title: 'Browser icon', type: 'imageWithAlt'}),

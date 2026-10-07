@@ -55,13 +55,14 @@ test("the Christmas experience is interactive, accessible and mobile ready", asy
 });
 
 test("special-day content and homepage posters are editable in Sanity", async () => {
-  const [campaignSchema, routeSchema, campaignSelect, promotionSchema, home, popup] = await Promise.all([
+  const [campaignSchema, routeSchema, campaignSelect, promotionSchema, home, popup, queries] = await Promise.all([
     readFile(new URL("../studio/schemaTypes/documents/specialDayCampaign.ts", import.meta.url), "utf8"),
     readFile(new URL("../studio/schemaTypes/documents/bookingExperienceSettings.ts", import.meta.url), "utf8"),
     readFile(new URL("../studio/components/SpecialDayCampaignSelect.tsx", import.meta.url), "utf8"),
     readFile(new URL("../studio/schemaTypes/documents/promotion.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/promotion-popup.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../sanity/lib/queries.ts", import.meta.url), "utf8"),
   ]);
   assert.match(campaignSchema, /desktopHero/);
   assert.match(campaignSchema, /mobileHero/);
@@ -73,8 +74,21 @@ test("special-day content and homepage posters are editable in Sanity", async ()
   assert.match(campaignSelect, /\/special-days\/\{campaign\.slug/);
   assert.match(promotionSchema, /popupDesktopPoster/);
   assert.match(promotionSchema, /popupMobilePoster/);
+  assert.match(promotionSchema, /Every enabled live offer becomes a slide in the homepage carousel/);
+  assert.match(promotionSchema, /name: 'displayDurationSeconds'/);
+  assert.match(queries, /coalesce\(displayDurationSeconds, 7\)/);
   assert.match(home, /getActivePromotions/);
   assert.match(popup, /popupMobilePoster/);
+  assert.match(popup, /SWIPE_THRESHOLD_PX/);
+  assert.match(popup, /promotionPopupProgress/);
+  assert.match(popup, /getCmsImageUrl/);
+  assert.match(popup, /new window\.Image\(\)/);
+  assert.match(popup, /unoptimized/);
+  assert.match(popup, /LOCAL_IMAGE_FALLBACK/);
+  assert.match(popup, /window\.setTimeout/);
+  assert.match(popup, /Skip to next offer/);
+  assert.match(popup, /aria-live="polite"/);
+  assert.match(popup, /callToAction\?\.href \|\| "\/book-a-table"/);
 });
 
 test("the Onam campaign has distinct responsive art and festival behaviour", async () => {
