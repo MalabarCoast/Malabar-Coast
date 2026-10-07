@@ -364,30 +364,60 @@ export const activeDailySpecialsQuery = defineQuery(`
     (!defined(endsAt) || endsAt >= now())
   ] | order(displayOrder asc, _updatedAt desc) {
     _id,
-    title,
     status,
     badge,
-    description,
-    pricePence,
+    titleOverride,
+    descriptionOverride,
+    priceOverridePence,
     priceNote,
     dietaryNote,
     activeDays,
     startsAt,
     endsAt,
     callToAction,
-    image {
+    imageOverride {
+      asset,
       alt,
       caption,
+      hotspot,
+      crop,
+      "url": asset->url,
+      "lqip": asset->metadata.lqip,
+      "dimensions": asset->metadata.dimensions
+    },
+    "legacyTitle": title,
+    "legacyDescription": description,
+    "legacyPricePence": pricePence,
+    "legacyImage": image {
+      asset,
+      alt,
+      caption,
+      hotspot,
+      crop,
       "url": asset->url,
       "lqip": asset->metadata.lqip,
       "dimensions": asset->metadata.dimensions
     },
     menuItem->{
       "id": coalesce(sourceKey, _id),
+      name,
+      description,
       pricePence,
+      dietaryNotes,
+      allergens,
       "available": coalesce(available, true),
       "onlineOrdering": coalesce(onlineOrdering, true),
-      "isAlcoholic": coalesce(isAlcoholic, false)
+      "isAlcoholic": coalesce(isAlcoholic, false),
+      image {
+        asset,
+        alt,
+        caption,
+        hotspot,
+        crop,
+        "url": asset->url,
+        "lqip": asset->metadata.lqip,
+        "dimensions": asset->metadata.dimensions
+      }
     }
   }
 `);

@@ -5,9 +5,9 @@ const builder = sanityConfigured
   ? createImageUrlBuilder({projectId: sanityProjectId, dataset: sanityDataset})
   : null;
 
-type CmsImageSource = {
+export type CmsImageSource = {
   asset?: {_ref?: string};
-  url?: string;
+  url: string;
   crop?: {top: number; bottom: number; left: number; right: number};
   hotspot?: {x: number; y: number; height: number; width: number};
 };

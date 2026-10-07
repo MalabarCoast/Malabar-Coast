@@ -421,14 +421,9 @@ async function seed() {
   const specialMenuItem = menuItems.find((item) => item.id === "malabar-coast-signature-konju-coconut-fry");
   const specialMenuItemId = itemIds.get("malabar-coast-signature-konju-coconut-fry");
   if (specialMenuItem && specialMenuItemId && specialMenuItem.pricePence != null) {
-    await upsertByField("dailySpecial", "slug.current", "coastal-kitchen-pick", {
-      title: specialMenuItem.name,
-      slug: {_type: "slug", current: "coastal-kitchen-pick"},
+    await upsertByField("dailySpecial", "menuItem._ref", specialMenuItemId, {
       status: "active",
-      image: image("calicutPrawns", "A coastal prawn dish with curry leaf and charred lime"),
       badge: "Today from the kitchen",
-      description: specialMenuItem.description || "A bright coastal plate of pepper, coconut and curry leaf.",
-      pricePence: specialMenuItem.pricePence,
       priceNote: "While today's batch lasts",
       dietaryNote: "Please tell the team about allergies before ordering.",
       menuItem: {_type: "reference", _ref: specialMenuItemId},

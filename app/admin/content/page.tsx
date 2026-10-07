@@ -74,7 +74,7 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
     <section className="adminMetrics" aria-label="Published content summary">
       <MetricCard label="Published dishes" value={overview?.menuItems.length ?? 0} detail={`${overview?.categoryCount ?? 0} menu categories`} tone={overview?.menuItems.length ? "good" : undefined}/>
       <MetricCard label="Orderable now" value={orderableItems.length} detail="Available with a valid online price" tone={orderableItems.length ? "good" : undefined}/>
-      <MetricCard label="Today's specials" value={activeSpecials.length} detail={`${overview?.dailySpecials.length ?? 0} prepared in CMS`} tone={activeSpecials.length ? "good" : undefined}/>
+      <MetricCard label="Today's specials" value={activeSpecials.length} detail={`${overview?.dailySpecials.length ?? 0} selected from the menu`} tone={activeSpecials.length ? "good" : undefined}/>
       <MetricCard label="Active offers" value={activePromotions.length} detail={`${activePromotions.filter((promotion) => promotion.showOnHomepage).length} in homepage popup`}/>
       <MetricCard label="Booking route" value={overview?.bookingExperience?.bookingMode === "special" ? "Special" : "Regular"} detail={overview?.bookingExperience?.activeCampaign?.title || "Standard table booking"} tone="good"/>
     </section>
@@ -84,7 +84,7 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
     </section>}
 
     <section className="adminContentWorkflow" aria-label="Content workflow">
-      <article><span>01 · Create</span><h2>Start with the right record.</h2><p>Add a dish, today&apos;s special, promotion, FAQ or guest testimonial using its purpose-built Studio form.</p><div>{createDish && <a href={createDish} target="_blank" rel="noreferrer">New dish</a>}{createSpecial && <a href={createSpecial} target="_blank" rel="noreferrer">New special</a>}{createPromotion && <a href={createPromotion} target="_blank" rel="noreferrer">New promotion</a>}</div></article>
+      <article><span>01 · Create</span><h2>Start with the right record.</h2><p>Add a dish once, then choose it from the same menu catalogue whenever it becomes today&apos;s special.</p><div>{createDish && <a href={createDish} target="_blank" rel="noreferrer">New dish</a>}{createSpecial && <a href={createSpecial} target="_blank" rel="noreferrer">Choose today&apos;s special</a>}{createPromotion && <a href={createPromotion} target="_blank" rel="noreferrer">New promotion</a>}</div></article>
       <article><span>02 · Read</span><h2>Know what is live.</h2><p>This dashboard reads the same published catalogue used by guests and checkout, including current prices and availability.</p><div><Link href="/menu" target="_blank">Public menu</Link><Link href="/offers" target="_blank">Public offers</Link></div></article>
       <article><span>03 · Update</span><h2>Edit with context.</h2><p>Open any record directly from the tables below, publish it, and return here to verify the guest-facing result.</p></article>
       <article><span>04 · Retire</span><h2>Pause before deleting.</h2><p>Mark dishes unavailable or promotions paused for a recoverable change. Studio also provides unpublish and delete when removal is genuinely required.</p></article>
@@ -119,11 +119,11 @@ export default async function AdminContentPage({searchParams}: {searchParams: Pr
 
     <section className="adminSplitGrid adminContentLowerGrid">
       <article className="adminPanel adminPromotionAdmin">
-        <div className="adminPanelHeading"><div><p>Offers, posters and kitchen board</p><h2>Live content library</h2></div><div>{createSpecial && <a href={createSpecial} target="_blank" rel="noreferrer">Create special</a>} {createPromotion && <a href={createPromotion} target="_blank" rel="noreferrer">Create offer</a>}</div></div>
+        <div className="adminPanelHeading"><div><p>Offers, posters and kitchen board</p><h2>Live content library</h2></div><div>{createSpecial && <a href={createSpecial} target="_blank" rel="noreferrer">Choose from menu</a>} {createPromotion && <a href={createPromotion} target="_blank" rel="noreferrer">Create offer</a>}</div></div>
         <p className="adminContentSubheading">Today&apos;s specials</p>
-        {!overview?.dailySpecials.length ? <EmptyState title="No specials yet" detail="Create a priced daily special for the homepage kitchen board."/> : <div className="adminPromotionRows">{overview.dailySpecials.map((special) => <a href={studioIntent(studioUrl, "edit", "dailySpecial", special._id) || studioUrl || "#"} target="_blank" rel="noreferrer" key={special._id}>
+        {!overview?.dailySpecials.length ? <EmptyState title="No specials selected" detail="Choose any existing dish from the menu catalogue, then set its days and availability."/> : <div className="adminPromotionRows">{overview.dailySpecials.map((special) => <a href={studioIntent(studioUrl, "edit", "dailySpecial", special._id) || studioUrl || "#"} target="_blank" rel="noreferrer" key={special._id}>
           <span className="adminPromotionThumb">{special.image?.url ? <Image src={special.image.url} alt="" fill sizes="64px"/> : <b>No image</b>}</span>
-          <span><strong>{special.title}</strong><small>{special.pricePence == null ? "Price needed" : money(special.pricePence)} · Homepage kitchen board</small></span>
+          <span><strong>{special.title}</strong><small>{special.pricePence == null ? "Price needed" : money(special.pricePence)} · {special.menuItemId ? "Synced with menu catalogue" : "Legacy copied entry"}</small></span>
           <b className={`adminContentState ${special.status === "active" ? "isLive" : "isPaused"}`}>{special.status}</b>
         </a>)}</div>}
         <p className="adminContentSubheading">Posters and offers</p>

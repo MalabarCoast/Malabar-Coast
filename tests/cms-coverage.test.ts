@@ -102,3 +102,45 @@ test("menu interlude images are editable in the menu page CMS", async () => {
   assert.match(experience, /page\.menuInterludes/);
   assert.match(experience, /menuInterludes\.get\(category\.slug\)/);
 });
+
+test("today's specials inherit catalogue data from selected menu items", async () => {
+  const [schema, query, loader, admin, structure] = await Promise.all([
+    read("../studio/schemaTypes/documents/dailySpecial.ts"),
+    read("../sanity/lib/queries.ts"),
+    read("../sanity/lib/daily-specials.ts"),
+    read("../app/admin/content/page.tsx"),
+    read("../studio/structure.ts"),
+  ]);
+  assert.match(schema, /name: 'menuItem'[\s\S]*?Choose a dish from the menu catalogue[\s\S]*?rule\.required\(\)/);
+  assert.match(schema, /name: 'titleOverride'/);
+  assert.match(schema, /name: 'descriptionOverride'/);
+  assert.match(schema, /name: 'imageOverride'/);
+  assert.match(schema, /name: 'priceOverridePence'/);
+  assert.match(query, /menuItem->\{[\s\S]*?name,[\s\S]*?description,[\s\S]*?pricePence,[\s\S]*?image \{/);
+  assert.match(loader, /record\.menuItem\?\.name/);
+  assert.match(loader, /record\.menuItem\?\.description/);
+  assert.match(loader, /record\.menuItem\?\.pricePence/);
+  assert.match(loader, /record\.menuItem\?\.image/);
+  assert.match(admin, /Choose from menu/);
+  assert.match(structure, /Today's specials · choose from menu/);
+});
+
+test("the offers page combines menu-linked specials with independently managed promotions", async () => {
+  const [offers, image, promotionSchema, structure] = await Promise.all([
+    read("../app/offers/page.tsx"),
+    read("../app/components/cms-sanity-image.tsx"),
+    read("../studio/schemaTypes/documents/promotion.ts"),
+    read("../studio/structure.ts"),
+  ]);
+  assert.match(offers, /getActiveDailySpecials/);
+  assert.match(offers, /dailySpecials\.map/);
+  assert.match(offers, /getActivePromotions/);
+  assert.match(offers, /promotions\.map/);
+  assert.match(offers, /CmsSanityImage/);
+  assert.match(offers, /Dish names, images, descriptions and standard prices stay in sync with the menu/);
+  assert.match(image, /getCmsImageUrl/);
+  assert.match(image, /unoptimized/);
+  assert.match(promotionSchema, /title: 'Offers page poster'/);
+  assert.match(promotionSchema, /main image on the Offers page/);
+  assert.match(structure, /Offers & carousel posters/);
+});
