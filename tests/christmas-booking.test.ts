@@ -55,13 +55,14 @@ test("the Christmas experience is interactive, accessible and mobile ready", asy
 });
 
 test("special-day content and homepage posters are editable in Sanity", async () => {
-  const [campaignSchema, routeSchema, campaignSelect, promotionSchema, home, popup, queries] = await Promise.all([
+  const [campaignSchema, routeSchema, campaignSelect, promotionSchema, home, popup, cmsImage, queries] = await Promise.all([
     readFile(new URL("../studio/schemaTypes/documents/specialDayCampaign.ts", import.meta.url), "utf8"),
     readFile(new URL("../studio/schemaTypes/documents/bookingExperienceSettings.ts", import.meta.url), "utf8"),
     readFile(new URL("../studio/components/SpecialDayCampaignSelect.tsx", import.meta.url), "utf8"),
     readFile(new URL("../studio/schemaTypes/documents/promotion.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/promotion-popup.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/cms-sanity-image.tsx", import.meta.url), "utf8"),
     readFile(new URL("../sanity/lib/queries.ts", import.meta.url), "utf8"),
   ]);
   assert.match(campaignSchema, /desktopHero/);
@@ -83,8 +84,10 @@ test("special-day content and homepage posters are editable in Sanity", async ()
   assert.match(popup, /promotionPopupProgress/);
   assert.match(popup, /getCmsImageUrl/);
   assert.match(popup, /new window\.Image\(\)/);
-  assert.match(popup, /unoptimized/);
-  assert.match(popup, /LOCAL_IMAGE_FALLBACK/);
+  assert.match(popup, /CmsSanityImage/);
+  assert.match(cmsImage, /unoptimized/);
+  assert.match(cmsImage, /DEFAULT_FALLBACK/);
+  assert.match(cmsImage, /applyFallback/);
   assert.match(popup, /window\.setTimeout/);
   assert.match(popup, /Skip to next offer/);
   assert.match(popup, /aria-live="polite"/);

@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import {useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type SyntheticEvent, type TouchEvent} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type TouchEvent} from "react";
 import type {Promotion} from "@/sanity/lib/promotions";
 import {getCmsImageUrl} from "@/sanity/lib/image";
+import {CmsSanityImage} from "./cms-sanity-image";
 
 const POPUP_DELAY_MS = 450;
 const DEFAULT_SLIDE_DURATION_SECONDS = 7;
@@ -12,7 +12,6 @@ const MIN_SLIDE_DURATION_SECONDS = 4;
 const MAX_SLIDE_DURATION_SECONDS = 15;
 const SWIPE_THRESHOLD_PX = 48;
 const POPUP_IMAGE_WIDTH = 960;
-const LOCAL_IMAGE_FALLBACK = "/restaurant/dining-room.png";
 
 type PromotionPoster = Promotion["poster"];
 
@@ -24,19 +23,6 @@ function popupPosters(promotion: Promotion) {
   const desktop = firstUsablePoster(promotion.popupDesktopPoster, promotion.poster);
   const mobile = firstUsablePoster(promotion.popupMobilePoster, promotion.popupDesktopPoster, promotion.poster);
   return {desktop, mobile};
-}
-
-function handlePosterError(event: SyntheticEvent<HTMLImageElement>, originalUrl: string) {
-  const image = event.currentTarget;
-  if (!image.dataset.fallbackStage && image.src !== originalUrl) {
-    image.dataset.fallbackStage = "original";
-    image.src = originalUrl;
-    return;
-  }
-  if (image.dataset.fallbackStage !== "local") {
-    image.dataset.fallbackStage = "local";
-    image.src = LOCAL_IMAGE_FALLBACK;
-  }
 }
 
 export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; ready: boolean}) {
@@ -124,8 +110,6 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
 
   if (!open || popupPromotions.length === 0) return null;
   const {desktop: desktopPoster, mobile: mobilePoster} = popupPosters(activePromotion);
-  const desktopPosterUrl = getCmsImageUrl(desktopPoster, POPUP_IMAGE_WIDTH);
-  const mobilePosterUrl = getCmsImageUrl(mobilePoster, POPUP_IMAGE_WIDTH);
 
   const close = () => {
     window.sessionStorage.setItem(storageKey, "1");
@@ -169,27 +153,21 @@ export function PromotionPopup({promotions, ready}: {promotions: Promotion[]; re
         <button ref={closeButtonRef} className="promotionPopupClose" type="button" onClick={close} aria-label="Close offers popup">×</button>
         <div className="promotionPopupSlide" key={activePromotion._id} role="group" aria-label={`Offer ${activeIndex + 1} of ${popupPromotions.length}`} aria-live="polite" aria-atomic="true">
           <div className="promotionPopupPoster promotionPopupPosterDesktop">
-            <Image
-              src={desktopPosterUrl}
+            <CmsSanityImage
+              image={desktopPoster}
+              width={POPUP_IMAGE_WIDTH}
               alt={desktopPoster.alt}
-              fill
               sizes="(max-width: 760px) 94vw, 430px"
-              unoptimized
-              loading="eager"
-              fetchPriority="high"
-              onError={(event) => handlePosterError(event, desktopPoster.url)}
+              eager
             />
           </div>
           <div className="promotionPopupPoster promotionPopupPosterMobile">
-            <Image
-              src={mobilePosterUrl}
+            <CmsSanityImage
+              image={mobilePoster}
+              width={POPUP_IMAGE_WIDTH}
               alt={mobilePoster.alt}
-              fill
               sizes="94vw"
-              unoptimized
-              loading="eager"
-              fetchPriority="high"
-              onError={(event) => handlePosterError(event, mobilePoster.url)}
+              eager
             />
           </div>
           <div className="promotionPopupCopy">

@@ -33,6 +33,17 @@ export type AdminDailySpecialRecord = {
   pricePence?: number;
   updatedAt: string;
   image?: {url?: string; alt?: string};
+  menuItemId?: string;
+};
+
+type AdminDailySpecialQueryRecord = Omit<AdminDailySpecialRecord, "title" | "pricePence" | "image"> & {
+  titleOverride?: string;
+  legacyTitle?: string;
+  priceOverridePence?: number;
+  legacyPricePence?: number;
+  imageOverride?: AdminDailySpecialRecord["image"];
+  legacyImage?: AdminDailySpecialRecord["image"];
+  menuItem?: {id?: string; name?: string; pricePence?: number; image?: AdminDailySpecialRecord["image"]};
 };
 
 export type AdminPageRecord = {
@@ -92,11 +103,15 @@ export const adminContentOverviewQuery = defineQuery(`{
   },
   "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {
     _id,
-    title,
     "status": coalesce(status, "paused"),
-    pricePence,
+    titleOverride,
+    "legacyTitle": title,
+    priceOverridePence,
+    "legacyPricePence": pricePence,
     "updatedAt": _updatedAt,
-    image {alt, "url": asset->url}
+    imageOverride {alt, "url": asset->url},
+    "legacyImage": image {alt, "url": asset->url},
+    menuItem->{"id": _id, name, pricePence, image {alt, "url": asset->url}}
   },
   "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {
     _id,
@@ -129,7 +144,19 @@ export async function getAdminContentOverview(): Promise<AdminContentOverview | 
   if (!client) return null;
 
   try {
-    return await client.fetch(adminContentOverviewQuery, {}, {cache: "no-store"}) as AdminContentOverview;
+    const overview = await client.fetch(adminContentOverviewQuery, {}, {cache: "no-store"}) as Omit<AdminContentOverview, "dailySpecials"> & {dailySpecials: AdminDailySpecialQueryRecord[]};
+    return {
+      ...overview,
+      dailySpecials: overview.dailySpecials.map((special) => ({
+        _id: special._id,
+        title: special.titleOverride?.trim() || special.menuItem?.name?.trim() || special.legacyTitle?.trim() || "Untitled special",
+        status: special.status,
+        pricePence: special.priceOverridePence ?? special.menuItem?.pricePence ?? special.legacyPricePence,
+        updatedAt: special.updatedAt,
+        image: special.imageOverride?.url ? special.imageOverride : special.menuItem?.image?.url ? special.menuItem.image : special.legacyImage,
+        menuItemId: special.menuItem?.id,
+      })),
+    };
   } catch (error) {
     console.error("Sanity admin content overview could not be loaded.", error instanceof Error ? error.name : "UnknownError");
     return null;

@@ -158,21 +158,25 @@ export type DailySpecial = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: string;
-  slug?: Slug;
+  menuItem?: MenuItemReference;
   status?: "active" | "soldOut" | "paused";
-  image?: ImageWithAlt;
   badge?: string;
-  description?: string;
-  pricePence?: number;
+  titleOverride?: string;
+  descriptionOverride?: string;
+  imageOverride?: ImageWithAlt;
+  priceOverridePence?: number;
   priceNote?: string;
   dietaryNote?: string;
-  menuItem?: MenuItemReference;
   activeDays?: Array<string>;
   startsAt?: string;
   endsAt?: string;
   callToAction?: Link;
   displayOrder?: number;
+  title?: string;
+  slug?: Slug;
+  image?: ImageWithAlt;
+  description?: string;
+  pricePence?: number;
 };
 
 export type Promotion = {
@@ -680,7 +684,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../sanity/lib/admin-content.ts
 // Variable: adminContentOverviewQuery
-// Query: {  "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {    _id,    name,    description,    "category": category->title,    "categorySlug": category->slug.current,    pricePence,    "available": coalesce(available, true),    "onlineOrdering": coalesce(onlineOrdering, true),    "featured": coalesce(featured, false),    "isAlcoholic": coalesce(isAlcoholic, false),    "updatedAt": _updatedAt  },  "promotions": *[_type == "promotion"] | order(displayOrder asc, _updatedAt desc) {    _id,    title,    "status": coalesce(status, "paused"),    "showOnHomepage": coalesce(showOnHomepage, false),    startsAt,    endsAt,    "updatedAt": _updatedAt,    poster {alt, "url": asset->url}  },  "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {    _id,    title,    "status": coalesce(status, "paused"),    pricePence,    "updatedAt": _updatedAt,    image {alt, "url": asset->url}  },  "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {    _id,    title,    "slug": slug.current,    "status": coalesce(status, "paused"),    "updatedAt": _updatedAt,    desktopHero {alt, "url": asset->url}  },  "bookingExperience": *[_id == "bookingExperienceSettings"][0] {    "bookingMode": coalesce(bookingMode, "regular"),    activeCampaign->{_id, title, "slug": slug.current}  },  "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {    _id,    _type,    title,    pageKey,    "updatedAt": _updatedAt  },  "categoryCount": count(*[_type == "menuCategory"]),  "faqCount": count(*[_type == "faqItem"]),  "testimonialCount": count(*[_type == "testimonial"]),  "hasMenuPage": defined(*[_id == "menuPage"][0]._id),  "hasSiteSettings": defined(*[_id == "siteSettings"][0]._id)}
+// Query: {  "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {    _id,    name,    description,    "category": category->title,    "categorySlug": category->slug.current,    pricePence,    "available": coalesce(available, true),    "onlineOrdering": coalesce(onlineOrdering, true),    "featured": coalesce(featured, false),    "isAlcoholic": coalesce(isAlcoholic, false),    "updatedAt": _updatedAt  },  "promotions": *[_type == "promotion"] | order(displayOrder asc, _updatedAt desc) {    _id,    title,    "status": coalesce(status, "paused"),    "showOnHomepage": coalesce(showOnHomepage, false),    startsAt,    endsAt,    "updatedAt": _updatedAt,    poster {alt, "url": asset->url}  },  "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {    _id,    "status": coalesce(status, "paused"),    titleOverride,    "legacyTitle": title,    priceOverridePence,    "legacyPricePence": pricePence,    "updatedAt": _updatedAt,    imageOverride {alt, "url": asset->url},    "legacyImage": image {alt, "url": asset->url},    menuItem->{"id": _id, name, pricePence, image {alt, "url": asset->url}}  },  "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {    _id,    title,    "slug": slug.current,    "status": coalesce(status, "paused"),    "updatedAt": _updatedAt,    desktopHero {alt, "url": asset->url}  },  "bookingExperience": *[_id == "bookingExperienceSettings"][0] {    "bookingMode": coalesce(bookingMode, "regular"),    activeCampaign->{_id, title, "slug": slug.current}  },  "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {    _id,    _type,    title,    pageKey,    "updatedAt": _updatedAt  },  "categoryCount": count(*[_type == "menuCategory"]),  "faqCount": count(*[_type == "faqItem"]),  "testimonialCount": count(*[_type == "testimonial"]),  "hasMenuPage": defined(*[_id == "menuPage"][0]._id),  "hasSiteSettings": defined(*[_id == "siteSettings"][0]._id)}
 export type AdminContentOverviewQueryResult = {
   menuItems: Array<{
     _id: string;
@@ -710,13 +714,28 @@ export type AdminContentOverviewQueryResult = {
   }>;
   dailySpecials: Array<{
     _id: string;
-    title: string | null;
     status: "active" | "paused" | "soldOut";
-    pricePence: number | null;
+    titleOverride: string | null;
+    legacyTitle: string | null;
+    priceOverridePence: number | null;
+    legacyPricePence: number | null;
     updatedAt: string;
-    image: {
+    imageOverride: {
       alt: string | null;
       url: string | null;
+    } | null;
+    legacyImage: {
+      alt: string | null;
+      url: string | null;
+    } | null;
+    menuItem: {
+      id: string;
+      name: string | null;
+      pricePence: number | null;
+      image: {
+        alt: string | null;
+        url: string | null;
+      } | null;
     } | null;
   }>;
   specialDays: Array<{
@@ -1300,7 +1319,7 @@ export type TestimonialsQueryResult = Array<{
 
 // Source: ../sanity/lib/queries.ts
 // Variable: activePromotionsQuery
-// Query: *[    _type == "promotion" &&    status == "active" &&    (!defined(startsAt) || startsAt <= now()) &&    (!defined(endsAt) || endsAt >= now())  ] | order(displayOrder asc, startsAt desc, _createdAt desc) {    _id,    _updatedAt,    title,    badge,    summary,    offerCode,    validityLabel,    startsAt,    endsAt,    showOnHomepage,    "displayDurationSeconds": coalesce(displayDurationSeconds, 7),    terms,    callToAction,    poster {      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    },    popupDesktopPoster {      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    },    popupMobilePoster {      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    }  }
+// Query: *[    _type == "promotion" &&    status == "active" &&    (!defined(startsAt) || startsAt <= now()) &&    (!defined(endsAt) || endsAt >= now())  ] | order(displayOrder asc, startsAt desc, _createdAt desc) {    _id,    _updatedAt,    title,    badge,    summary,    offerCode,    validityLabel,    startsAt,    endsAt,    showOnHomepage,    "displayDurationSeconds": coalesce(displayDurationSeconds, 7),    terms,    callToAction,    poster {      asset,      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    },    popupDesktopPoster {      asset,      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    },    popupMobilePoster {      asset,      alt,      caption,      hotspot,      crop,      "url": asset->url,      "dimensions": asset->metadata.dimensions,      "lqip": asset->metadata.lqip    }  }
 export type ActivePromotionsQueryResult = Array<{
   _id: string;
   _updatedAt: string;
@@ -1316,6 +1335,7 @@ export type ActivePromotionsQueryResult = Array<{
   terms: string | null;
   callToAction: Link | null;
   poster: {
+    asset: SanityImageAssetReference | null;
     alt: string | null;
     caption: string | null;
     hotspot: SanityImageHotspot | null;
@@ -1325,6 +1345,7 @@ export type ActivePromotionsQueryResult = Array<{
     lqip: string | null;
   } | null;
   popupDesktopPoster: {
+    asset: SanityImageAssetReference | null;
     alt: string | null;
     caption: string | null;
     hotspot: SanityImageHotspot | null;
@@ -1334,6 +1355,7 @@ export type ActivePromotionsQueryResult = Array<{
     lqip: string | null;
   } | null;
   popupMobilePoster: {
+    asset: SanityImageAssetReference | null;
     alt: string | null;
     caption: string | null;
     hotspot: SanityImageHotspot | null;
@@ -1458,33 +1480,63 @@ export type LiveSpecialDayCampaignsQueryResult = Array<{
 
 // Source: ../sanity/lib/queries.ts
 // Variable: activeDailySpecialsQuery
-// Query: *[    _type == "dailySpecial" &&    status in ["active", "soldOut"] &&    (!defined(startsAt) || startsAt <= now()) &&    (!defined(endsAt) || endsAt >= now())  ] | order(displayOrder asc, _updatedAt desc) {    _id,    title,    status,    badge,    description,    pricePence,    priceNote,    dietaryNote,    activeDays,    startsAt,    endsAt,    callToAction,    image {      alt,      caption,      "url": asset->url,      "lqip": asset->metadata.lqip,      "dimensions": asset->metadata.dimensions    },    menuItem->{      "id": coalesce(sourceKey, _id),      pricePence,      "available": coalesce(available, true),      "onlineOrdering": coalesce(onlineOrdering, true),      "isAlcoholic": coalesce(isAlcoholic, false)    }  }
+// Query: *[    _type == "dailySpecial" &&    status in ["active", "soldOut"] &&    (!defined(startsAt) || startsAt <= now()) &&    (!defined(endsAt) || endsAt >= now())  ] | order(displayOrder asc, _updatedAt desc) {    _id,    status,    badge,    titleOverride,    descriptionOverride,    priceOverridePence,    priceNote,    dietaryNote,    activeDays,    startsAt,    endsAt,    callToAction,    imageOverride {      asset,      alt,      caption,      hotspot,      crop,      "url": asset->url,      "lqip": asset->metadata.lqip,      "dimensions": asset->metadata.dimensions    },    "legacyTitle": title,    "legacyDescription": description,    "legacyPricePence": pricePence,    "legacyImage": image {      asset,      alt,      caption,      hotspot,      crop,      "url": asset->url,      "lqip": asset->metadata.lqip,      "dimensions": asset->metadata.dimensions    },    menuItem->{      "id": coalesce(sourceKey, _id),      name,      description,      pricePence,      dietaryNotes,      allergens,      "available": coalesce(available, true),      "onlineOrdering": coalesce(onlineOrdering, true),      "isAlcoholic": coalesce(isAlcoholic, false),      image {        asset,        alt,        caption,        hotspot,        crop,        "url": asset->url,        "lqip": asset->metadata.lqip,        "dimensions": asset->metadata.dimensions      }    }  }
 export type ActiveDailySpecialsQueryResult = Array<{
   _id: string;
-  title: string | null;
   status: "active" | "paused" | "soldOut" | null;
   badge: string | null;
-  description: string | null;
-  pricePence: number | null;
+  titleOverride: string | null;
+  descriptionOverride: string | null;
+  priceOverridePence: number | null;
   priceNote: string | null;
   dietaryNote: string | null;
   activeDays: Array<string> | null;
   startsAt: string | null;
   endsAt: string | null;
   callToAction: Link | null;
-  image: {
+  imageOverride: {
+    asset: SanityImageAssetReference | null;
     alt: string | null;
     caption: string | null;
+    hotspot: SanityImageHotspot | null;
+    crop: SanityImageCrop | null;
+    url: string | null;
+    lqip: string | null;
+    dimensions: SanityImageDimensions | null;
+  } | null;
+  legacyTitle: string | null;
+  legacyDescription: string | null;
+  legacyPricePence: number | null;
+  legacyImage: {
+    asset: SanityImageAssetReference | null;
+    alt: string | null;
+    caption: string | null;
+    hotspot: SanityImageHotspot | null;
+    crop: SanityImageCrop | null;
     url: string | null;
     lqip: string | null;
     dimensions: SanityImageDimensions | null;
   } | null;
   menuItem: {
     id: string;
+    name: string | null;
+    description: string | null;
     pricePence: number | null;
+    dietaryNotes: string | null;
+    allergens: Array<string> | null;
     available: boolean | true;
     onlineOrdering: boolean | true;
     isAlcoholic: boolean | false;
+    image: {
+      asset: SanityImageAssetReference | null;
+      alt: string | null;
+      caption: string | null;
+      hotspot: SanityImageHotspot | null;
+      crop: SanityImageCrop | null;
+      url: string | null;
+      lqip: string | null;
+      dimensions: SanityImageDimensions | null;
+    } | null;
   } | null;
 }>;
 
@@ -1492,7 +1544,7 @@ export type ActiveDailySpecialsQueryResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '{\n  "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {\n    _id,\n    name,\n    description,\n    "category": category->title,\n    "categorySlug": category->slug.current,\n    pricePence,\n    "available": coalesce(available, true),\n    "onlineOrdering": coalesce(onlineOrdering, true),\n    "featured": coalesce(featured, false),\n    "isAlcoholic": coalesce(isAlcoholic, false),\n    "updatedAt": _updatedAt\n  },\n  "promotions": *[_type == "promotion"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    "status": coalesce(status, "paused"),\n    "showOnHomepage": coalesce(showOnHomepage, false),\n    startsAt,\n    endsAt,\n    "updatedAt": _updatedAt,\n    poster {alt, "url": asset->url}\n  },\n  "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    "status": coalesce(status, "paused"),\n    pricePence,\n    "updatedAt": _updatedAt,\n    image {alt, "url": asset->url}\n  },\n  "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    "status": coalesce(status, "paused"),\n    "updatedAt": _updatedAt,\n    desktopHero {alt, "url": asset->url}\n  },\n  "bookingExperience": *[_id == "bookingExperienceSettings"][0] {\n    "bookingMode": coalesce(bookingMode, "regular"),\n    activeCampaign->{_id, title, "slug": slug.current}\n  },\n  "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {\n    _id,\n    _type,\n    title,\n    pageKey,\n    "updatedAt": _updatedAt\n  },\n  "categoryCount": count(*[_type == "menuCategory"]),\n  "faqCount": count(*[_type == "faqItem"]),\n  "testimonialCount": count(*[_type == "testimonial"]),\n  "hasMenuPage": defined(*[_id == "menuPage"][0]._id),\n  "hasSiteSettings": defined(*[_id == "siteSettings"][0]._id)\n}': AdminContentOverviewQueryResult;
+    '{\n  "menuItems": *[_type == "menuItem"] | order(category->orderRank asc, displayOrder asc, name asc) {\n    _id,\n    name,\n    description,\n    "category": category->title,\n    "categorySlug": category->slug.current,\n    pricePence,\n    "available": coalesce(available, true),\n    "onlineOrdering": coalesce(onlineOrdering, true),\n    "featured": coalesce(featured, false),\n    "isAlcoholic": coalesce(isAlcoholic, false),\n    "updatedAt": _updatedAt\n  },\n  "promotions": *[_type == "promotion"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    "status": coalesce(status, "paused"),\n    "showOnHomepage": coalesce(showOnHomepage, false),\n    startsAt,\n    endsAt,\n    "updatedAt": _updatedAt,\n    poster {alt, "url": asset->url}\n  },\n  "dailySpecials": *[_type == "dailySpecial"] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    "status": coalesce(status, "paused"),\n    titleOverride,\n    "legacyTitle": title,\n    priceOverridePence,\n    "legacyPricePence": pricePence,\n    "updatedAt": _updatedAt,\n    imageOverride {alt, "url": asset->url},\n    "legacyImage": image {alt, "url": asset->url},\n    menuItem->{"id": _id, name, pricePence, image {alt, "url": asset->url}}\n  },\n  "specialDays": *[_type == "specialDayCampaign"] | order(_updatedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    "status": coalesce(status, "paused"),\n    "updatedAt": _updatedAt,\n    desktopHero {alt, "url": asset->url}\n  },\n  "bookingExperience": *[_id == "bookingExperienceSettings"][0] {\n    "bookingMode": coalesce(bookingMode, "regular"),\n    activeCampaign->{_id, title, "slug": slug.current}\n  },\n  "pages": *[_type in ["marketingPage", "legalPage"]] | order(_type asc, pageKey asc) {\n    _id,\n    _type,\n    title,\n    pageKey,\n    "updatedAt": _updatedAt\n  },\n  "categoryCount": count(*[_type == "menuCategory"]),\n  "faqCount": count(*[_type == "faqItem"]),\n  "testimonialCount": count(*[_type == "testimonial"]),\n  "hasMenuPage": defined(*[_id == "menuPage"][0]._id),\n  "hasSiteSettings": defined(*[_id == "siteSettings"][0]._id)\n}': AdminContentOverviewQueryResult;
     '{\n  "categories": *[_type == "menuCategory" && published != false] | order(orderRank asc) {\n    "slug": slug.current,\n    title,\n    "note": coalesce(shortTitle, title),\n    "description": coalesce(description, ""),\n    orderRank\n  },\n  "items": *[_type == "menuItem" && published != false] | order(category->orderRank asc, displayOrder asc, name asc) {\n    "id": coalesce(sourceKey, _id),\n    "category": category->slug.current,\n    name,\n    "description": coalesce(description, ""),\n    subheading,\n    pricePence,\n    priceLabel,\n    hidePrice,\n    isAlcoholic,\n    isVegetarian,\n    isVegan,\n    dietaryReviewStatus,\n    "allergens": coalesce(allergens, []),\n    "allergenReviewStatus": coalesce(allergenReviewStatus, "needs-review"),\n    allergenNotes,\n    spiceLevel,\n    available,\n    onlineOrdering,\n    featured,\n    displayOrder,\n    image {\n      alt,\n      caption,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions\n    }\n  },\n  "page": *[_id == "menuPage"][0] {\n    eyebrow,\n    headingLineOne,\n    headingLineTwo,\n    introduction,\n    journeyLinkLabel,\n    manifestEyebrow,\n    manifestHeading,\n    manifestIntroduction,\n    dietaryNotice,\n    alcoholNotice,\n    menuInterludes[] {\n      _key,\n      "afterCategory": afterCategory->slug.current,\n      eyebrow,\n      title,\n      image {\n        alt,\n        caption,\n        "url": asset->url,\n        "dimensions": asset->metadata.dimensions\n      }\n    },\n    voyageStops[] {\n      _key,\n      "itemId": coalesce(dish->sourceKey, dish->_id),\n      "area": coalesce(area, port),\n      region,\n      coordinates,\n      "year": yearLabel,\n      "course": courseLabel,\n      description,\n      image {\n        alt,\n        "url": asset->url,\n        "dimensions": asset->metadata.dimensions\n      }\n    },\n    seo {\n      title,\n      description,\n      noIndex,\n      image {alt, "url": asset->url}\n    }\n  }\n}': MenuContentQueryResult;
     '*[_type == "menuItem" && (sourceKey == $id || _id == $id)][0] {\n  "id": coalesce(sourceKey, _id),\n  "category": category->slug.current,\n  name,\n  pricePence,\n  available,\n  onlineOrdering,\n  isAlcoholic\n}': CheckoutMenuItemQueryResult;
     '*[_id == "siteSettings"][0] {\n  restaurantName,\n  legalName,\n  shortDescription,\n  description,\n  establishedDate,\n  siteUrl,\n  phone,\n  email,\n  reservationEmail,\n  address,\n  coordinates,\n  mapUrl,\n  mapEmbedUrl,\n  socialLinks,\n  primaryNavigation,\n  footerNavigation,\n  announcement,\n  footerEyebrow,\n  footerHeading,\n  footerText,\n  footerCreditLabel,\n  footerCreditUrl,\n  copyrightText,\n  defaultSeo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  },\n  logo {alt, "url": asset->url},\n  lightLogo {alt, "url": asset->url},\n  favicon {alt, "url": asset->url}\n}': SiteSettingsQueryResult;
@@ -1500,10 +1552,10 @@ declare module "@sanity/client" {
     '*[_type == "legalPage" && pageKey == $pageKey][0] {\n  pageKey,\n  title,\n  eyebrow,\n  summary,\n  lastUpdated,\n  sections[] {\n    _key,\n    "id": sectionId.current,\n    title,\n    body[] {\n      ...,\n      children[] {...},\n      markDefs[] {...}\n    }\n  },\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url}\n  }\n}': LegalPageQueryResult;
     '*[_type == "faqItem" && published != false] | order(displayOrder asc) {\n  question,\n  answer,\n  category,\n  displayOrder\n}': FaqItemsQueryResult;
     '*[_type == "testimonial" && published != false] | order(displayOrder asc) {\n  quote,\n  name,\n  source,\n  rating,\n  displayOrder\n}': TestimonialsQueryResult;
-    '\n  *[\n    _type == "promotion" &&\n    status == "active" &&\n    (!defined(startsAt) || startsAt <= now()) &&\n    (!defined(endsAt) || endsAt >= now())\n  ] | order(displayOrder asc, startsAt desc, _createdAt desc) {\n    _id,\n    _updatedAt,\n    title,\n    badge,\n    summary,\n    offerCode,\n    validityLabel,\n    startsAt,\n    endsAt,\n    showOnHomepage,\n    "displayDurationSeconds": coalesce(displayDurationSeconds, 7),\n    terms,\n    callToAction,\n    poster {\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    },\n    popupDesktopPoster {\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    },\n    popupMobilePoster {\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    }\n  }\n': ActivePromotionsQueryResult;
+    '\n  *[\n    _type == "promotion" &&\n    status == "active" &&\n    (!defined(startsAt) || startsAt <= now()) &&\n    (!defined(endsAt) || endsAt >= now())\n  ] | order(displayOrder asc, startsAt desc, _createdAt desc) {\n    _id,\n    _updatedAt,\n    title,\n    badge,\n    summary,\n    offerCode,\n    validityLabel,\n    startsAt,\n    endsAt,\n    showOnHomepage,\n    "displayDurationSeconds": coalesce(displayDurationSeconds, 7),\n    terms,\n    callToAction,\n    poster {\n      asset,\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    },\n    popupDesktopPoster {\n      asset,\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    },\n    popupMobilePoster {\n      asset,\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "dimensions": asset->metadata.dimensions,\n      "lqip": asset->metadata.lqip\n    }\n  }\n': ActivePromotionsQueryResult;
     '*[_id == "bookingExperienceSettings"][0] {\n  "bookingMode": coalesce(bookingMode, "regular"),\n  activeCampaign->{\n    _id,\n    "slug": slug.current,\n    "status": coalesce(status, "paused"),\n    startsAt,\n    endsAt\n  }\n}': BookingExperienceSettingsQueryResult;
     '*[\n  _type == "specialDayCampaign" && slug.current == $slug\n][0] {\n  _id,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  "status": coalesce(status, "paused"),\n  startsAt,\n  endsAt,\n  logoRibbon,\n  greeting,\n  heroHeading,\n  heroAccent,\n  heroText,\n  primaryActionLabel,\n  soundActionLabel,\n  scrollLabel,\n  storyEyebrow,\n  storyHeading,\n  storyItems[] {_key, symbol, title, copy},\n  bookingEyebrow,\n  bookingHeading,\n  bookingText,\n  occasionLabel,\n  confirmationEyebrow,\n  formHeading,\n  confirmationHeading,\n  promiseTitle,\n  promiseText,\n  submitLabel,\n  closingEyebrow,\n  closingHeading,\n  closingLink,\n  palette,\n  emblemStyle,\n  ambientEffect,\n  enableSound,\n  desktopHero {\n    alt,\n    caption,\n    hotspot,\n    crop,\n    "url": asset->url,\n    "dimensions": asset->metadata.dimensions,\n    "lqip": asset->metadata.lqip\n  },\n  mobileHero {\n    alt,\n    caption,\n    hotspot,\n    crop,\n    "url": asset->url,\n    "dimensions": asset->metadata.dimensions,\n    "lqip": asset->metadata.lqip\n  },\n  campaignLogo {\n    alt,\n    caption,\n    hotspot,\n    crop,\n    "url": asset->url,\n    "dimensions": asset->metadata.dimensions,\n    "lqip": asset->metadata.lqip\n  },\n  "jingleUrl": jingle.asset->url,\n  seo {\n    title,\n    description,\n    noIndex,\n    image {alt, "url": asset->url, "dimensions": asset->metadata.dimensions}\n  }\n}': SpecialDayCampaignQueryResult;
     '*[\n  _type == "specialDayCampaign" &&\n  status == "active" &&\n  seo.noIndex != true &&\n  (!defined(startsAt) || startsAt <= now()) &&\n  (!defined(endsAt) || endsAt >= now())\n] | order(_updatedAt desc) {"slug": slug.current, "updatedAt": _updatedAt}': LiveSpecialDayCampaignsQueryResult;
-    '\n  *[\n    _type == "dailySpecial" &&\n    status in ["active", "soldOut"] &&\n    (!defined(startsAt) || startsAt <= now()) &&\n    (!defined(endsAt) || endsAt >= now())\n  ] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    title,\n    status,\n    badge,\n    description,\n    pricePence,\n    priceNote,\n    dietaryNote,\n    activeDays,\n    startsAt,\n    endsAt,\n    callToAction,\n    image {\n      alt,\n      caption,\n      "url": asset->url,\n      "lqip": asset->metadata.lqip,\n      "dimensions": asset->metadata.dimensions\n    },\n    menuItem->{\n      "id": coalesce(sourceKey, _id),\n      pricePence,\n      "available": coalesce(available, true),\n      "onlineOrdering": coalesce(onlineOrdering, true),\n      "isAlcoholic": coalesce(isAlcoholic, false)\n    }\n  }\n': ActiveDailySpecialsQueryResult;
+    '\n  *[\n    _type == "dailySpecial" &&\n    status in ["active", "soldOut"] &&\n    (!defined(startsAt) || startsAt <= now()) &&\n    (!defined(endsAt) || endsAt >= now())\n  ] | order(displayOrder asc, _updatedAt desc) {\n    _id,\n    status,\n    badge,\n    titleOverride,\n    descriptionOverride,\n    priceOverridePence,\n    priceNote,\n    dietaryNote,\n    activeDays,\n    startsAt,\n    endsAt,\n    callToAction,\n    imageOverride {\n      asset,\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "lqip": asset->metadata.lqip,\n      "dimensions": asset->metadata.dimensions\n    },\n    "legacyTitle": title,\n    "legacyDescription": description,\n    "legacyPricePence": pricePence,\n    "legacyImage": image {\n      asset,\n      alt,\n      caption,\n      hotspot,\n      crop,\n      "url": asset->url,\n      "lqip": asset->metadata.lqip,\n      "dimensions": asset->metadata.dimensions\n    },\n    menuItem->{\n      "id": coalesce(sourceKey, _id),\n      name,\n      description,\n      pricePence,\n      dietaryNotes,\n      allergens,\n      "available": coalesce(available, true),\n      "onlineOrdering": coalesce(onlineOrdering, true),\n      "isAlcoholic": coalesce(isAlcoholic, false),\n      image {\n        asset,\n        alt,\n        caption,\n        hotspot,\n        crop,\n        "url": asset->url,\n        "lqip": asset->metadata.lqip,\n        "dimensions": asset->metadata.dimensions\n      }\n    }\n  }\n': ActiveDailySpecialsQueryResult;
   }
 }
