@@ -1,11 +1,16 @@
 "use client";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import styles from "./booking-forms.module.css";
 import {SmartDateInput} from "./smart-date-input";
+import {serviceAvailabilityRefreshMs, serviceUnavailableMessage, type ResolvedServiceAvailability} from "../lib/service-availability";
 
-export function HallEnquiryForm() {
+const defaultHallAvailability: ResolvedServiceAvailability = {channel: "hall", enabled: true, source: "open", message: ""};
+
+export function HallEnquiryForm({availability: initialAvailability = defaultHallAvailability}: {availability?: ResolvedServiceAvailability}) {
   const [submitting, setSubmitting] = useState(false); const [message, setMessage] = useState<{ error?: string; success?: string } | null>(null);
+  const [availability, setAvailability] = useState(initialAvailability);
   const [minimumDate] = useState(() => new Date().toISOString().slice(0, 10));
+  useEffect(() => { let active = true; const refreshAvailability = () => fetch("/api/availability", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => {if (active && data?.channels?.hall) setAvailability(data.channels.hall);}).catch(() => undefined); void refreshAvailability(); const availabilityTimer = window.setInterval(refreshAvailability, serviceAvailabilityRefreshMs); return () => {active = false; window.clearInterval(availabilityTimer);}; }, []);
   async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setSubmitting(true); setMessage(null); const form=event.currentTarget; const data=new FormData(form); try { const response=await fetch("/api/hall-enquiries",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.fromEntries(data.entries()))}); const result=await response.json() as {error?:string;reference?:string}; if(!response.ok) throw new Error(result.error||"The enquiry could not be sent."); setMessage({success:`Your request has reached our team. Reference ${result.reference}. This is an enquiry, not a confirmed hall booking; the team will contact you to discuss availability and details.`}); form.reset(); } catch(error){setMessage({error:error instanceof Error?error.message:"The enquiry could not be sent."});} finally{setSubmitting(false);} }
   return <form className={styles.form} onSubmit={submit}>
     <div className={styles.grid}>
@@ -17,7 +22,7 @@ export function HallEnquiryForm() {
       <label className={styles.full}>Tell us the basics<textarea name="message" maxLength={1000} required placeholder="What are you planning? Mention catering, layout, stage or accessibility needs if known." /></label>
     </div>
     <label className={styles.consent}><input type="checkbox" required /><span>I understand this is an enquiry. The hall is only confirmed after the restaurant team reviews the request and contacts me.</span></label>
-    {message?.error&&<p className={styles.message} role="alert">{message.error}</p>}{message?.success&&<p className={`${styles.message} ${styles.success}`} role="status">{message.success}</p>}
-    <button className={styles.button} disabled={submitting}>{submitting?"Sending request…":"Send hall enquiry"}<span aria-hidden="true">→</span></button>
+    {!availability.enabled&&<p className={styles.message} role="status">{serviceUnavailableMessage(availability)}</p>}{message?.error&&<p className={styles.message} role="alert">{message.error}</p>}{message?.success&&<p className={`${styles.message} ${styles.success}`} role="status">{message.success}</p>}
+    <button className={styles.button} disabled={submitting || !availability.enabled}>{submitting?"Sending request…":availability.enabled?"Send hall enquiry":"Enquiries paused"}<span aria-hidden="true">→</span></button>
   </form>;
 }

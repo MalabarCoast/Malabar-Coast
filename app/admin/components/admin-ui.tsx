@@ -15,11 +15,12 @@ const navigation = [
   { href: "/admin/reservations", label: "Tables", mark: "04", permission: "reservations:read" },
   { href: "/admin/schedule", label: "Calendar", mark: "05", permission: "reservations:read" },
   { href: "/admin/hall-enquiries", label: "Hall", mark: "06", permission: "hall:read" },
-  { href: "/admin/reports", label: "Reports", mark: "07", permission: "reports:read" },
-  { href: "/admin/discounts", label: "Discounts", mark: "08", permission: "discounts:read" },
-  { href: "/admin/content", label: "Content", mark: "09", permission: "content:write" },
-  { href: "/admin/careers", label: "Careers", mark: "10", permission: "content:write" },
-  { href: "/admin/settings", label: "System", mark: "11", permission: "settings:read" },
+  { href: "/admin/availability", label: "Controls", mark: "07", permission: "availability:read" },
+  { href: "/admin/reports", label: "Reports", mark: "08", permission: "reports:read" },
+  { href: "/admin/discounts", label: "Discounts", mark: "09", permission: "discounts:read" },
+  { href: "/admin/content", label: "Content", mark: "10", permission: "content:write" },
+  { href: "/admin/careers", label: "Careers", mark: "11", permission: "content:write" },
+  { href: "/admin/settings", label: "System", mark: "12", permission: "settings:read" },
 ] satisfies { href: string; label: string; mark: string; permission: AdminPermission }[];
 
 export function AdminFrame({ active, session, children }: { active: string; session: AdminSession; children: ReactNode }) {

@@ -19,6 +19,7 @@ export default async function AdminPage() {
   const canReadReservations = adminCan(session.role, "reservations:read");
   const canReadHall = adminCan(session.role, "hall:read");
   const canWriteContent = adminCan(session.role, "content:write");
+  const canReadAvailability = adminCan(session.role, "availability:read");
   const [recentOrders, reportingOrders, liveOrders, reservations, hallEnquiries, content] = await Promise.all([
     listOrdersPage({ limit: 500 }),
     listOrdersForReport(range.from, range.to),
@@ -42,7 +43,7 @@ export default async function AdminPage() {
       eyebrow="Live restaurant overview"
       title="Good service starts here."
       description="A clear view of today’s kitchen, order demand and confirmed online sales."
-      actions={<>{canWriteContent && <Link className="adminButton isSecondary" href="/admin/content">Edit website</Link>}<Link className="adminButton isSecondary" href="/admin/orders">All orders</Link><Link className="adminButton" href="/admin/kitchen">Open kitchen board</Link></>}
+      actions={<>{canReadAvailability && <Link className="adminButton isSecondary" href="/admin/availability">Service controls</Link>}{canWriteContent && <Link className="adminButton isSecondary" href="/admin/content">Edit website</Link>}<Link className="adminButton isSecondary" href="/admin/orders">All orders</Link><Link className="adminButton" href="/admin/kitchen">Open kitchen board</Link></>}
     />
 
     <section className="adminMetrics" aria-label="Business summary">

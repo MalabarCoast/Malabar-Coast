@@ -7,6 +7,8 @@ import { HallEnquiryForm } from "../components/hall-enquiry-form";
 import { absoluteUrl, formatPublicDate, pageLastUpdated, site } from "../lib/site";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 import {getFaqItems} from "@/sanity/lib/faq";
+import {getServiceAvailability} from "../lib/service-availability-store";
+import {publicServiceAvailability} from "../lib/service-availability";
 
 const fallbackMetadata: Metadata = {
   title: "Private Event Hall in Holytown",
@@ -136,7 +138,7 @@ const createHallSchema = (hallFaqs: ReadonlyArray<{id: string; question: string;
 });
 
 export default async function HallPage() {
-  const [cmsPage, allFaqs] = await Promise.all([getMarketingPage("hall"), getFaqItems()]);
+  const [cmsPage, allFaqs, serviceAvailability] = await Promise.all([getMarketingPage("hall"), getFaqItems(), getServiceAvailability()]);
   const cmsHallFaqs = allFaqs.filter((item) => /hall|private|kerala suite/i.test(`${item.category || ""} ${item.question}`));
   const hallFaqs = cmsHallFaqs.length >= 3 ? cmsHallFaqs : fallbackHallFaqs;
   const hallSchema = createHallSchema(hallFaqs);
@@ -188,7 +190,7 @@ export default async function HallPage() {
             <span>Hall availability request</span>
             <strong>Start with the basics.</strong>
           </div>
-          <HallEnquiryForm />
+          <HallEnquiryForm availability={publicServiceAvailability(serviceAvailability).hall} />
         </Reveal>
       </section>
 

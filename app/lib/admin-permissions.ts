@@ -18,14 +18,16 @@ export type AdminPermission =
   | "discounts:read"
   | "discounts:write"
   | "content:write"
+  | "availability:read"
+  | "availability:write"
   | "settings:read";
 
 const permissionsByRole: Record<AdminRole, readonly AdminPermission[]> = {
-  owner: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "settings:read"],
-  admin: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "settings:read"],
-  manager: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "kitchen:read", "reservations:read", "reservations:write", "hall:read", "hall:write", "reports:read"],
+  owner: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "availability:read", "availability:write", "settings:read"],
+  admin: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "orders:delete", "kitchen:read", "reservations:read", "reservations:write", "reservations:delete", "hall:read", "hall:write", "hall:delete", "reports:read", "discounts:read", "discounts:write", "content:write", "availability:read", "availability:write", "settings:read"],
+  manager: ["dashboard:read", "orders:read", "orders:transition", "orders:notes", "kitchen:read", "reservations:read", "reservations:write", "hall:read", "hall:write", "reports:read", "availability:read", "availability:write"],
   kitchen: ["dashboard:read", "orders:read", "orders:transition", "kitchen:read"],
-  viewer: ["dashboard:read", "orders:read", "reservations:read", "hall:read"],
+  viewer: ["dashboard:read", "orders:read", "reservations:read", "hall:read", "availability:read"],
 };
 
 export const adminRoleLabels: Record<AdminRole, string> = {

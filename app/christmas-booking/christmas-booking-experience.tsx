@@ -9,6 +9,7 @@ import {reservationSlots} from "../lib/bookings";
 import {isWithinSchedule, regularClosureNotice, scheduleNotice, type RestaurantSchedule} from "../lib/restaurant-schedule";
 import styles from "./christmas-booking.module.css";
 import type {SpecialDayCampaign} from "@/sanity/lib/special-days";
+import {serviceAvailabilityRefreshMs, serviceUnavailableMessage, type ResolvedServiceAvailability} from "../lib/service-availability";
 
 type Confirmation = {
   reference: string;
@@ -21,7 +22,7 @@ type Confirmation = {
 type CampaignStyle = CSSProperties & Record<`--campaign-${string}`, string>;
 const cssImage = (value: string) => `url(${JSON.stringify(value.replace(/[\r\n]/g, ""))})`;
 
-export function SpecialDayBookingExperience({campaign, settings, schedule}: {campaign: SpecialDayCampaign; settings: BookingSettings; schedule: RestaurantSchedule}) {
+export function SpecialDayBookingExperience({campaign, settings, schedule, availability: initialAvailability}: {campaign: SpecialDayCampaign; settings: BookingSettings; schedule: RestaurantSchedule; availability: ResolvedServiceAvailability}) {
   const [effectEnabled, setEffectEnabled] = useState(campaign.ambientEffect !== "none");
   const [jinglePlaying, setJinglePlaying] = useState(false);
   const [story, setStory] = useState(0);
@@ -32,6 +33,7 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedParty, setSelectedParty] = useState(Math.max(2, settings.minimumPartySize));
   const [liveSchedule, setLiveSchedule] = useState(schedule);
+  const [availability, setAvailability] = useState(initialAvailability);
   const audioContext = useRef<AudioContext | null>(null);
   const uploadedJingle = useRef<HTMLAudioElement | null>(null);
   const jingleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -50,8 +52,15 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
       .then((response) => response.ok ? response.json() : null)
       .then((data) => { if (active && data?.schedule) setLiveSchedule(data.schedule); })
       .catch(() => undefined);
+    const refreshAvailability = () => fetch("/api/availability", {cache: "no-store"})
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => { if (active && data?.channels?.table) setAvailability(data.channels.table); })
+      .catch(() => undefined);
+    void refreshAvailability();
+    const availabilityTimer = window.setInterval(refreshAvailability, serviceAvailabilityRefreshMs);
     return () => {
       active = false;
+      window.clearInterval(availabilityTimer);
       if (jingleTimer.current) clearTimeout(jingleTimer.current);
       uploadedJingle.current?.pause();
       void audioContext.current?.close();
@@ -244,8 +253,9 @@ export function SpecialDayBookingExperience({campaign, settings, schedule}: {cam
 
             <div className={styles.liveSummary} aria-live="polite"><p><b>{selectedParty} seat{selectedParty === 1 ? "" : "s"}</b>{selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : "Choose a date and time above"}</p></div>
             <label className={styles.consent}><input type="checkbox" required/><span>I confirm these details are correct and understand the restaurant may contact me about this booking.</span></label>
+            {!availability.enabled && <p className={styles.formMessage} role="status">{serviceUnavailableMessage(availability)}</p>}
             {message && <p className={styles.formMessage} role="alert">{message}</p>}
-            <button className={styles.submitButton} type="submit" disabled={submitting || !settings.bookingEnabled || closedDate || invalidTime}><span>{submitting ? "Checking the table…" : settings.bookingEnabled ? campaign.submitLabel : "Booking paused"}</span></button>
+            <button className={styles.submitButton} type="submit" disabled={submitting || !settings.bookingEnabled || !availability.enabled || closedDate || invalidTime}><span>{submitting ? "Checking the table…" : settings.bookingEnabled && availability.enabled ? campaign.submitLabel : "Booking paused"}</span></button>
           </form>
         </>}
       </div>

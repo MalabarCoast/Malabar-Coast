@@ -6,6 +6,8 @@ import Link from "next/link";
 import {getMarketingPage, getMarketingPageMetadata, getPageSection, portableTextToPlainText} from "@/sanity/lib/pages";
 import {getActiveBookingCampaign} from "@/sanity/lib/special-days";
 import {SpecialDayBookingExperience} from "../christmas-booking/christmas-booking-experience";
+import {getServiceAvailability} from "../lib/service-availability-store";
+import {publicServiceAvailability} from "../lib/service-availability";
 
 export const dynamic = "force-dynamic";
 const fallbackMetadata: Metadata = { title: "Book a Table", description: "Reserve a table at Malabar Coast in Holytown.", alternates: { canonical: "/book-a-table" } };
@@ -24,11 +26,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BookATablePage() {
-  const [settings, schedule, page, activeCampaign] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table"), getActiveBookingCampaign()]);
-  if (activeCampaign) return <SpecialDayBookingExperience campaign={activeCampaign} settings={settings} schedule={schedule} />;
+  const [settings, schedule, page, activeCampaign, serviceAvailability] = await Promise.all([getBookingSettings(), getRestaurantSchedule(), getMarketingPage("book-a-table"), getActiveBookingCampaign(), getServiceAvailability()]);
+  const tableAvailability = publicServiceAvailability(serviceAvailability).table;
+  if (activeCampaign) return <SpecialDayBookingExperience campaign={activeCampaign} settings={settings} schedule={schedule} availability={tableAvailability} />;
   const details = getPageSection(page, "booking-details");
   return <main className="bookingPage">
     <section className="bookingIntro"><p>{page?.eyebrow || "Book your table · Holytown"}</p><h1>{page?.heroHeading || <>Come sit<br />by the coast.</>}</h1><span>{page?.heroText || `Choose a date, arrival time and party size. We check the restaurant's live ${settings.capacity}-seat capacity before confirming your table.`}<span className="bookingIntroLinks"><Link href={page?.heroPrimaryLink?.href || "/menu"}>{page?.heroPrimaryLink?.label || "See what's cooking"} <b aria-hidden="true">↗</b></Link><Link href={page?.heroSecondaryLink?.href || "/hall"}>{page?.heroSecondaryLink?.label || "Planning something bigger?"} <b aria-hidden="true">↗</b></Link></span></span></section>
-    <section className="bookingWorkspace"><div><p>{details?.eyebrow || "Before you book"}</p><h2>{details?.heading || <>A table prepared<br />for your people.</>}</h2>{portableTextToPlainText(details?.body) && <span>{portableTextToPlainText(details?.body)}</span>}<ul><li><b>{settings.sittingMinutes} minutes</b><span>Reserved for each table</span></li><li><b>Up to {settings.maximumPartySize}</b><span>Guests per online booking</span></li><li><b>{Math.ceil(settings.minimumLeadMinutes/60)} hours</b><span>Minimum booking notice</span></li></ul><nav className="bookingSideLinks"><Link href="/offers">Today&apos;s offers <span>→</span></Link><Link href="/faq">Questions before you book <span>→</span></Link></nav></div><div className="bookingFormCard"><TableBookingForm settings={settings} schedule={schedule} /></div></section>
+    <section className="bookingWorkspace"><div><p>{details?.eyebrow || "Before you book"}</p><h2>{details?.heading || <>A table prepared<br />for your people.</>}</h2>{portableTextToPlainText(details?.body) && <span>{portableTextToPlainText(details?.body)}</span>}<ul><li><b>{settings.sittingMinutes} minutes</b><span>Reserved for each table</span></li><li><b>Up to {settings.maximumPartySize}</b><span>Guests per online booking</span></li><li><b>{Math.ceil(settings.minimumLeadMinutes/60)} hours</b><span>Minimum booking notice</span></li></ul><nav className="bookingSideLinks"><Link href="/offers">Today&apos;s offers <span>→</span></Link><Link href="/faq">Questions before you book <span>→</span></Link></nav></div><div className="bookingFormCard"><TableBookingForm settings={settings} schedule={schedule} availability={tableAvailability} /></div></section>
   </main>;
 }

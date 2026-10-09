@@ -15,6 +15,7 @@ import {
 } from "../lib/checkout-recovery";
 import { useCart } from "./cart-provider";
 import { SmartDateInput } from "./smart-date-input";
+import {serviceAvailabilityRefreshMs, serviceUnavailableMessage, type PublicServiceAvailability} from "../lib/service-availability";
 
 type PaymentConfig = { stripe: boolean; deliveryFeePence: number };
 type AppliedDiscount = { code: string; percentOff: number };
@@ -29,10 +30,11 @@ function recoveryIsForClosedDate(attempt: CheckoutAttempt | null, schedule: Rest
   }
 }
 
-export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
+export function CheckoutForm({schedule, availability: initialAvailability}: {schedule: RestaurantSchedule; availability: PublicServiceAvailability}) {
   const { lines, items, subtotalPence, setQuantity, removeItem, clearCart, hydrated } = useCart();
   const [config, setConfig] = useState<PaymentConfig | null>(null);
-  const [fulfilment, setFulfilment] = useState<FulfilmentMethod>("collection");
+  const [fulfilment, setFulfilment] = useState<FulfilmentMethod>(() => initialAvailability.collection.enabled ? "collection" : initialAvailability.delivery.enabled ? "delivery" : "collection");
+  const [channelAvailability, setChannelAvailability] = useState(initialAvailability);
   const [requestedTime, setRequestedTime] = useState("");
   const [liveSchedule, setLiveSchedule] = useState(schedule);
   const closedDate = Boolean(requestedTime) && !isWithinSchedule(liveSchedule, requestedTime.slice(0, 10), requestedTime.slice(11));
@@ -59,8 +61,16 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
       })
       .catch(() => active && setError("Secure payment could not be prepared. Please refresh and try again."));
     fetch("/api/schedule", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => {if (active && data?.schedule) setLiveSchedule(data.schedule);}).catch(() => undefined);
+    const refreshAvailability = () => fetch("/api/availability", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => {
+      if (!active || !data?.channels) return;
+      setChannelAvailability(data.channels);
+      setFulfilment((current) => data.channels[current]?.enabled ? current : data.channels.collection?.enabled ? "collection" : data.channels.delivery?.enabled ? "delivery" : current);
+    }).catch(() => undefined);
+    void refreshAvailability();
+    const availabilityTimer = window.setInterval(refreshAvailability, serviceAvailabilityRefreshMs);
     return () => {
       active = false;
+      window.clearInterval(availabilityTimer);
       if (recoveryFrame !== undefined) window.cancelAnimationFrame(recoveryFrame);
     };
   }, []);
@@ -70,10 +80,13 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
   const discountPence = appliedDiscount ? Math.min(subtotalPence, Math.round(subtotalPence * appliedDiscount.percentOff / 100)) : 0;
   const totalPence = originalTotalPence - discountPence;
   const paymentReady = config?.stripe === true;
+  const fulfilmentReady = channelAvailability[fulfilment].enabled;
   const paymentButtonLabel = submitting
     ? "Opening secure payment…"
     : config === null
       ? "Checking secure payment…"
+      : !fulfilmentReady
+        ? `${fulfilment === "collection" ? "Collection" : "Delivery"} temporarily unavailable`
       : paymentReady
         ? `Continue to payment · ${formatPrice(totalPence)}`
         : "Payment temporarily unavailable";
@@ -112,6 +125,10 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
     event.preventDefault();
     if (closedDate) {
       setError(`${scheduleNotice(liveSchedule, requestedTime.slice(0, 10))} Please choose another date or time.`);
+      return;
+    }
+    if (!fulfilmentReady) {
+      setError(serviceUnavailableMessage(channelAvailability[fulfilment]));
       return;
     }
     if (!paymentReady) {
@@ -246,15 +263,17 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
               <div><p>Fulfilment</p><h2 id="checkout-fulfilment-heading">How would you like it?</h2></div>
             </div>
             <div className="choiceCards">
-              <label className={fulfilment === "collection" ? "isSelected" : ""}>
-                <input type="radio" name="fulfilment" value="collection" checked={fulfilment === "collection"} onChange={() => setFulfilment("collection")} />
+              <label className={`${fulfilment === "collection" ? "isSelected" : ""}${!channelAvailability.collection.enabled ? " isUnavailable" : ""}`}>
+                <input type="radio" name="fulfilment" value="collection" checked={fulfilment === "collection"} disabled={!channelAvailability.collection.enabled} onChange={() => setFulfilment("collection")} />
                 <strong>Collection</strong><span>Collect from 33 Main Street, Holytown</span>
               </label>
-              <label className={fulfilment === "delivery" ? "isSelected" : ""}>
-                <input type="radio" name="fulfilment" value="delivery" checked={fulfilment === "delivery"} onChange={() => setFulfilment("delivery")} />
+              <label className={`${fulfilment === "delivery" ? "isSelected" : ""}${!channelAvailability.delivery.enabled ? " isUnavailable" : ""}`}>
+                <input type="radio" name="fulfilment" value="delivery" checked={fulfilment === "delivery"} disabled={!channelAvailability.delivery.enabled} onChange={() => setFulfilment("delivery")} />
                 <strong>Delivery</strong><span>{formatPrice(config?.deliveryFeePence ?? 350)} delivery fee</span>
               </label>
             </div>
+            {!channelAvailability.collection.enabled && <p className="paymentNotice" role="status"><strong>Collection paused.</strong> {serviceUnavailableMessage(channelAvailability.collection)}</p>}
+            {!channelAvailability.delivery.enabled && <p className="paymentNotice" role="status"><strong>Delivery paused.</strong> {serviceUnavailableMessage(channelAvailability.delivery)}</p>}
             <label className="fullField">Requested date &amp; time<SmartDateInput name="requestedTime" type="datetime-local" onChange={(event) => setRequestedTime(event.target.value)} required /></label>
             <p className="checkoutScheduleNote">{regularClosureNotice} Holiday hours may differ.</p>
             {closedDate && <p className="paymentNotice" role="alert">{scheduleNotice(liveSchedule, requestedTime.slice(0, 10))} Choose another date or time before continuing to payment.</p>}
@@ -358,7 +377,7 @@ export function CheckoutForm({schedule}: {schedule: RestaurantSchedule}) {
             </strong>
           </div>
           {error && <div className="checkoutError" role="alert" aria-live="assertive">{error}</div>}
-          <button className="payButton" type="submit" disabled={submitting || !paymentReady || closedDate} aria-busy={submitting}>
+          <button className="payButton" type="submit" disabled={submitting || !paymentReady || !fulfilmentReady || closedDate} aria-busy={submitting}>
             <span>{paymentButtonLabel}</span><b aria-hidden="true">→</b>
           </button>
           <button className="clearOrder" type="button" onClick={clearCart}>Clear order</button>

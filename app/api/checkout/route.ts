@@ -5,6 +5,7 @@ import {findActiveDiscountCode} from "../../lib/discount-store";
 import { setOrderAccess, isOrderAccessConfigured } from "../../lib/order-access";
 import { createStripeCheckout, isStripeConfigured } from "../../lib/payments/stripe";
 import {getRestaurantSchedule} from "../../lib/schedule-store";
+import {assertServiceAvailable, ServiceUnavailableError} from "../../lib/service-availability-store";
 import { checkRateLimit, configuredSiteOrigin, getClientAddress, isTrustedOrigin, noStoreJson, readLimitedJson, RequestBodyTooLargeError } from "../../lib/security";
 
 export const runtime = "nodejs";
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
     if (!isOrderAccessConfigured()) throw new Error("Order access signing is not configured.");
 
     const validatedCheckout = await validateCheckout(await readLimitedJson(request, 64_000), await getRestaurantSchedule());
+    await assertServiceAvailable(validatedCheckout.fulfilment);
     const discount = validatedCheckout.discountCode ? await findActiveDiscountCode(validatedCheckout.discountCode) : null;
     if (validatedCheckout.discountCode && !discount) {
       throw new CheckoutValidationError("That discount code is not recognized or is no longer active.");
@@ -117,11 +119,11 @@ export async function POST(request: Request) {
       paymentStatus: "failed",
       outcome: "checkout_error",
     }).catch(() => false);
-    const status = error instanceof RequestBodyTooLargeError ? 413 : error instanceof CheckoutValidationError || error instanceof SyntaxError ? 400 : 500;
+    const status = error instanceof RequestBodyTooLargeError ? 413 : error instanceof ServiceUnavailableError ? 409 : error instanceof CheckoutValidationError || error instanceof SyntaxError ? 400 : 500;
     if (status === 500) console.error("Checkout could not be started.", error instanceof Error ? error.name : "UnknownError");
     const message = error instanceof RequestBodyTooLargeError
       ? "Checkout request is too large."
-      : error instanceof CheckoutValidationError
+      : error instanceof ServiceUnavailableError || error instanceof CheckoutValidationError
         ? error.message
         : error instanceof SyntaxError
           ? "Checkout details are invalid."
