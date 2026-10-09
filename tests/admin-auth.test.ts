@@ -35,11 +35,14 @@ test("role permissions follow least privilege", () => {
   assert.equal(adminCan("admin", "orders:delete"), true);
   assert.equal(adminCan("manager", "orders:delete"), false);
   assert.equal(adminCan("manager", "reports:read"), true);
+  assert.equal(adminCan("manager", "availability:write"), true);
   assert.equal(adminCan("manager", "settings:read"), false);
   assert.equal(adminCan("kitchen", "orders:transition"), true);
   assert.equal(adminCan("kitchen", "orders:notes"), false);
   assert.equal(adminCan("viewer", "orders:read"), true);
   assert.equal(adminCan("viewer", "orders:transition"), false);
+  assert.equal(adminCan("viewer", "availability:read"), true);
+  assert.equal(adminCan("viewer", "availability:write"), false);
 });
 
 test("Supabase Auth login also requires an active matching administrator profile", async () => {

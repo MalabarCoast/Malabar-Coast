@@ -3,7 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("database schema contains the atomic checkout and transition boundary", async () => {
-  const schema = await readFile(new URL("../supabase/schema.sql", import.meta.url), "utf8");
+  const [schema, orderStore] = await Promise.all([
+    readFile(new URL("../supabase/schema.sql", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/order-store.ts", import.meta.url), "utf8"),
+  ]);
   assert.match(schema, /create unique index if not exists orders_idempotency_key_hash_uidx/i);
   assert.match(schema, /create or replace function public\.create_checkout_order/i);
   assert.match(schema, /on conflict \(idempotency_key_hash\).*do nothing/i);
@@ -22,6 +25,11 @@ test("database schema contains the atomic checkout and transition boundary", asy
   assert.match(schema, /deleted_at timestamptz/i);
   assert.match(schema, /'career\.deleted'/i);
   assert.match(schema, /grant execute on function public\.order_database_health\(\) to service_role/i);
+  assert.match(schema, /create table if not exists public\.service_availability/i);
+  assert.match(schema, /create or replace function public\.admin_update_service_availability/i);
+  assert.match(schema, /'service\.availability\.updated'/i);
+  assert.match(schema, /2026-10-09-service-availability-v9/i);
+  assert.match(orderStore, /ORDER_DATABASE_CONTRACT_VERSION = "2026-10-09-service-availability-v9"/);
 });
 
 test("payment event RPC requires provider identity and value inputs", async () => {

@@ -18,6 +18,7 @@ import {formatPublicDate, pageLastUpdated, site} from "./lib/site";
 import {PromotionPopup} from "./components/promotion-popup";
 import type {Promotion} from "@/sanity/lib/promotions";
 import type {MarketingSection} from "@/sanity/lib/pages";
+import type {ResolvedServiceAvailability} from "./lib/service-availability";
 
 const REDUCED_MOTION_INTRO_DELAY_MS = 120;
 const REPLAY_INTRO_EVENT = "malabar:replay-intro";
@@ -66,7 +67,7 @@ function CompassMark() {
   );
 }
 
-export function HomeExperience({content, menuItems, dailySpecials, promotions, bookingSettings, schedule}: {content: HomeCmsContent; menuItems: MenuItem[]; dailySpecials: DailySpecial[]; promotions: Promotion[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule}) {
+export function HomeExperience({content, menuItems, dailySpecials, promotions, bookingSettings, schedule, tableAvailability}: {content: HomeCmsContent; menuItems: MenuItem[]; dailySpecials: DailySpecial[]; promotions: Promotion[]; bookingSettings: BookingSettings; schedule: RestaurantSchedule; tableAvailability: ResolvedServiceAvailability}) {
   const [introActive, setIntroActive] = useState(true);
   const [heroFooterRevealed, setHeroFooterRevealed] = useState(false);
   const latitude = content.coordinates?.latitude ?? site.geo.latitude;
@@ -250,7 +251,7 @@ export function HomeExperience({content, menuItems, dailySpecials, promotions, b
             <Link href="/book-a-table">Open the full booking page <span aria-hidden="true">→</span></Link>
           </nav>
         </div>
-        <div className="homeBookingForm"><TableBookingForm settings={bookingSettings} schedule={schedule} compact /></div>
+        <div className="homeBookingForm"><TableBookingForm settings={bookingSettings} schedule={schedule} availability={tableAvailability} compact /></div>
       </section>
 
       <HomeStoryScroll />

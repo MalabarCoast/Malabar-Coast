@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CheckoutForm } from "../components/checkout-form";
 import {getRestaurantSchedule} from "../lib/schedule-store";
+import {getServiceAvailability} from "../lib/service-availability-store";
+import {publicServiceAvailability} from "../lib/service-availability";
 
 export const dynamic = "force-dynamic";
 
@@ -11,5 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default async function CheckoutPage() {
-  return <CheckoutForm schedule={await getRestaurantSchedule()} />;
+  const [schedule, serviceAvailability] = await Promise.all([getRestaurantSchedule(), getServiceAvailability()]);
+  return <CheckoutForm schedule={schedule} availability={publicServiceAvailability(serviceAvailability)} />;
 }

@@ -75,6 +75,7 @@
 .choiceCards label,.choiceCards > div { position: relative; display: flex; flex-direction: column; gap: .45rem; min-height: 6.8rem; padding: 1.25rem; border: 1px solid rgba(16,32,28,.28); transition: background .2s,border-color .2s; }
 .choiceCards label { cursor: pointer; }
 .choiceCards label.isSelected,.choiceCards > div.isSelected { border-color: #8a5d24; background: rgba(199,155,85,.14); }
+.choiceCards label.isUnavailable { cursor: not-allowed; opacity: .52; background: rgba(16,32,28,.04); }
 .choiceCards input { position: absolute; top: .8rem; right: .8rem; width: 1rem; min-height: 1rem; margin: 0; accent-color: #8a5d24; }
 .choiceCards strong { margin-top: auto; font-family: "Iowan Old Style",Georgia,serif; font-size: 1.25rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .choiceCards span { color: rgba(16,32,28,.62); font-size: .68rem; line-height: 1.45; letter-spacing: 0; text-transform: none; }

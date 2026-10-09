@@ -7,6 +7,8 @@ import {getBookingSettings} from "./lib/booking-store";
 import type {Metadata} from "next";
 import {getSiteSettings} from "@/sanity/lib/site";
 import {getRestaurantSchedule} from "./lib/schedule-store";
+import {getServiceAvailability} from "./lib/service-availability-store";
+import {publicServiceAvailability} from "./lib/service-availability";
 import {getActivePromotions} from "@/sanity/lib/promotions";
 
 const fallbackMetadata: Metadata = {
@@ -32,7 +34,7 @@ export async function generateMetadata() {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [page, {items: menuItems}, testimonials, dailySpecials, promotions, bookingSettings, siteSettings, schedule] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActiveDailySpecials(), getActivePromotions(), getBookingSettings(), getSiteSettings(), getRestaurantSchedule()]);
+  const [page, {items: menuItems}, testimonials, dailySpecials, promotions, bookingSettings, siteSettings, schedule, serviceAvailability] = await Promise.all([getMarketingPage("home"), getMenuContent(), getTestimonials(), getActiveDailySpecials(), getActivePromotions(), getBookingSettings(), getSiteSettings(), getRestaurantSchedule(), getServiceAvailability()]);
   const overview = getPageSection(page, "home-overview");
   const menu = getPageSection(page, "home-menu");
   const reservations = getPageSection(page, "home-reservations");
@@ -62,5 +64,5 @@ export default async function HomePage() {
     establishedDate: siteSettings.establishedDate,
     testimonials,
   } : {};
-  return <HomeExperience content={content} menuItems={menuItems} dailySpecials={dailySpecials} promotions={promotions} bookingSettings={bookingSettings} schedule={schedule} />;
+  return <HomeExperience content={content} menuItems={menuItems} dailySpecials={dailySpecials} promotions={promotions} bookingSettings={bookingSettings} schedule={schedule} tableAvailability={publicServiceAvailability(serviceAvailability).table} />;
 }

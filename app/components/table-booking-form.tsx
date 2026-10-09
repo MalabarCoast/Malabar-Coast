@@ -5,19 +5,26 @@ import { reservationSlots } from "../lib/bookings";
 import { isWithinSchedule, regularClosureNotice, scheduleNotice, type RestaurantSchedule } from "../lib/restaurant-schedule";
 import styles from "./booking-forms.module.css";
 import {SmartDateInput} from "./smart-date-input";
+import {serviceAvailabilityRefreshMs, serviceUnavailableMessage, type ResolvedServiceAvailability} from "../lib/service-availability";
 
-export function TableBookingForm({ settings, schedule, compact = false }: { settings: BookingSettings; schedule: RestaurantSchedule; compact?: boolean }) {
+const defaultTableAvailability: ResolvedServiceAvailability = {channel: "table", enabled: true, source: "open", message: ""};
+
+export function TableBookingForm({ settings, schedule, availability: initialAvailability = defaultTableAvailability, compact = false }: { settings: BookingSettings; schedule: RestaurantSchedule; availability?: ResolvedServiceAvailability; compact?: boolean }) {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ error?: string; success?: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [liveSchedule, setLiveSchedule] = useState(schedule);
+  const [availability, setAvailability] = useState(initialAvailability);
   const closedDate = Boolean(selectedDate) && !isWithinSchedule(liveSchedule, selectedDate);
   const invalidTime = Boolean(selectedDate && selectedTime) && !isWithinSchedule(liveSchedule, selectedDate, selectedTime, settings.sittingMinutes);
   useEffect(() => {
     let active = true;
     fetch("/api/schedule", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => { if (active && data?.schedule) setLiveSchedule(data.schedule); }).catch(() => undefined);
-    return () => { active = false; };
+    const refreshAvailability = () => fetch("/api/availability", {cache: "no-store"}).then((response) => response.ok ? response.json() : null).then((data) => { if (active && data?.channels?.table) setAvailability(data.channels.table); }).catch(() => undefined);
+    void refreshAvailability();
+    const availabilityTimer = window.setInterval(refreshAvailability, serviceAvailabilityRefreshMs);
+    return () => { active = false; window.clearInterval(availabilityTimer); };
   }, []);
   const [{ minimumDate, maximumDate }] = useState(() => ({
     minimumDate: new Intl.DateTimeFormat("sv-SE", {timeZone: "Europe/London"}).format(new Date()),
@@ -51,11 +58,12 @@ export function TableBookingForm({ settings, schedule, compact = false }: { sett
       <label className={styles.full}>Anything else?<textarea name="notes" maxLength={600} placeholder="Seating preferences or notes for front of house." /></label></>}
     </div>
     <p className={styles.scheduleNote}>{regularClosureNotice} Check the calendar for holiday hours.</p>
+    {!availability.enabled && <p className={styles.message} role="status">{serviceUnavailableMessage(availability)}</p>}
     {(closedDate || invalidTime) && <p className={styles.message} role="alert">{scheduleNotice(liveSchedule, selectedDate)} Please choose another date or time.</p>}
     <div className={styles.summary}><strong>{settings.capacity} seats managed per sitting</strong><span>Your table is held for {settings.sittingMinutes} minutes. Availability is checked securely when you submit.</span></div>
     <label className={styles.consent}><input type="checkbox" required /><span>I confirm these details are correct and understand the restaurant may contact me about this booking.</span></label>
     {message?.error && <p className={styles.message} role="alert">{message.error}</p>}
     {message?.success && <p className={`${styles.message} ${styles.success}`} role="status">{message.success}</p>}
-    <button className={styles.button} disabled={submitting || !settings.bookingEnabled || closedDate || invalidTime}>{submitting ? "Checking the table…" : settings.bookingEnabled ? "Confirm table" : "Booking paused"}<span aria-hidden="true">→</span></button>
+    <button className={styles.button} disabled={submitting || !settings.bookingEnabled || !availability.enabled || closedDate || invalidTime}>{submitting ? "Checking the table…" : settings.bookingEnabled && availability.enabled ? "Confirm table" : "Booking paused"}<span aria-hidden="true">→</span></button>
   </form>;
 }

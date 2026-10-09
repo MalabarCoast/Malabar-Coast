@@ -86,6 +86,8 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
 .adminButton:hover { background: var(--admin-green); border-color: var(--admin-green); }
 .adminButton.isSecondary { background: transparent; color: var(--admin-ink) !important; }
 .adminButton.isSecondary:hover { background: rgba(19,32,28,.06); }
+.adminButton.isDanger { border-color: var(--admin-red); background: var(--admin-red); }
+.adminButton.isDanger:hover { border-color: #7f2e29; background: #7f2e29; }
 .adminTextButton { align-self: end; padding: .9rem .3rem; color: var(--admin-muted) !important; font-size: .64rem; text-decoration: underline !important; }
 .adminLive { display: inline-flex; gap: .55rem; align-items: center; color: var(--admin-muted); font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 .adminRealtimeState { margin: .85rem 0 .15rem; }
@@ -507,6 +509,49 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
 }
 
 .scheduleEditor { display:grid; gap:1.25rem; }.scheduleWeek { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:.5rem; margin:1.5rem 0; }
+
+/* Customer booking and ordering controls */
+.availabilityEditor { display: grid; gap: 1rem; }
+.availabilityStatusGrid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .85rem; margin-top: 1.5rem; }
+.availabilityStatusGrid article { display: flex; min-height: 12rem; flex-direction: column; padding: 1.15rem; border: 1px solid var(--admin-line); border-top: 3px solid var(--admin-green); border-radius: var(--admin-radius); background: var(--admin-panel); }
+.availabilityStatusGrid article.isClosed { border-top-color: var(--admin-red); background: #fbf3f0; }
+.availabilityStatusGrid article > div { display: flex; justify-content: space-between; align-items: center; }
+.availabilityStatusGrid article > div span { color: var(--admin-green); font-size: .58rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+.availabilityStatusGrid article.isClosed > div span { color: var(--admin-red); }
+.availabilityStatusGrid article i { width: .55rem; height: .55rem; border-radius: 50%; background: var(--admin-green); box-shadow: 0 0 .7rem rgba(39,112,85,.4); }
+.availabilityStatusGrid article.isClosed i { background: var(--admin-red); box-shadow: none; }
+.availabilityStatusGrid h2 { margin: 1.5rem 0 .55rem; font: 400 1.35rem "Iowan Old Style",Georgia,serif; }
+.availabilityStatusGrid p { margin: 0; color: var(--admin-muted); font-size: .72rem; line-height: 1.55; }
+.availabilityStatusGrid small { margin-top: auto; padding-top: 1rem; color: var(--admin-red); font-size: .61rem; font-weight: 700; }
+.availabilityImmediate fieldset,.availabilityScheduleForm fieldset { display: grid; gap: 1rem; margin: 1rem 0 0; padding: 0; border: 0; }
+.availabilityImmediate fieldset:disabled,.availabilityScheduleForm fieldset:disabled { opacity: .62; }
+.availabilityChoices { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .6rem; }
+.availabilityChoices label { display: flex; min-height: 4.4rem; gap: .7rem; align-items: center; padding: .75rem; border: 1px solid var(--admin-line); border-radius: .4rem; background: #fff; cursor: pointer; }
+.availabilityChoices label:has(input:checked) { border-color: var(--admin-green); background: #eef6f2; }
+.availabilityChoices input { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; accent-color: var(--admin-green); }
+.availabilityChoices strong,.availabilityChoices small { display: block; }
+.availabilityChoices strong { font-size: .7rem; }
+.availabilityChoices small { margin-top: .25rem; color: var(--admin-muted); font-size: .58rem; }
+.availabilityMessage,.availabilityScheduleForm label { display: grid; gap: .45rem; color: var(--admin-muted); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.availabilityMessage textarea,.availabilityScheduleForm input,.availabilityScheduleForm select,.availabilityScheduleForm textarea { width: 100%; min-height: 3rem; padding: .75rem; border: 1px solid var(--admin-line); border-radius: .35rem; background: #fff; color: var(--admin-ink); font-size: .78rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.availabilityMessage textarea,.availabilityScheduleForm textarea { min-height: 5.5rem; resize: vertical; }
+.availabilityMessage small,.availabilityTimeZone small { color: var(--admin-muted); font-weight: 400; letter-spacing: 0; line-height: 1.45; text-transform: none; }
+.availabilityActions { display: flex; flex-wrap: wrap; gap: .65rem; }
+.availabilityScheduleForm legend { margin-bottom: .7rem; color: var(--admin-ink); font: 400 1rem "Iowan Old Style",Georgia,serif; }
+.availabilityDateGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem; }
+.availabilityScheduleList > div:last-child { display: grid; gap: .65rem; margin-top: 1rem; }
+.availabilityScheduleList article { display: grid; grid-template-columns: minmax(10rem,.65fr) minmax(15rem,1fr) minmax(10rem,.8fr) auto; gap: .8rem; align-items: center; padding: .9rem; border: 1px solid var(--admin-line); border-left: 3px solid var(--admin-brass); border-radius: .4rem; background: #fff; }
+.availabilityScheduleList article.isActive { border-left-color: var(--admin-red); background: #fbf3f0; }
+.availabilityScheduleList article.isPast { border-left-color: var(--admin-muted); opacity: .7; }
+.availabilityScheduleMeta span,.availabilityScheduleMeta strong { display: block; }
+.availabilityScheduleMeta span { margin-bottom: .35rem; color: var(--admin-brass); font-size: .55rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.availabilityScheduleList .isActive .availabilityScheduleMeta span { color: var(--admin-red); }
+.availabilityScheduleMeta strong,.availabilityScheduleList p,.availabilityScheduleList small { font-size: .64rem; line-height: 1.45; }
+.availabilityScheduleList h3 { margin: 0; font: 400 .95rem/1.45 "Iowan Old Style",Georgia,serif; }
+.availabilityScheduleList h3 small { display: block; margin-top: .15rem; font: 600 .54rem/1.4 Arial,sans-serif; letter-spacing: .07em; text-transform: uppercase; }
+.availabilityScheduleList p,.availabilityScheduleList small { margin: 0; color: var(--admin-muted); }
+.availabilityScheduleList article > div:last-child { display: flex; gap: .55rem; justify-content: flex-end; }
+.adminTextButton.isDanger { color: var(--admin-red) !important; }
 .scheduleWeek > div { display:flex; flex-direction:column; gap:.6rem; min-width:0; padding:1rem .7rem; border:1px solid var(--admin-line); background:#f8f5ee; }
 .scheduleWeek strong { font-size:.68rem; }.scheduleWeek span { color:#66736c; font-size:.7rem; line-height:1.4; }
 .scheduleHelp { color:#66736c; line-height:1.55; }.scheduleExceptions { display:grid; gap:.5rem; margin:1rem 0; }
@@ -520,4 +565,5 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
 .careerAdminDialog > .adminRecordForm { margin-top:1.25rem; }.careerAdminActions { position:sticky; top:0; z-index:2; display:flex; min-height:4.6rem; flex-wrap:wrap; align-items:center; gap:.75rem; margin:0 -1.25rem; padding:1rem 6.5rem 1rem 1.25rem; border-bottom:1px solid var(--admin-line); background:rgba(251,250,246,.98); }.careerAdminActions > strong { font:400 1rem "Iowan Old Style",Georgia,serif; }.careerAdminActions form { margin:0 0 0 auto; }.careerAdminActions .adminTextButton { display:inline-flex; align-items:center; min-height:2.6rem; padding:.65rem .85rem; }
 @media (max-width:900px) { .scheduleWeek { grid-template-columns:repeat(4,minmax(0,1fr)); } }
 @media (max-width:820px) { .careerAdminList .adminEditRecord[open] > .careerAdminDialog { padding:0 max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left)); }.careerAdminActions { margin:0 -1rem; padding:max(1rem,env(safe-area-inset-top)) max(5.5rem,calc(env(safe-area-inset-right) + 4.75rem)) 1rem max(1rem,env(safe-area-inset-left)); } }
-@media (max-width:600px) { .scheduleWeek { grid-template-columns:repeat(2,minmax(0,1fr)); }.scheduleExceptions button { flex-direction:column; }.scheduleActions .adminButton { width:100%; }.careerAdminRecord { grid-template-columns:1fr; }.careerAdminRecordControls { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); justify-content:stretch; }.careerAdminRecordControls > .adminTextButton,.careerAdminRecordControls > details,.careerAdminRecordControls > form,.careerAdminRecordControls .adminEditRecord > summary,.careerAdminRecordControls .adminDeleteButton { width:100%; }.careerAdminRecordControls .adminEditRecord[open] > summary { width:auto; min-width:5rem; }.careerAdminActions { align-items:stretch; flex-direction:column; padding-right:max(5.5rem,calc(env(safe-area-inset-right) + 4.75rem)); }.careerAdminActions form { margin:0; }.careerAdminActions .adminTextButton,.careerAdminActions .adminDeleteButton { width:100%; justify-content:center; } }
+@media (max-width:1100px) { .availabilityStatusGrid,.availabilityChoices { grid-template-columns: repeat(2,minmax(0,1fr)); }.availabilityScheduleList article { grid-template-columns: 1fr 1fr; } }
+@media (max-width:600px) { .scheduleWeek { grid-template-columns:repeat(2,minmax(0,1fr)); }.scheduleExceptions button { flex-direction:column; }.scheduleActions .adminButton { width:100%; }.careerAdminRecord { grid-template-columns:1fr; }.careerAdminRecordControls { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); justify-content:stretch; }.careerAdminRecordControls > .adminTextButton,.careerAdminRecordControls > details,.careerAdminRecordControls > form,.careerAdminRecordControls .adminEditRecord > summary,.careerAdminRecordControls .adminDeleteButton { width:100%; }.careerAdminRecordControls .adminEditRecord[open] > summary { width:auto; min-width:5rem; }.careerAdminActions { align-items:stretch; flex-direction:column; padding-right:max(5.5rem,calc(env(safe-area-inset-right) + 4.75rem)); }.careerAdminActions form { margin:0; }.careerAdminActions .adminTextButton,.careerAdminActions .adminDeleteButton { width:100%; justify-content:center; }.availabilityStatusGrid,.availabilityChoices,.availabilityDateGrid,.availabilityScheduleList article { grid-template-columns:1fr; }.availabilityActions { display:grid; }.availabilityScheduleList article > div:last-child { justify-content:flex-start; } }
