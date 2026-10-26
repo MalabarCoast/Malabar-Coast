@@ -3,20 +3,25 @@ import {createECDH} from "node:crypto";
 import {supabaseServerRpc} from "./supabase/server";
 import {validatePushSubscription} from "./push-validation";
 
-export function pushConfiguration() {
+export function pushConfigurationProblem(): string | null {
   const publicKey = process.env.WEB_PUSH_PUBLIC_KEY?.trim();
   const privateKey = process.env.WEB_PUSH_PRIVATE_KEY?.trim();
   const subject = process.env.WEB_PUSH_SUBJECT?.trim();
-  const valid = publicKey && /^[A-Za-z0-9_-]{87}$/.test(publicKey)
-    && privateKey && /^[A-Za-z0-9_-]{43}$/.test(privateKey)
-    && subject && /^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subject)
-    ? {publicKey, privateKey, subject} : null;
-  if (!valid) return null;
+  const missing = [["WEB_PUSH_PUBLIC_KEY", publicKey], ["WEB_PUSH_PRIVATE_KEY", privateKey], ["WEB_PUSH_SUBJECT", subject]].filter(([, value]) => !value).map(([name]) => name);
+  if (missing.length) return `Missing deployment environment variables: ${missing.join(", ")}. Add the existing values from .env.local to Vercel, then redeploy.`;
+  if (!/^[A-Za-z0-9_-]{87}$/.test(publicKey!)) return "WEB_PUSH_PUBLIC_KEY has an invalid format. Copy the existing complete value from .env.local, then redeploy.";
+  if (!/^[A-Za-z0-9_-]{43}$/.test(privateKey!)) return "WEB_PUSH_PRIVATE_KEY has an invalid format. Copy the existing complete value from .env.local, then redeploy.";
+  if (!/^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subject!)) return "WEB_PUSH_SUBJECT must be a mailto: email address, for example mailto:reservations@malabarcoast.co.uk. Update it in Vercel, then redeploy.";
   try {
     const curve = createECDH("prime256v1");
-    curve.setPrivateKey(Buffer.from(valid.privateKey, "base64url"));
-    return curve.getPublicKey().toString("base64url") === valid.publicKey ? valid : null;
-  } catch { return null; }
+    curve.setPrivateKey(Buffer.from(privateKey!, "base64url"));
+    return curve.getPublicKey().toString("base64url") === publicKey ? null : "WEB_PUSH_PUBLIC_KEY and WEB_PUSH_PRIVATE_KEY do not match. Copy both from the same existing .env.local key pair, then redeploy.";
+  } catch { return "The deployment push key pair is invalid. Copy both existing keys from .env.local, then redeploy."; }
+}
+
+export function pushConfiguration() {
+  if (pushConfigurationProblem()) return null;
+  return {publicKey: process.env.WEB_PUSH_PUBLIC_KEY!.trim(), privateKey: process.env.WEB_PUSH_PRIVATE_KEY!.trim(), subject: process.env.WEB_PUSH_SUBJECT!.trim()};
 }
 
 type Delivery = {alertId: string; subscriptionId: string; leaseToken: string; subscription: unknown};

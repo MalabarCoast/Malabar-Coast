@@ -1,7 +1,25 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import webpush from "web-push";
-import {dispatchAdminPush,pushConfiguration} from "../app/lib/admin-push";
+import {dispatchAdminPush,pushConfiguration,pushConfigurationProblem} from "../app/lib/admin-push";
+
+test("push setup diagnoses missing deployment variables without exposing secrets or blaming migrations", () => {
+  const saved={...process.env};
+  try {
+    delete process.env.WEB_PUSH_PUBLIC_KEY;
+    delete process.env.WEB_PUSH_PRIVATE_KEY;
+    delete process.env.WEB_PUSH_SUBJECT;
+    const message=pushConfigurationProblem()!;
+    for (const name of ["WEB_PUSH_PUBLIC_KEY","WEB_PUSH_PRIVATE_KEY","WEB_PUSH_SUBJECT"]) assert.ok(message.includes(name));
+    assert.doesNotMatch(message,/migration/i);
+    const keys=webpush.generateVAPIDKeys();
+    Object.assign(process.env,{WEB_PUSH_PUBLIC_KEY:keys.publicKey,WEB_PUSH_PRIVATE_KEY:keys.privateKey,WEB_PUSH_SUBJECT:"https://invalid.example"});
+    const invalid=pushConfigurationProblem()!;
+    assert.match(invalid,/WEB_PUSH_SUBJECT/);
+    assert.ok(!invalid.includes(keys.privateKey));
+    assert.ok(!invalid.includes(keys.publicKey));
+  } finally {process.env=saved;}
+});
 
 test("push configuration rejects mismatched signing keys", () => {
   const saved={...process.env};
