@@ -32,7 +32,7 @@ export default async function AdminSettingsPage() {
   const checks = [
     {label: "Durable staff alerts", ready: alertsReady, detail: "Database alerts, transactional triggers and shared acknowledgement"},
     {label: "Background push configuration", ready: Boolean(pushConfiguration()), detail: "Matching server VAPID keys; devices must separately grant notification permission"},
-    {label: "Push retry credentials", ready: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32, detail: "Scheduler token configured; verify scheduled dispatch in the deployment dashboard"},
+    {label: "Push retry credentials", ready: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32, detail: "Scheduler token configured; verify minute-level retries in Supabase Cron (see PWA operations guide)"},
     { label: "Administrator authentication", ready: adminAuthReady, detail: "Supabase Auth identity, active staff profile, roles, session revocation and audit log" },
     { label: "Durable order database", ready: isDurableOrderStorageConfigured(), detail: "Supabase server-secret connection for private order access" },
     { label: "Customer order privacy", ready: isProductionOrderAccessConfigured(), detail: "Signed access grants prevent order-reference enumeration" },
