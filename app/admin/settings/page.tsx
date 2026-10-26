@@ -6,16 +6,19 @@ import { isStripeConfigured } from "../../lib/payments/stripe";
 import { checkBrevoConnection } from "../../lib/email/brevo";
 import { getAdminContentOverview } from "../../../sanity/lib/admin-content";
 import { AdminFrame, AdminPageHeader } from "../components/admin-ui";
+import {checkAdminAlertsSchema} from "../../lib/admin-alerts";
+import {pushConfiguration} from "../../lib/admin-push";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage() {
   const session = await getAdminSession("settings:read");
   if (!session) redirect("/admin/login");
-  const [adminAuthReady, brevoReady, contentOverview] = await Promise.all([
+  const [adminAuthReady, brevoReady, contentOverview, alertsReady] = await Promise.all([
     checkAdminAuthSchema(),
     checkBrevoConnection(),
     getAdminContentOverview(),
+    checkAdminAlertsSchema(),
   ]);
   const canonicalReady = (() => { try { return new URL(process.env.NEXT_PUBLIC_SITE_URL || "").protocol === "https:"; } catch { return false; } })();
   const studioReady = (() => {
@@ -27,6 +30,9 @@ export default async function AdminSettingsPage() {
     }
   })();
   const checks = [
+    {label: "Durable staff alerts", ready: alertsReady, detail: "Database alerts, transactional triggers and shared acknowledgement"},
+    {label: "Background push configuration", ready: Boolean(pushConfiguration()), detail: "Matching server VAPID keys; devices must separately grant notification permission"},
+    {label: "Push retry credentials", ready: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32, detail: "Scheduler token configured; verify scheduled dispatch in the deployment dashboard"},
     { label: "Administrator authentication", ready: adminAuthReady, detail: "Supabase Auth identity, active staff profile, roles, session revocation and audit log" },
     { label: "Durable order database", ready: isDurableOrderStorageConfigured(), detail: "Supabase server-secret connection for private order access" },
     { label: "Customer order privacy", ready: isProductionOrderAccessConfigured(), detail: "Signed access grants prevent order-reference enumeration" },

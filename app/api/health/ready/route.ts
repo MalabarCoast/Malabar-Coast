@@ -5,6 +5,8 @@ import { isProductionOrderAccessConfigured } from "../../../lib/order-access";
 import { isStripeProductionReady } from "../../../lib/payments/stripe";
 import { checkBrevoConnection } from "../../../lib/email/brevo";
 import { checkRateLimit, getClientAddress, noStoreJson } from "../../../lib/security";
+import {checkAdminAlertsSchema} from "../../../lib/admin-alerts";
+import {pushConfiguration} from "../../../lib/admin-push";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,10 +31,11 @@ export async function GET(request: Request) {
   }
 
   const storageConfigured = isDurableOrderStorageConfigured();
-  const [storageReachable, adminAuthReachable, transactionalEmailReachable] = await Promise.all([
+  const [storageReachable, adminAuthReachable, transactionalEmailReachable, alertsReady] = await Promise.all([
     storageConfigured ? checkDurableOrderStorage() : Promise.resolve(false),
     checkAdminAuthSchema(),
     checkBrevoConnection(),
+    checkAdminAlertsSchema(),
   ]);
   const canonicalHttps = (() => {
     try { return new URL(process.env.NEXT_PUBLIC_SITE_URL || "").protocol === "https:"; } catch { return false; }
@@ -44,6 +47,9 @@ export async function GET(request: Request) {
     administratorAccess: adminAuthReachable,
     stripePayments: isStripeProductionReady(),
     transactionalEmail: transactionalEmailReachable,
+    staffAlertDatabase: alertsReady,
+    backgroundPush: Boolean(pushConfiguration()),
+    pushRetryScheduler: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32,
   };
   const ready = Object.values(checks).every(Boolean);
   const body: Record<string, unknown> = { status: ready ? "ready" : "not_ready", time: new Date().toISOString() };

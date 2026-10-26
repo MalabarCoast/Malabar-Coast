@@ -73,3 +73,4 @@ Run the current `supabase/schema.sql` before deploying the matching application 
 - [BOOKINGS_AND_EMAIL.md](./BOOKINGS_AND_EMAIL.md) — table capacity, hall workflow, Brevo setup and deployment order
 - [LESSONS.md](./LESSONS.md) — responsive design and editorial composition notes
 - [progress.txt](./progress.txt) — build log
+- [docs/PWA_OPERATIONS.md](./docs/PWA_OPERATIONS.md) — PWA installation, secure background push, repeating chimes and device acceptance checks

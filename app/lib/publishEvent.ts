@@ -1,8 +1,14 @@
 import { getSupabaseChannelClient } from "./config/supabase_channel";
+import {dispatchAdminPush} from "./admin-push";
+import {after} from "next/server";
 
 export type AdminActivityKind = "order" | "reservation" | "hall";
 
 export async function publishAdminActivityEvent(kind: AdminActivityKind, recordId: string) {
+  // The database trigger has already queued the alert atomically. Push transport
+  // must never change the success of the underlying payment or booking.
+  try { after(async () => {await dispatchAdminPush().catch(() => console.warn("Staff push is queued for retry."));}); }
+  catch { /* Non-request maintenance scripts rely on the durable dispatcher. */ }
   let supabase: ReturnType<typeof getSupabaseChannelClient>;
   try {
     supabase = getSupabaseChannelClient();
