@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { clearAdminSession, getAdminSession, recordAdminLogout, verifyAdminCsrf } from "../../../lib/admin-auth";
 import { configuredSiteOrigin, isTrustedOrigin, readLimitedFormData } from "../../../lib/security";
+import {removeSessionPushSubscriptions} from "../../../lib/admin-alerts";
 
 export const runtime = "nodejs";
 
@@ -16,6 +17,8 @@ export async function POST(request: Request) {
     return new NextResponse("Forbidden", { status: 403, headers: { "Cache-Control": "no-store" } });
   }
 
+  try { await removeSessionPushSubscriptions(session); }
+  catch { return new NextResponse("Sign-out could not revoke background alerts. Please retry.", {status: 503, headers: {"Cache-Control": "no-store"}}); }
   await recordAdminLogout(session);
   const response = NextResponse.redirect(new URL("/admin/login", configuredSiteOrigin(request)), 303);
   clearAdminSession(response);

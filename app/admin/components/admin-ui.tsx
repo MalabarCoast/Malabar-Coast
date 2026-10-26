@@ -49,7 +49,7 @@ export function AdminFrame({ active, session, children }: { active: string; sess
       </aside>
       <div className="adminWorkspace">{children}</div>
       <AdminNativePicker/>
-      <AdminActivityNotifications supabaseUrl={realtimeUrl} publishableKey={realtimePublishableKey}/>
+      <AdminActivityNotifications supabaseUrl={realtimeUrl} publishableKey={realtimePublishableKey} csrfToken={session.csrfToken} expiresAt={session.expiresAt}/>
     </main>
   );
 }

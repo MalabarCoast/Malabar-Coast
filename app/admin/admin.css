@@ -389,7 +389,17 @@ body:has(.adminShell) { margin: 0; background: #f2efe7; }
 .adminDetailGrid dd a { color: var(--admin-green); text-decoration: underline; text-underline-offset: .15em; }
 .adminDetailGrid .adminDetailWide { grid-column: 1 / -1; }
 .adminHallPlanPreview,.adminRecordPreview { display: -webkit-box !important; max-width: 22rem !important; overflow: hidden; white-space: normal !important; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-.adminNotificationRail { position: fixed; right: 1rem; bottom: 1rem; z-index: 70; width: min(24rem,calc(100vw - 2rem)); pointer-events: none; }
+.adminNotificationRail { position: fixed; right: 1rem; bottom: 1rem; z-index: 70; width: min(24rem,calc(100vw - 2rem)); max-height: 75svh; overflow-y: auto; overscroll-behavior: contain; pointer-events: none; }
+.adminAlertControls { pointer-events: auto; margin-bottom: .55rem; padding: .8rem; border: 2px solid #a47724; border-radius: .45rem; background: #fffdf7; color: #10201c; box-shadow: 0 .4rem 1.5rem #0003; }
+.adminAlertControls summary { cursor: pointer; min-height: 2.75rem; font-size: .85rem; }
+.adminAlertControls summary span { display: block; margin-top: .3rem; font-size: .75rem; }
+.adminAlertSetup { display: grid; gap: .6rem; font: .8rem/1.5 Arial,sans-serif; }
+.adminAlertSetup p { margin: 0; }
+.adminAlertControlButtons { display: flex; flex-wrap: wrap; gap: .4rem; }
+.adminAlertControlButtons button { min-height: 2.75rem; padding: .6rem .8rem; border: 1px solid #506a60; border-radius: .25rem; background: #102d28; color: #fff; cursor: pointer; font-size: .78rem; }
+.adminAlertControlButtons button:disabled { opacity: .6; cursor: wait; }
+.adminAlertWarning { color: #8f241b; font-weight: bold; }
+.adminAlertWarning a { text-decoration: underline; }
 .adminNotifications { display: grid; gap: .55rem; }
 .adminNotification { padding: 1rem; border: 1px solid rgba(183,144,63,.55); border-radius: .45rem; background: #fffdf7; color: var(--admin-ink); box-shadow: 0 1rem 2.5rem rgba(0,0,0,.2); pointer-events: auto; animation: adminNoticeIn .28s ease-out both; }
 .adminNotification > span { color: var(--admin-brass); font-size: .52rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }

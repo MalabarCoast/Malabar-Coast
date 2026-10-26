@@ -22,10 +22,10 @@ test("the public site uses the approved Malabar logo everywhere", async () => {
 test("favicon and install icons use square PNGs derived from the approved logo", async () => {
   const [layout, manifest, adminLayout, adminManifest, notification, small, large, maskable] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/manifest.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/public-manifest.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/admin/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/admin/manifest.webmanifest/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/admin/components/admin-activity-notifications.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../public/admin-sw.js", import.meta.url), "utf8"),
     readFile(new URL("../public/icon-192.png", import.meta.url)),
     readFile(new URL("../public/icon-512.png", import.meta.url)),
     readFile(new URL("../public/icon-maskable-512.png", import.meta.url)),

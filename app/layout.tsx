@@ -17,6 +17,7 @@ import {getRestaurantSchedule} from "./lib/schedule-store";
 import {dayNames, servicePeriods, type RestaurantSchedule} from "./lib/restaurant-schedule";
 
 const fallbackMetadata: Metadata = {
+  manifest: "/manifest.webmanifest",
   metadataBase: new URL(site.url),
   title: {
     default: "Malabar Coast UK | Indian Restaurant & Bar in Holytown",

@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "tsx --test tests/**/*.test.ts",
+    "push:keys": "tsx scripts/generate-push-keys.ts",
     "test:realtime": "tsx scripts/test-realtime.ts",
     "test:realtime-transport": "tsx scripts/test-realtime-transport.ts",
     "handover:allergen-register": "tsx scripts/export-menu-allergen-register.ts",
@@ -36,21 +37,39 @@
     "@supabase/supabase-js": "^2.112.2",
     "gsap": "^3.15.0",
     "lenis": "^1.3.25",
-    "next": "16.2.12",
+    "next": "16.4.3",
     "next-sanity": "^13.3.3",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/web-push": "^3.6.4",
     "autoprefixer": "^10.5.2",
     "eslint": "^9.17.0",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.4.3",
     "postcss": "8.5.25",
     "tailwindcss": "3.4.17",
     "tsx": "4.23.4",
     "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "brace-expansion@>=4.0.0 <5.0.12": "5.0.12",
+    "source-map-js@<1.2.2": "1.2.2",
+    "uuid@<11.1.1": "11.1.1",
+    "js-yaml@>=3.0.0 <3.15.2": "3.15.2",
+    "sharp": "0.35.5",
+    "smol-toml@<1.9.1": "1.9.1",
+    "undici@>=7.0.0 <7.30.1": "7.30.1",
+    "undici@>=6.0.0 <6.29.1": "6.29.1",
+    "dompurify@<3.4.17": "3.4.17",
+    "zod@>=4.0.0 <4.6.7": "4.6.7",
+    "markdown-it@>=14.0.0 <14.3.3": "14.3.3",
+    "adm-zip@<0.6.1": "0.6.1",
+    "vite@>=8.0.0 <8.2.4": "8.2.4"
   }
 }

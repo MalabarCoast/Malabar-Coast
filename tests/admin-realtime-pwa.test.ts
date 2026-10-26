@@ -9,16 +9,15 @@ test("admin activity alerts verify records before showing or sounding", async ()
     readFile(new URL("../app/api/reservations/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/hall-enquiries/route.ts", import.meta.url), "utf8"),
   ]);
-  assert.match(notifier, /await fetch\(endpoints\[payload\.kind\]/);
-  assert.match(notifier, /if \(!response\.ok\) return/);
+  assert.match(notifier, /fetch\("\/api\/admin\/alerts"/);
+  assert.match(notifier, /if \(!response\.ok \|\| !Array\.isArray\(body\.alerts\)\)/);
   assert.match(notifier, /playOrderNotificationSound\(\)/);
   assert.match(notifier, /armOrderNotificationSound\(\)/);
-  assert.match(notifier, /window\.addEventListener\("focus", arm\)/);
-  assert.match(notifier, /document\.addEventListener\("visibilitychange", arm\)/);
-  assert.doesNotMatch(notifier, /Enable alert sound/);
-  assert.match(notifier, /New paid food order/);
-  assert.match(notifier, /New table booking/);
-  assert.match(notifier, /New hall enquiry/);
+  assert.match(notifier, /window\.addEventListener\("focus", onFocus\)/);
+  assert.match(notifier, /document\.addEventListener\("visibilitychange", onVisibility\)/);
+  assert.match(notifier, /Enable sound & test/);
+  assert.match(notifier, /setInterval/);
+  assert.doesNotMatch(notifier, /new Notification\(/);
   assert.match(publisher, /admin-activity/);
   assert.match(publisher, /activity-changed/);
   assert.match(reservationRoute, /publishAdminActivityEvent\("reservation"/);
@@ -33,10 +32,12 @@ test("admin has a private network-first installable PWA shell", async () => {
     readFile(new URL("../public/admin-sw.js", import.meta.url), "utf8"),
   ]);
   assert.match(layout, /\/admin\/manifest\.webmanifest/);
-  assert.match(manifest, /start_url: "\/admin\/"/);
+  assert.match(manifest, /start_url: "\/admin\/orders"/);
   assert.match(manifest, /display: "standalone"/);
   assert.match(registration, /\/admin-sw\.js/);
-  assert.match(registration, /MutationObserver/);
+  assert.doesNotMatch(registration, /MutationObserver/);
+  assert.match(registration, /scope: "\/admin"/);
+  assert.match(worker, /showNotification/);
   assert.doesNotMatch(worker, /caches\.open/);
   assert.match(worker, /Reconnect to securely load live orders/);
 });
