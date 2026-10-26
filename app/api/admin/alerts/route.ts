@@ -1,6 +1,6 @@
 import {getAdminSession, verifyAdminCsrf} from "../../../lib/admin-auth";
 import {acknowledgeAdminAlert, pendingAdminAlerts} from "../../../lib/admin-alerts";
-import {pushConfiguration} from "../../../lib/admin-push";
+import {pushConfiguration,pushConfigurationProblem} from "../../../lib/admin-push";
 import {checkRateLimit, getClientAddress, isTrustedOrigin, noStoreJson, readLimitedJson} from "../../../lib/security";
 
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   if (!rate.allowed) return noStoreJson({error: "Too many alert checks."}, {status: 429});
   try {
     const alerts = await pendingAdminAlerts(session);
-    return noStoreJson({alerts, publicKey: pushConfiguration()?.publicKey || null, expiresAt: session.expiresAt});
+    return noStoreJson({alerts, publicKey: pushConfiguration()?.publicKey || null, pushError: pushConfigurationProblem(), expiresAt: session.expiresAt});
   } catch {
     return noStoreJson({error: "Staff alerts are unavailable. Check the alert database migration and connection."}, {status: 503});
   }

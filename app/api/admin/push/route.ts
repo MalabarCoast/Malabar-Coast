@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {getAdminSession, verifyAdminCsrf} from "../../../lib/admin-auth";
 import {pushSessionHash, removeSessionPushSubscriptions} from "../../../lib/admin-alerts";
-import {pushConfiguration,sendStaffPush} from "../../../lib/admin-push";
+import {pushConfigurationProblem,sendStaffPush} from "../../../lib/admin-push";
 import {validatePushSubscription} from "../../../lib/push-validation";
 import {checkRateLimit, isTrustedOrigin, noStoreJson, readLimitedJson} from "../../../lib/security";
 import {supabaseServerRpc} from "../../../lib/supabase/server";
@@ -20,7 +20,8 @@ export async function POST(request: Request) {
       return noStoreJson({enabled: false});
     }
     if (body.action !== "enable" && body.action !== "test") return noStoreJson({error: "Invalid action"}, {status: 400});
-    if (!pushConfiguration()) return noStoreJson({error: "Background alerts need deployment push keys."}, {status: 503});
+    const configurationProblem = pushConfigurationProblem();
+    if (configurationProblem) return noStoreJson({error: configurationProblem}, {status: 503});
     let subscription;
     try { subscription = validatePushSubscription(body.subscription); }
     catch { return noStoreJson({error: "Invalid browser push subscription."}, {status: 400}); }

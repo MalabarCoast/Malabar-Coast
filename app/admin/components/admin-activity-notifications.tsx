@@ -10,7 +10,7 @@ import {getAdminWorker} from "./admin-pwa-registration";
 
 type InstallPrompt = Event & {prompt(): Promise<void>; userChoice: Promise<{outcome: string}>};
 type WakeLock = {release(): Promise<void>; released: boolean};
-type AlertFeed = {alerts?: AdminAlert[]; publicKey?: string | null; expiresAt?: number; error?: string};
+type AlertFeed = {alerts?: AdminAlert[]; publicKey?: string | null; pushError?: string | null; expiresAt?: number; error?: string};
 const lastRingKey = "mc-staff-last-ring-v2";
 
 function applicationServerKey(value: string) {
@@ -28,6 +28,7 @@ export function AdminActivityNotifications({supabaseUrl, publishableKey, csrfTok
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [pushStatus, setPushStatus] = useState("Background alerts not enabled");
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [pushError, setPushError] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [installed, setInstalled] = useState(false);
@@ -79,6 +80,8 @@ export function AdminActivityNotifications({supabaseUrl, publishableKey, csrfTok
       if (signature !== alertSignature.current) {alertSignature.current = signature; router.refresh();}
       setAlerts(body.alerts);
       setPublicKey(body.publicKey || null);
+      setPushError(body.pushError || null);
+      if (!body.publicKey) setPushStatus("Background alerts need deployment environment settings");
       setFeedState("Alerts connected");
       if (body.alerts.length === 0) stopOrderNotificationSound();
       if (body.publicKey && !renewedPush.current && "Notification" in window && Notification.permission === "granted" && "serviceWorker" in navigator) {
@@ -198,7 +201,12 @@ export function AdminActivityNotifications({supabaseUrl, publishableKey, csrfTok
   }
 
   async function enablePush() {
-    if (!publicKey) {setMessage("Background alerts need the database migration and deployment push keys."); return;}
+    if (!publicKey) {
+      setMessage(pushError || (feedState === "Alerts connected"
+        ? "Push keys are unavailable in this deployment. Add WEB_PUSH_PUBLIC_KEY, WEB_PUSH_PRIVATE_KEY and WEB_PUSH_SUBJECT to Vercel, then redeploy."
+        : "The alert service has not connected yet. Wait for Alerts connected, or check the connection error shown above."));
+      return;
+    }
     if (!("Notification" in window) || !("PushManager" in window) || !("serviceWorker" in navigator)) {
       setMessage("Background push is unavailable here. On iPhone/iPad, add Operations to the Home Screen, open it there, then enable alerts.");
       return;
