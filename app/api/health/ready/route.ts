@@ -49,7 +49,7 @@ export async function GET(request: Request) {
     transactionalEmail: transactionalEmailReachable,
     staffAlertDatabase: alertsReady,
     backgroundPush: Boolean(pushConfiguration()),
-    pushRetryScheduler: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32,
+    pushRetryCredentials: (process.env.CRON_SECRET?.trim().length ?? 0) >= 32,
   };
   const ready = Object.values(checks).every(Boolean);
   const body: Record<string, unknown> = { status: ready ? "ready" : "not_ready", time: new Date().toISOString() };

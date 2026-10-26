@@ -19,15 +19,23 @@ background notifications. The public app never subscribes to private staff alert
 3. Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin and redeploy. Installed apps,
    cookies, permissions and push subscriptions belong to their exact origin; choose
    the canonical domain rather than installing a temporary preview.
-4. Configure the scheduler. `vercel.json` calls `/api/cron/admin-push` every minute;
-   this frequency requires a Vercel plan that supports minute-level Cron Jobs.
-   Vercel sends `Authorization: Bearer CRON_SECRET`. If using another host, schedule
-   the same authenticated GET every minute. Verify executions in the scheduler logs.
-   If the hosting plan cannot support this, use a supported external scheduler
-   instead of silently reducing retry frequency. Do not put the token in a URL.
+4. Configure retries using **Supabase Cron**, independently of the Vercel plan.
+   `vercel.json` deliberately defines no cron jobs, so it can deploy on Vercel Hobby.
+   Enable Supabase Cron (`pg_cron`), `pg_net` and Vault in the Supabase dashboard.
+   In Vault, create `admin_push_url` containing the final HTTPS URL ending in
+   `/api/cron/admin-push`, and `admin_push_cron_secret` containing the same generated
+   `CRON_SECRET` configured in Vercel. Run `supabase/setup-admin-push-cron.sql` in
+   SQL Editor. It replaces only `malabar-admin-push-retry` and schedules it every
+   minute. The job reads its bearer token from Vault; never put it in a URL or
+   commit it to source control. Verify both Cron runs and `net._http_response`
+   HTTP status codes: a successful Cron run only proves the HTTP request was queued.
+   Another trusted scheduler can call the same authenticated GET instead.
 5. Verify protected `/api/health/ready` details and `/admin/settings`: staff alert
    database, matching VAPID keys and scheduler credentials must be ready. A configured
-   token does not prove scheduled executions; inspect those independently.
+   token does not prove scheduled executions; inspect those independently in Supabase.
+   New events attempt delivery immediately after their request, without waiting for
+   Cron. Scheduled retries are still required for failed or interrupted delivery
+   when all staff apps are closed; a daily job is not an adequate replacement.
 6. On every service device, sign in, press **Enable sound & test**, set speaker volume,
    enable background alerts and grant the OS permission. Press **Test background
    notification** and verify it appears on that device. This sends only to a device
